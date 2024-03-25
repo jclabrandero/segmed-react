@@ -1,12 +1,13 @@
 
 
 import { useQuery, useSubscription } from '@apollo/client'
-import { Input, Table, Tag } from 'antd'
+import { Input, Table, Tag, Space } from 'antd'
 
 import { ErrorDialog, Loader, ToolBar, ToolBarMenu } from '../../../components'
 import { useAntdHelp, useError, useFilter } from '../../../hooks'
 
 import { query, subscription } from './user.constant'
+import { CreateUser, UpdateUser } from './user-upsert.view'
 
 
 export function UserList() {
@@ -22,6 +23,9 @@ export function UserList() {
 			<ToolBar>
 				<ToolBarMenu>
 					<Input.Search enterButton onSearch={filter}/>
+				</ToolBarMenu>
+				<ToolBarMenu>
+					<CreateUser/>
 				</ToolBarMenu>
 			</ToolBar>
 
@@ -39,6 +43,11 @@ export function UserList() {
 					const e = estado(record.status)
 					return (<Tag color={ e.color }>{ e.label }</Tag>)
 				}}/>
+				<Column title='Acciones' width='7rem' render={usuario => (
+					<Space>
+						<UpdateUser id={usuario.id}/>
+					</Space>
+				)}/>
 			</Table>
 
 			<Loader show={loading}/>

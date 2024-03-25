@@ -17,6 +17,30 @@ export const query = {
 				isAuthorized @client
 			}
 		}
+	`,
+	USER: gql`
+		query user($id: Int!) {
+			user(id: $id) {
+				id userName displayName email status
+			}
+		}
+	`
+}
+
+export const mutation = {
+	CREATE_USER: gql`
+		mutation create($data: IUserCreateArgs!) {
+			user: createUser(data: $data) {
+				id
+			}
+		}
+	`,
+	UPDATE_USER: gql`
+		mutation update($id: Int!, $data: IUserUpdateArgs!) {
+			user: updateUser(id: $id, data: $data) {
+				id
+			}
+		}
 	`
 }
 
