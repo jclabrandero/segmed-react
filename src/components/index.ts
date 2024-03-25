@@ -9,6 +9,7 @@ import { NavLink } from './navbar/nav-link'
 import { NavMenu } from './navbar/nav-menu'
 import { ToolBar } from './toolbar/toolbar'
 import { ToolBarMenu } from './toolbar/toolbar-menu'
+import { UpdateDialog } from './dialog/update-dialog'
 
 
 export {
@@ -21,5 +22,6 @@ export {
 	NavLink,
 	NavMenu,
 	ToolBar,
-	ToolBarMenu
+	ToolBarMenu,
+	UpdateDialog
 }
