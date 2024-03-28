@@ -5,6 +5,8 @@ export type User = {
 	displayName?:	string
 	email?:			string
 
+	groups:			Array<Group>
+
 	status:			number
 
 	isAuthorized:	boolean

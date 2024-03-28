@@ -7,6 +7,7 @@ export const query = {
 		query users {
 			users {
 				id userName displayName email status
+				groups { id name }
 			}
 		}
 	`,
@@ -22,6 +23,24 @@ export const query = {
 		query user($id: Int!) {
 			user(id: $id) {
 				id userName displayName email status
+			}
+		}
+	`,
+	CREATE_DEPENDENCIES: gql`
+		query dependencies {
+			groups: activeGroups {
+				id name
+			}
+		}
+	`,
+	UPDATE_DEPENDENCIES: gql`
+		query dependencies($id: Int!) {
+			groups: activeGroups {
+				id name
+			}
+			user(id: $id) {
+				id userName displayName email
+				groups { id }
 			}
 		}
 	`
