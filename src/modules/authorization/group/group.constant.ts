@@ -7,9 +7,17 @@ export const query = {
 		query groups {
 			groups {
 				id name description status
+				permissions { code }
 			}
 		}
-	`
+	`,
+	CREATE_DEPENDENCIES: gql`
+		query dependencies {
+			permissions: activePermissions {
+				id code description
+			}
+		}
+	`,
 }
 
 export const mutation = {

@@ -16,6 +16,16 @@ export type Group = {
 	id:				number
 	name:			string
 	description?:	string
+
+	permissions:	Array<Permission>
+	
+	status:			number
+}
+
+export type Permission = {
+	id:				number
+	code:			string
+	description?:	string
 	
 	status:			number
 }

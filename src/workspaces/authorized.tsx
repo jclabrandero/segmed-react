@@ -93,7 +93,6 @@ export function Authorized() {
 								children: [
 									{ label: 'Usuarios', key: '/configuracion/usuarios' },
 									{ label: 'Grupos', key: '/configuracion/grupos' },
-									{ label: 'Roles', key: '/configuracion/roles' },
 									{ label: 'Permisos', key: '/configuracion/permisos' }
 								]
 							}

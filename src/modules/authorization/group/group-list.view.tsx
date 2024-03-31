@@ -5,6 +5,7 @@ import { Input, Table, Tag } from 'antd'
 
 import { ErrorDialog, Loader, ToolBar, ToolBarMenu } from '../../../components'
 import { useAntdHelp, useError, useFilter } from '../../../hooks'
+import { Permission } from '../../../types'
 
 import { query, subscription } from './group.constant'
 import { CreateGroup } from './group-upsert.view'
@@ -38,6 +39,11 @@ export function GroupList() {
 				<Column title='Id' dataIndex='id'/>
 				<Column title='Nombre' dataIndex='name'/>
 				<Column title='Descripción' dataIndex='description'/>
+				<Column title='Permisos' render={group => group.permissions.map((permission: Permission) => (
+					<div key={`group${group.id}-permission${permission.id}`}>
+						<Tag>{ permission.code }</Tag>
+					</div>
+				))}/>
 				<Column title='Estado' render={record => {
 					const e = estado(record.status)
 					return (<Tag color={ e.color }>{ e.label }</Tag>)

@@ -1,20 +1,23 @@
 
-import { Button, Form, Input, Space } from 'antd'
+import { Button, Form, Input, Space, TreeSelect } from 'antd'
 
 import { CreateDialog } from '../../../components'
 import { useAntdHelp } from '../../../hooks'
-import { Group } from '../../../types'
+import { Group, Permission } from '../../../types'
 
-import { mutation } from './group.constant'
+import { mutation, query } from './group.constant'
 
 
 interface IGroupCreateArgs {
 	nombre:			string
 	descripcion?:	string
+
+	permissions?:	Array<number>
 }
 
 interface IGroupDependencies {
-	group?: Group
+	permissions:	Array<Permission>
+	group?:			Group
 }
 
 type GroupFormProps = {
@@ -30,14 +33,16 @@ function GroupForm({ data, onSubmit, onCancel }: GroupFormProps) {
 	const [ form ] = Form.useForm()
 	const { touched } = useAntdHelp()
 	const onFinish = () => onSubmit(touched(form))
+	const format = (payload?: Group) => {
+		if (!payload) return undefined
+		const { permissions, ...remaining } = payload
+		return { ...remaining, permissions: permissions.map(permission => permission.id) }
+	}
+
+	const permissions = data ? data.permissions : []
 
 	return (
-		<Form layout='vertical' autoComplete='off' onFinish={onFinish} form={form}
-			initialValues={group ? {
-				nombre: group.name,
-				descripcion: group.description
-			}: undefined}
-		>
+		<Form layout='vertical' autoComplete='off' onFinish={onFinish} form={form} initialValues={format(group)}>
 			<Item
 				name='name'
 				label='Nombre'
@@ -49,6 +54,12 @@ function GroupForm({ data, onSubmit, onCancel }: GroupFormProps) {
 				label='Descripción'>
 				<Input placeholder='Descripción'/>
 			</Item>
+			<Item
+				name='permissions'
+				label='Permisos'>
+				<TreeSelect treeCheckable={true} treeData={permissions.map(rec => ({ title: `${rec.code} (${rec.description})`, value: rec.id }))}/>
+			</Item>
+
 			<div className='modal-dialog-footer'>
 				<Space>
 					<Button type='default' onClick={onCancel}>Cancelar</Button>
@@ -63,8 +74,9 @@ export function CreateGroup() {
 	return (
 		<CreateDialog<IGroupCreateArgs, IGroupDependencies>
 			title='Nuevo grupo'
+			query={query.CREATE_DEPENDENCIES}
 			mutation={mutation.CREATE_GROUP}
-			render={(submit, close) => <GroupForm mode='create' data={{}} onSubmit={submit} onCancel={close}/>}
+			render={(submit, close, data) => <GroupForm mode='create' data={data} onSubmit={submit} onCancel={close}/>}
 		/>
 	)
 }
