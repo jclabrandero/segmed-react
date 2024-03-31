@@ -18,12 +18,30 @@ export const query = {
 			}
 		}
 	`,
+	UPDATE_DEPENDENCIES: gql`
+		query dependencies($id: Int!) {
+			permissions: activePermissions {
+				id code description
+			}
+			group(id: $id) {
+				id name description
+				permissions { id }
+			}
+		}
+	`
 }
 
 export const mutation = {
 	CREATE_GROUP: gql`
 		mutation create($data: IGroupCreateArgs!) {
 			group: createGroup(data: $data) {
+				id
+			}
+		}
+	`,
+	UPDATE_GROUP: gql`
+		mutation update($id: Int!, $data: IGroupUpdateArgs!) {
+			group: updateGroup(id: $id, data: $data) {
 				id
 			}
 		}

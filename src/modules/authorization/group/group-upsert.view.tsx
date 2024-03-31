@@ -1,9 +1,9 @@
 
 import { Button, Form, Input, Space, TreeSelect } from 'antd'
 
-import { CreateDialog } from '../../../components'
+import { CreateDialog, UpdateDialog } from '../../../components'
 import { useAntdHelp } from '../../../hooks'
-import { Group, Permission } from '../../../types'
+import { Group, Permission, UpdateProps } from '../../../types'
 
 import { mutation, query } from './group.constant'
 
@@ -77,6 +77,18 @@ export function CreateGroup() {
 			query={query.CREATE_DEPENDENCIES}
 			mutation={mutation.CREATE_GROUP}
 			render={(submit, close, data) => <GroupForm mode='create' data={data} onSubmit={submit} onCancel={close}/>}
+		/>
+	)
+}
+
+export function UpdateGroup({ id }: UpdateProps) {
+	return (
+		<UpdateDialog<IGroupCreateArgs, IGroupDependencies>
+			id={id}
+			title='Editar usuario'
+			query={query.UPDATE_DEPENDENCIES}
+			mutation={mutation.UPDATE_GROUP}
+			render={(submit, close, data) => <GroupForm mode='update' data={data} onSubmit={submit} onCancel={close}/>}
 		/>
 	)
 }

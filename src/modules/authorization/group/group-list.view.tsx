@@ -1,14 +1,14 @@
 
 
 import { useQuery, useSubscription } from '@apollo/client'
-import { Input, Table, Tag } from 'antd'
+import { Input, Table, Tag, Space } from 'antd'
 
 import { ErrorDialog, Loader, ToolBar, ToolBarMenu } from '../../../components'
 import { useAntdHelp, useError, useFilter } from '../../../hooks'
 import { Permission } from '../../../types'
 
 import { query, subscription } from './group.constant'
-import { CreateGroup } from './group-upsert.view'
+import { CreateGroup, UpdateGroup } from './group-upsert.view'
 
 
 export function GroupList() {
@@ -48,6 +48,11 @@ export function GroupList() {
 					const e = estado(record.status)
 					return (<Tag color={ e.color }>{ e.label }</Tag>)
 				}}/>
+				<Column title='Acciones' width='7rem' render={group => (
+					<Space>
+						<UpdateGroup id={group.id}/>
+					</Space>
+				)}/>
 			</Table>
 
 			<Loader show={loading}/>
