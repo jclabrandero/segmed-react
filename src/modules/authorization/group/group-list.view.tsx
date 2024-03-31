@@ -5,7 +5,7 @@ import { Input, Table, Tag, Space } from 'antd'
 
 import { ErrorDialog, Loader, ToolBar, ToolBarMenu } from '../../../components'
 import { useAntdHelp, useError, useFilter } from '../../../hooks'
-import { Permission } from '../../../types'
+import { Permission, User } from '../../../types'
 
 import { query, subscription } from './group.constant'
 import { CreateGroup, UpdateGroup } from './group-upsert.view'
@@ -42,6 +42,11 @@ export function GroupList() {
 				<Column title='Permisos' render={group => group.permissions.map((permission: Permission) => (
 					<div key={`group${group.id}-permission${permission.id}`}>
 						<Tag>{ permission.code }</Tag>
+					</div>
+				))}/>
+				<Column title='Miembros' render={group => group.members.map((user: User) => (
+					<div key={`group${group.id}-member${user.id}`}>
+						<Tag>{ user.userName }</Tag>
 					</div>
 				))}/>
 				<Column title='Estado' render={record => {

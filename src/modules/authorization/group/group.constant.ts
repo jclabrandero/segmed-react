@@ -7,7 +7,8 @@ export const query = {
 		query groups {
 			groups {
 				id name description status
-				permissions { code }
+				members { id userName }
+				permissions { id code }
 			}
 		}
 	`,
