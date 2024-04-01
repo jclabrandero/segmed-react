@@ -13,7 +13,7 @@ import { CreateGroup, UpdateGroup } from './group-upsert.view'
 
 
 export function GroupList() {
-	const { addKey, estado } = useAntdHelp()
+	const { addKey, tableStatus } = useAntdHelp()
 	const [ error, onError ] = useError()
 	const { has } = useAuth()
 	const { loading, data, refetch } = useQuery(query.GROUPS, { onError })
@@ -51,10 +51,7 @@ export function GroupList() {
 						<Tag>{ user.userName }</Tag>
 					</div>
 				))}/>
-				<Column title='Estado' render={record => {
-					const e = estado(record.status)
-					return (<Tag color={ e.color }>{ e.label }</Tag>)
-				}}/>
+				<Column title='Estado' render={tableStatus}/>
 				<Column title='Acciones' width='7rem' render={record => (
 					<Space>
 						{ has('W_GRP', <UpdateGroup id={record.id}/>) }

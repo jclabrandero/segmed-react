@@ -1,7 +1,7 @@
 
 
 import { useQuery } from '@apollo/client'
-import { Input, Table, Tag } from 'antd'
+import { Input, Table } from 'antd'
 
 import { ErrorDialog, Loader, ToolBar, ToolBarMenu } from '../../../components'
 import { useAntdHelp, useAuth, useError, useFilter } from '../../../hooks'
@@ -11,7 +11,7 @@ import { query } from './permission.constant'
 
 
 export function PermissionList() {
-	const { addKey, estado } = useAntdHelp()
+	const { addKey, tableStatus } = useAntdHelp()
 	const [ error, onError ] = useError()
 	const { has } = useAuth()
 	const { loading, data } = useQuery(query.PERMISSIONS, { onError })
@@ -35,10 +35,7 @@ export function PermissionList() {
 				<Column title='Id' dataIndex='id'/>
 				<Column title='Código' dataIndex='code'/>
 				<Column title='Descripción' dataIndex='description'/>
-				<Column title='Estado' render={record => {
-					const e = estado(record.status)
-					return (<Tag color={ e.color }>{ e.label }</Tag>)
-				}}/>
+				<Column title='Estado' render={tableStatus}/>
 			</Table>
 
 			<Loader show={loading}/>
