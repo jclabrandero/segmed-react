@@ -34,19 +34,7 @@ function main() {
 			})),
 			concat(authLink, new HttpLink({ uri: 'http://localhost:3000/graphql' }))
 		),
-		cache: new InMemoryCache({
-			typePolicies: {
-				User: {
-					fields: {
-						isAuthorized: {
-							read() {
-								return true
-							}
-						}
-					}
-				}
-			}
-		})
+		cache: new InMemoryCache()
 	})
 
 	return {

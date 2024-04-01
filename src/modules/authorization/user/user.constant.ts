@@ -15,7 +15,8 @@ export const query = {
 		query CurrentUser($sessionId: Int!) {
 			currentUser(sessionId: $sessionId) {
 				id userName displayName
-				isAuthorized @client
+				permissions
+				isAuthorized
 			}
 		}
 	`,
