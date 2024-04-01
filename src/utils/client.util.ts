@@ -27,7 +27,9 @@ export function getDefaultUser(): User {
 		userName: 'guest',
 		displayName: '',
 		email: '',
+		groups: [],
 		status: 1,
+		permissions: [],
 		isAuthorized: false
 	}
 }

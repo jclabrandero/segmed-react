@@ -4,7 +4,8 @@ import { useQuery } from '@apollo/client'
 import { Input, Table, Tag } from 'antd'
 
 import { ErrorDialog, Loader, ToolBar, ToolBarMenu } from '../../../components'
-import { useAntdHelp, useError, useFilter } from '../../../hooks'
+import { useAntdHelp, useAuth, useError, useFilter } from '../../../hooks'
+import { NotAllowed } from '../../basic'
 
 import { query } from './permission.constant'
 
@@ -12,11 +13,12 @@ import { query } from './permission.constant'
 export function PermissionList() {
 	const { addKey, estado } = useAntdHelp()
 	const [ error, onError ] = useError()
+	const { has } = useAuth()
 	const { loading, data } = useQuery(query.PERMISSIONS, { onError })
 		, [ permissions, filter ] = useFilter(addKey(data?.permissions), ['code', 'description'])
 	const { Column } = Table
 
-	return (
+	return has('R_PRMSSN',
 		<>
 			<ToolBar>
 				<ToolBarMenu>
@@ -41,6 +43,7 @@ export function PermissionList() {
 
 			<Loader show={loading}/>
 			<ErrorDialog error={error} />
-		</>
+		</>,
+		<NotAllowed/>
 	)
 }

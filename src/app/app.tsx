@@ -20,7 +20,6 @@ function useApp() {
 
 	const onError = () => userState(getDefaultUser())
 		, onCompleted = ({ currentUser }: { currentUser: User }) => {
-			console.log(currentUser)
 			userState(currentUser)
 		}
 

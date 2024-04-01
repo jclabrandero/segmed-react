@@ -9,6 +9,7 @@ export type User = {
 
 	status:			number
 
+	permissions:	Array<string>
 	isAuthorized:	boolean
 }
 
