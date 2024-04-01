@@ -1,0 +1,21 @@
+
+import { ReactNode } from 'react'
+import { useReactiveVar } from '@apollo/client'
+
+import { authState, userState } from '../utils'
+
+
+export function useAuth() {
+	const user = useReactiveVar(userState)
+		, auth = useReactiveVar(authState)
+
+	const has = (permission: string, component: ReactNode, unauthorized: ReactNode = null) => {
+		if (user.permissions.includes(permission)) {
+			return component
+		}
+
+		return unauthorized
+	}
+
+	return { auth, user, has }
+}

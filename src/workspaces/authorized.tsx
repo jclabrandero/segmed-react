@@ -1,13 +1,13 @@
 
 import { useRef } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
-import { useMutation, useReactiveVar } from '@apollo/client'
+import { useMutation } from '@apollo/client'
 import { Avatar, Dropdown, Menu } from 'antd'
 import { MenuOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
 
 import { ErrorDialog, Loader, NavAction, NavBar, NavBrand, NavMenu } from '../components'
-import { useError } from '../hooks'
-import { authState, userState, getDefaultUser, setAuth } from '../utils'
+import { useAuth, useError } from '../hooks'
+import { userState, getDefaultUser, setAuth } from '../utils'
 
 import { mutation } from '../modules/authorization/signin/signin.constant'
 import { Home, NotFound } from '../modules/basic'
@@ -17,8 +17,7 @@ import { UserList, GroupList, PermissionList } from '../modules/authorization'
 function useAuthorized() {
 	const [ error, onError ] = useError()
 
-	const user = useReactiveVar(userState)
-		, auth = useReactiveVar(authState)
+	const { user, auth } = useAuth()
 		, mainRef = useRef<HTMLDivElement>(null)
 	
 	const onCompleted = () => {
