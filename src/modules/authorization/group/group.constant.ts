@@ -8,7 +8,7 @@ export const query = {
 			groups {
 				id name description status
 				members { id userName }
-				permissions { id code }
+				permissions { id code description }
 			}
 		}
 	`,
@@ -53,6 +53,13 @@ export const subscription = {
 	GROUP_UPSERTED: gql`
 		subscription upserted {
 			groupUpserted {
+				id
+			}
+		}
+	`,
+	GROUP_UPDATED: gql`
+		subscription updated {
+			group: groupUpdated {
 				id
 			}
 		}

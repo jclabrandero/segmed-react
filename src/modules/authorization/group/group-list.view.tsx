@@ -43,7 +43,7 @@ export function GroupList() {
 				<Column title='Descripción' dataIndex='description'/>
 				<Column title='Permisos' render={group => group.permissions.map((permission: Permission) => (
 					<div key={`group${group.id}-permission${permission.id}`}>
-						<Tag>{ permission.code }</Tag>
+						<Tag>{ permission.description }</Tag>
 					</div>
 				))}/>
 				<Column title='Miembros' render={group => group.members.map((user: User) => (

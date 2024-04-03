@@ -15,6 +15,7 @@ export const query = {
 		query CurrentUser($sessionId: Int!) {
 			currentUser(sessionId: $sessionId) {
 				id userName displayName
+				groups { id name }
 				permissions
 				isAuthorized
 			}

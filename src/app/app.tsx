@@ -1,5 +1,5 @@
 
-import { useReactiveVar, useQuery } from '@apollo/client'
+import { useReactiveVar, useQuery, useSubscription } from '@apollo/client'
 import { ConfigProvider, ThemeConfig } from 'antd'
 import locale from 'antd/locale/es_ES'
 
@@ -10,6 +10,8 @@ import { authState, userState, getDefaultUser } from '../utils'
 import { Guest } from '../workspaces/guest'
 import { Authorized } from '../workspaces/authorized'
 import { query } from '../modules/authorization/user/user.constant'
+
+import { subscription as groupSubscription } from '../modules/authorization/group/group.constant'
 
 import './app.css'
 
@@ -23,13 +25,20 @@ function useApp() {
 			userState(currentUser)
 		}
 
-	const { loading } = useQuery(query.CURRENT_USER, { onError, onCompleted, variables: { sessionId: auth.sessionId } })
+	const { loading, refetch } = useQuery(query.CURRENT_USER, {
+		onError, onCompleted, variables: { sessionId: auth.sessionId }, notifyOnNetworkStatusChange: true
+	})
 
 	const theme: ThemeConfig = {
 		token: {
 			colorPrimary: '#1a5fba'
 		}
 	}
+
+	useSubscription(groupSubscription.GROUP_UPDATED, { onData: ({ data: { data } }) => {
+		if (user.groups.find(({ id }) => id === data.group.id))
+			refetch()
+	}})
 
 	return { loading, user, theme }
 }
