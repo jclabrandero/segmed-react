@@ -13,6 +13,7 @@ import { mutation } from '../modules/authorization/signin/signin.constant'
 import { Home, NotFound } from '../modules/basic'
 import { UserList, GroupList, PermissionList } from '../modules/authorization'
 import { PersonDocumentTypeList } from '../modules/catalog'
+import { PersonList } from '../modules/folk'
 
 
 function useAuthorized() {
@@ -87,6 +88,14 @@ export function Authorized() {
 						defaultOpenKeys={['identidad', 'servicios']}
 						items={[
 							{
+								label: 'Identidad',
+								key: 'identidad',
+								icon: <UserOutlined/>,
+								children: [
+									{ label: 'Personas', key: '/identidad/personas' },
+								]
+							},
+							{
 								label: 'Catálogo',
 								key: 'catalogo',
 								icon: <CarryOutOutlined/>,
@@ -111,6 +120,9 @@ export function Authorized() {
 					<Routes>
 						<Route path="/" element={<Home/>}/>
 
+						<Route path="identidad">
+							<Route path="personas" element={<PersonList/>}/>
+						</Route>
 						<Route path="catalogo">
 							<Route path="tipos-documento-identidad" element={<PersonDocumentTypeList/>}/>
 						</Route>
