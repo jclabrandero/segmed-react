@@ -1,13 +1,13 @@
 
 import { User, Group, Permission } from './authorization.type'
+import { PersonDocumentType } from './catalog.type'
 
 type UpdateProps = {
 	id: number
 }
 
 export type {
-	User,
-	Group,
-	Permission,
-	UpdateProps
+	UpdateProps,
+	User, Group, Permission,
+	PersonDocumentType
 }

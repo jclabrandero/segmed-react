@@ -3,7 +3,7 @@ import { useRef } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import { useMutation } from '@apollo/client'
 import { Avatar, Dropdown, Menu } from 'antd'
-import { MenuOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
+import { CarryOutOutlined, MenuOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
 
 import { ErrorDialog, Loader, NavAction, NavBar, NavBrand, NavMenu } from '../components'
 import { useAuth, useError } from '../hooks'
@@ -12,6 +12,7 @@ import { userState, getDefaultUser, setAuth } from '../utils'
 import { mutation } from '../modules/authorization/signin/signin.constant'
 import { Home, NotFound } from '../modules/basic'
 import { UserList, GroupList, PermissionList } from '../modules/authorization'
+import { PersonDocumentTypeList } from '../modules/catalog'
 
 
 function useAuthorized() {
@@ -86,6 +87,14 @@ export function Authorized() {
 						defaultOpenKeys={['identidad', 'servicios']}
 						items={[
 							{
+								label: 'Catálogo',
+								key: 'catalogo',
+								icon: <CarryOutOutlined/>,
+								children: [
+									{ label: 'Tipos de documento identidad', key: '/catalogo/tipos-documento-identidad' }
+								]
+							},
+							{
 								label: 'Configuración',
 								key: 'configuracion',
 								icon: <SettingOutlined/>,
@@ -102,6 +111,9 @@ export function Authorized() {
 					<Routes>
 						<Route path="/" element={<Home/>}/>
 
+						<Route path="catalogo">
+							<Route path="tipos-documento-identidad" element={<PersonDocumentTypeList/>}/>
+						</Route>
 						<Route path="configuracion">
 							<Route path="usuarios" element={<UserList/>}/>
 							<Route path="grupos" element={<GroupList/>}/>
