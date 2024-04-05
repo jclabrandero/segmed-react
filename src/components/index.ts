@@ -1,5 +1,6 @@
 
 import { CreateDialog } from './dialog/create-dialog'
+import { DeleteDialog } from './dialog/delete-dialog'
 import { ErrorDialog } from './dialog/error-dialog'
 import { Loader } from './loader/loader'
 import { NavAction } from './navbar/nav-action'
@@ -14,6 +15,7 @@ import { UpdateDialog } from './dialog/update-dialog'
 
 export {
 	CreateDialog,
+	DeleteDialog,
 	ErrorDialog,
 	Loader,
 	NavAction,
