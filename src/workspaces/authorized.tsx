@@ -12,7 +12,7 @@ import { userState, getDefaultUser, setAuth } from '../utils'
 import { mutation } from '../modules/authorization/signin/signin.constant'
 import { Home, NotFound } from '../modules/basic'
 import { UserList, GroupList, PermissionList } from '../modules/authorization'
-import { PersonDocumentTypeList } from '../modules/catalog'
+import { EmployeePositionList, EmployeeTypeList, PersonDocumentTypeList } from '../modules/catalog'
 import { PersonList } from '../modules/folk'
 
 
@@ -100,6 +100,8 @@ export function Authorized() {
 								key: 'catalogo',
 								icon: <CarryOutOutlined/>,
 								children: [
+									{ label: 'Cargos funcionarios', key: '/catalogo/cargos-funcionarios' },
+									{ label: 'Tipos de funcionarios', key: '/catalogo/tipos-funcionarios' },
 									{ label: 'Tipos de documento identidad', key: '/catalogo/tipos-documento-identidad' }
 								]
 							},
@@ -124,6 +126,8 @@ export function Authorized() {
 							<Route path="personas" element={<PersonList/>}/>
 						</Route>
 						<Route path="catalogo">
+							<Route path="cargos-funcionarios" element={<EmployeePositionList/>}/>
+							<Route path='tipos-funcionarios' element={<EmployeeTypeList/>}/>
 							<Route path="tipos-documento-identidad" element={<PersonDocumentTypeList/>}/>
 						</Route>
 						<Route path="configuracion">
