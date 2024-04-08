@@ -5,6 +5,7 @@ import { Input, Space, Table } from 'antd'
 import { ErrorDialog, Loader, ToolBar, ToolBarMenu } from '../../../components'
 import { useDate, useError, useAntdHelp, useFilter } from '../../../hooks'
 
+import { subscription as pdtSubscription } from '../../catalog/person-document-type/person-document-type.constant'
 import { query, subscription } from './person.constant'
 import { CreatePerson, DeletePerson, UpdatePerson } from './person-upsert.view'
 
@@ -16,6 +17,7 @@ export function PersonList() {
 		, { loading, data, refetch } = useQuery(query.PERSONS, { onError })
 		, [ persons, filter ] = useFilter(addKey(data?.persons), ['firstName', 'lastName'])
 	const { Column } = Table
+	useSubscription(pdtSubscription.PERSON_DOCUMENT_TYPE_UPSERTED, { onData: () => refetch() })
 	useSubscription(subscription.PERSON_UPSERTED, { onData: () => refetch() })
 
 	return (

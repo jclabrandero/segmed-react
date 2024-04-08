@@ -47,7 +47,7 @@ function PersonForm({ data, onSubmit, onCancel, onRefetch }: PersonFormProps) {
 	const format = (payload?: Person) => {
 		if (!payload) return undefined
 		const { personDocumentType, birthDate, ...remaining } = payload
-		return { ...remaining, birthDate: dayjs(birthDate), personDocumentTypeId: personDocumentType.id }
+		return { ...remaining, birthDate: dayjs(birthDate), personDocumentTypeId: personDocumentType?.id }
 	}
 	const personDocumentTypes = data ? data.personDocumentTypes : []
 
