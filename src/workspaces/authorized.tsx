@@ -3,7 +3,7 @@ import { useRef } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import { useMutation } from '@apollo/client'
 import { Avatar, Dropdown, Menu } from 'antd'
-import { CarryOutOutlined, MenuOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
+import { ApartmentOutlined, CarryOutOutlined, MenuOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
 
 import { ErrorDialog, Loader, NavAction, NavBar, NavBrand, NavMenu } from '../components'
 import { useAuth, useError } from '../hooks'
@@ -13,6 +13,7 @@ import { mutation } from '../modules/authorization/signin/signin.constant'
 import { Home, NotFound } from '../modules/basic'
 import { UserList, GroupList, PermissionList } from '../modules/authorization'
 import { EmployeePositionList, EmployeeTypeList, PersonDocumentTypeList } from '../modules/catalog'
+import { BelongingList, MedicalOfficeList } from '../modules/reference'
 import { PersonList } from '../modules/folk'
 
 
@@ -106,6 +107,15 @@ export function Authorized() {
 								]
 							},
 							{
+								label: 'Referencia',
+								key: 'referencia',
+								icon: <ApartmentOutlined/>,
+								children: [
+									{ label: 'Pertinencias', key: '/referencia/pertinencias' },
+									{ label: 'Consultorios', key: '/referencia/consultorios' }
+								]
+							},
+							{
 								label: 'Configuración',
 								key: 'configuracion',
 								icon: <SettingOutlined/>,
@@ -129,6 +139,10 @@ export function Authorized() {
 							<Route path="cargos-funcionarios" element={<EmployeePositionList/>}/>
 							<Route path='tipos-funcionarios' element={<EmployeeTypeList/>}/>
 							<Route path="tipos-documento-identidad" element={<PersonDocumentTypeList/>}/>
+						</Route>
+						<Route path="referencia">
+							<Route path="pertinencias" element={<BelongingList/>}/>
+							<Route path="consultorios" element={<MedicalOfficeList/>}/>
 						</Route>
 						<Route path="configuracion">
 							<Route path="usuarios" element={<UserList/>}/>
