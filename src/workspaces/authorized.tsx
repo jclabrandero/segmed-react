@@ -14,7 +14,7 @@ import { Home, NotFound } from '../modules/basic'
 import { UserList, GroupList, PermissionList } from '../modules/authorization'
 import { EmployeePositionList, EmployeeTypeList, PersonDocumentTypeList } from '../modules/catalog'
 import { BelongingList, MedicalOfficeList } from '../modules/reference'
-import { PersonList } from '../modules/folk'
+import { PersonList, ClerkList } from '../modules/folk'
 
 
 function useAuthorized() {
@@ -94,6 +94,7 @@ export function Authorized() {
 								icon: <UserOutlined/>,
 								children: [
 									{ label: 'Personas', key: '/identidad/personas' },
+									{ label: 'Funcionarios', key: '/identidad/funcionarios' }
 								]
 							},
 							{
@@ -134,6 +135,7 @@ export function Authorized() {
 
 						<Route path="identidad">
 							<Route path="personas" element={<PersonList/>}/>
+							<Route path="funcionarios" element={<ClerkList/>}/>
 						</Route>
 						<Route path="catalogo">
 							<Route path="cargos-funcionarios" element={<EmployeePositionList/>}/>

@@ -2,7 +2,7 @@
 import { User, Group, Permission } from './authorization.type'
 import { EmployeePosition, EmployeeType, PersonDocumentType } from './catalog.type'
 import { Belonging, MedicalOffice } from './reference.type'
-import { Person } from './folk.type'
+import { Person, Clerk } from './folk.type'
 
 type UpdateProps = {
 	id: number
@@ -13,5 +13,5 @@ export type {
 	User, Group, Permission,
 	EmployeePosition, EmployeeType, PersonDocumentType,
 	Belonging, MedicalOffice,
-	Person
+	Person, Clerk
 }

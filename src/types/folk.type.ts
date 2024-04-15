@@ -1,5 +1,5 @@
 
-import { PersonDocumentType } from '.'
+import { EmployeePosition, EmployeeType, MedicalOffice, PersonDocumentType } from '.'
 
 
 export type Person = {
@@ -13,4 +13,16 @@ export type Person = {
 	personDocumentType:	PersonDocumentType
 
 	status:		number
+}
+
+export type Clerk = {
+	id:		number
+	ein:	number
+
+	person:			Person
+	position:		EmployeePosition
+	employeeType:	EmployeeType
+	medicalOffices:	Array<MedicalOffice>
+
+	status:	number
 }
