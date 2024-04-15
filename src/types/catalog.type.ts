@@ -22,3 +22,12 @@ export type PersonDocumentType = {
 	
 	status:			number
 }
+
+export type InsuredType = {
+	id:				number
+	name:			string
+	description?:	string
+	withDependents:	boolean
+	
+	status:			number
+}

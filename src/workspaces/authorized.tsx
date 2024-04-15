@@ -12,7 +12,11 @@ import { userState, getDefaultUser, setAuth } from '../utils'
 import { mutation } from '../modules/authorization/signin/signin.constant'
 import { Home, NotFound } from '../modules/basic'
 import { UserList, GroupList, PermissionList } from '../modules/authorization'
-import { EmployeePositionList, EmployeeTypeList, PersonDocumentTypeList } from '../modules/catalog'
+import { 
+	PersonDocumentTypeList,
+	EmployeePositionList, EmployeeTypeList,
+	InsuredTypeList
+} from '../modules/catalog'
 import { BelongingList, MedicalOfficeList } from '../modules/reference'
 import { PersonList, ClerkList } from '../modules/folk'
 
@@ -104,7 +108,8 @@ export function Authorized() {
 								children: [
 									{ label: 'Cargos funcionarios', key: '/catalogo/cargos-funcionarios' },
 									{ label: 'Tipos de funcionarios', key: '/catalogo/tipos-funcionarios' },
-									{ label: 'Tipos de documento identidad', key: '/catalogo/tipos-documento-identidad' }
+									{ label: 'Tipos de documento identidad', key: '/catalogo/tipos-documento-identidad' },
+									{ label: 'Tipos de beneficiarios', key: '/catalogo/tipos-beneficiarios' }
 								]
 							},
 							{
@@ -141,6 +146,7 @@ export function Authorized() {
 							<Route path="cargos-funcionarios" element={<EmployeePositionList/>}/>
 							<Route path='tipos-funcionarios' element={<EmployeeTypeList/>}/>
 							<Route path="tipos-documento-identidad" element={<PersonDocumentTypeList/>}/>
+							<Route path='tipos-beneficiarios' element={<InsuredTypeList/>}/>
 						</Route>
 						<Route path="referencia">
 							<Route path="pertinencias" element={<BelongingList/>}/>
