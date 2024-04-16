@@ -18,7 +18,7 @@ import {
 	InsuredTypeList
 } from '../modules/catalog'
 import { BelongingList, MedicalOfficeList } from '../modules/reference'
-import { PersonList, ClerkList } from '../modules/folk'
+import { PersonList, ClerkList, InsuredList } from '../modules/folk'
 
 
 function useAuthorized() {
@@ -98,7 +98,8 @@ export function Authorized() {
 								icon: <UserOutlined/>,
 								children: [
 									{ label: 'Personas', key: '/identidad/personas' },
-									{ label: 'Funcionarios', key: '/identidad/funcionarios' }
+									{ label: 'Funcionarios', key: '/identidad/funcionarios' },
+									{ label: 'Beneficiarios', key: '/identidad/beneficiarios' }
 								]
 							},
 							{
@@ -141,6 +142,7 @@ export function Authorized() {
 						<Route path="identidad">
 							<Route path="personas" element={<PersonList/>}/>
 							<Route path="funcionarios" element={<ClerkList/>}/>
+							<Route path="beneficiarios" element={<InsuredList/>}/>
 						</Route>
 						<Route path="catalogo">
 							<Route path="cargos-funcionarios" element={<EmployeePositionList/>}/>

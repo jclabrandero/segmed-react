@@ -6,7 +6,7 @@ import {
 	InsuredType
 } from './catalog.type'
 import { Belonging, MedicalOffice } from './reference.type'
-import { Person, Clerk } from './folk.type'
+import { Person, Clerk, Insured } from './folk.type'
 
 type UpdateProps = {
 	id: number
@@ -19,5 +19,5 @@ export type {
 	EmployeePosition, EmployeeType,
 	InsuredType,
 	Belonging, MedicalOffice,
-	Person, Clerk
+	Person, Clerk, Insured
 }

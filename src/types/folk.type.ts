@@ -1,5 +1,10 @@
 
-import { EmployeePosition, EmployeeType, MedicalOffice, PersonDocumentType } from '.'
+import {
+	PersonDocumentType,
+	EmployeePosition, EmployeeType,
+	InsuredType,
+	Belonging, MedicalOffice
+} from '.'
 
 
 export type Person = {
@@ -25,4 +30,24 @@ export type Clerk = {
 	medicalOffices:	Array<MedicalOffice>
 
 	status:	number
+}
+
+export type Insured = {
+	id:				number
+	code:			string
+	iin?:			number
+	inletDate:		Date
+	outletDate?:	Date
+	tradeUnion:		boolean
+	address?:		string
+	phone?:			string
+
+	status:			number
+
+	person:			Person
+	insuredType:	InsuredType
+
+	holderInsured?:	Insured
+	dependents:		Array<Insured>
+	belonging:		Belonging
 }
