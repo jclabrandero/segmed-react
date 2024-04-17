@@ -20,14 +20,14 @@ export const query = {
 		}
 	`,
 	CREATE_DEPENDENCIES: gql`
-		query dependencias {
+		query dependencies {
 			personDocumentTypes: activePersonDocumentTypes {
 				id name
 			}
 		}
 	`,
 	UPDATE_DEPENDENCIES: gql`
-		query dependencias($id: Int!) {
+		query dependencies($id: Int!) {
 			person(id: $id) {
 				id firstName lastName sex birthDate documentNumber status
 				personDocumentType { id name }
