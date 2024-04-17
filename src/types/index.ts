@@ -4,7 +4,7 @@ import {
 	PersonDocumentType,
 	EmployeePosition, EmployeeType,
 	InsuredType,
-	MedicalSubspecialty
+	MedicalSubspecialty, MedicalSpecialty
 } from './catalog.type'
 import { Belonging, MedicalOffice } from './reference.type'
 import { Person, Clerk, Insured } from './folk.type'
@@ -20,7 +20,7 @@ export type {
 	PersonDocumentType,
 	EmployeePosition, EmployeeType,
 	InsuredType,
-	MedicalSubspecialty,
+	MedicalSubspecialty, MedicalSpecialty,
 
 	Belonging, MedicalOffice,
 

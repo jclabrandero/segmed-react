@@ -45,3 +45,13 @@ export type MedicalSubspecialty = {
 
 	status:			number
 }
+
+export type MedicalSpecialty = {
+	id:				number
+	name:			string
+	description?:	string
+
+	status:			number
+
+	subspecialties: Array<MedicalSubspecialty>
+}
