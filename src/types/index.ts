@@ -3,7 +3,8 @@ import { User, Group, Permission } from './authorization.type'
 import {
 	PersonDocumentType,
 	EmployeePosition, EmployeeType,
-	InsuredType
+	InsuredType,
+	MedicalSubspecialty
 } from './catalog.type'
 import { Belonging, MedicalOffice } from './reference.type'
 import { Person, Clerk, Insured } from './folk.type'
@@ -15,9 +16,13 @@ type UpdateProps = {
 export type {
 	UpdateProps,
 	User, Group, Permission,
+	
 	PersonDocumentType,
 	EmployeePosition, EmployeeType,
 	InsuredType,
+	MedicalSubspecialty,
+
 	Belonging, MedicalOffice,
+
 	Person, Clerk, Insured
 }

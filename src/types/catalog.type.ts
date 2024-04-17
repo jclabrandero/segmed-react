@@ -31,3 +31,17 @@ export type InsuredType = {
 	
 	status:			number
 }
+
+export type MedicalSubspecialty = {
+	id:		number
+	name:	string
+
+	description?:		string
+	ageRangePatients?:	string
+
+	dt?:	string
+	si?:	string
+	ot?:	string
+
+	status:			number
+}
