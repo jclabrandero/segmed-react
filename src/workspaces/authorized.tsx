@@ -16,7 +16,7 @@ import {
 	PersonDocumentTypeList,
 	EmployeePositionList, EmployeeTypeList,
 	InsuredTypeList,
-	MedicalSubspecialtyList, MedicalSpecialtyList
+	MedicalSubspecialtyList, MedicalSpecialtyList, MedicalGroupList
 } from '../modules/catalog'
 import { BelongingList, MedicalOfficeList } from '../modules/reference'
 import { PersonList, ClerkList, InsuredList } from '../modules/folk'
@@ -112,6 +112,7 @@ export function Authorized() {
 									{ label: 'Tipos de funcionarios', key: '/catalogo/tipos-funcionarios' },
 									{ label: 'Tipos de documento identidad', key: '/catalogo/tipos-documento-identidad' },
 									{ label: 'Tipos de beneficiarios', key: '/catalogo/tipos-beneficiarios' },
+									{ label: 'Unidades médicas', key: '/catalogo/unidades-medicas' },
 									{ label: 'Especialidades médicas', key: '/catalogo/especialidades-medicas' },
 									{ label: 'Sub-especialidades médicas', key: '/catalogo/sub-especialidades-medicas' }
 								]
@@ -152,6 +153,7 @@ export function Authorized() {
 							<Route path='tipos-funcionarios' element={<EmployeeTypeList/>}/>
 							<Route path="tipos-documento-identidad" element={<PersonDocumentTypeList/>}/>
 							<Route path='tipos-beneficiarios' element={<InsuredTypeList/>}/>
+							<Route path="unidades-medicas" element={<MedicalGroupList/>}/>
 							<Route path='especialidades-medicas' element={<MedicalSpecialtyList/>}/>
 							<Route path='sub-especialidades-medicas' element={<MedicalSubspecialtyList/>}/>
 						</Route>

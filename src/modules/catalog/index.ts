@@ -5,6 +5,7 @@ import { PersonDocumentTypeList } from './person-document-type/person-document-t
 import { InsuredTypeList } from './insured-type/insured-type-list.view'
 import { MedicalSubspecialtyList } from './medical-subspecialty/medical-subspecialty-list.view'
 import { MedicalSpecialtyList } from './medical-specialty/medical-specialty-list.view'
+import { MedicalGroupList } from './medical-group/medical-group-list.view'
 
 export {
 	EmployeePositionList,
@@ -12,5 +13,6 @@ export {
 	PersonDocumentTypeList,
 	InsuredTypeList,
 	MedicalSubspecialtyList,
-	MedicalSpecialtyList
+	MedicalSpecialtyList,
+	MedicalGroupList
 }

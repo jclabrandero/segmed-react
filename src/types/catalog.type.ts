@@ -55,3 +55,13 @@ export type MedicalSpecialty = {
 
 	subspecialties: Array<MedicalSubspecialty>
 }
+
+export type MedicalGroup = {
+	id:				number
+	name:			string
+	description?:	string
+
+	status:			number
+
+	specialties: Array<MedicalSpecialty>
+}
