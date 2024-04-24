@@ -1,3 +1,5 @@
+import { Clerk } from '.'
+
 
 export type User = {
 	id:				number
@@ -5,12 +7,12 @@ export type User = {
 	displayName?:	string
 	email?:			string
 
-	groups:			Array<Group>
-
 	status:			number
-
-	permissions:	Array<string>
 	isAuthorized:	boolean
+
+	groups:			Array<Group>
+	permissions:	Array<string>
+	clerk?:			Clerk
 }
 
 export type Group = {
