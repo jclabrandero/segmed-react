@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import { DocumentNode, useLazyQuery, useMutation } from '@apollo/client'
 import { Button,  Modal } from 'antd'
 import { EditFilled } from '@ant-design/icons'
@@ -14,27 +14,36 @@ type UpdateDialogProps<TUpdateArgs, TDependencies> = {
 	render:		(submit: (args: TUpdateArgs) => void, close: () => void, data: TDependencies, refetch: () => void) => React.ReactNode
 	query:		DocumentNode
 	mutation:	DocumentNode
+	size?:		'small' | 'large'
+	icon?:		ReactNode
 }
 
-export function UpdateDialog<TUpdateArgs, TDependencies>({ id, title, query, mutation, render }: UpdateDialogProps<TUpdateArgs, TDependencies>) {
+export function UpdateDialog<TUpdateArgs, TDependencies>({ id, title, query, mutation, render, size, icon }: UpdateDialogProps<TUpdateArgs, TDependencies>) {
 	const [ open, setOpen ] = useState(false)
 		, [ error, onError ] = useError()
 	const close = () => setOpen(false)
 	const [ get, { loading, data, refetch }] = useLazyQuery(query, { onError, fetchPolicy: 'no-cache' })
 	const [ update, { loading: updateting } ] = useMutation(mutation, { onCompleted: close, onError })
 	const submit = (data: TUpdateArgs) => update({ variables: { id, data }})
+	const FinalIcon = icon || <EditFilled/>
 
 	useEffect(() => data && setOpen(true), [data])
 
 	return (
 		<>
-			<Button
-				shape='circle'
-				type='text'
-				size='small'
-				className='table-toolbtn'
-				icon={<EditFilled/>}
-				onClick={() => get({ variables: { id } })}/>
+			{
+				size && size == 'large'
+					? <Button type='primary' shape='round' icon={FinalIcon} onClick={() => get({ variables: { id } })}>
+						{title}
+					</Button>
+					: <Button
+						shape='circle'
+						type='text'
+						size='small'
+						className='table-toolbtn'
+						icon={FinalIcon}
+						onClick={() => get({ variables: { id } })}/>
+			}
 			<Modal
 				className='modal-dialog'
 				title={title}
