@@ -21,6 +21,7 @@ type CreateDialogWithDependenciesProps<TCreateArgs, TDependencies> = {
 	render:			(submit: (args: TCreateArgs) => void, close: () => void, data: TDependencies, refetch: () => void) => React.ReactNode
 	query:			DocumentNode
 	mutation:		DocumentNode
+	options?:		object
 }
 
 function CreateDialogWithoutDependencies<TCreateArgs>(
@@ -54,7 +55,7 @@ function CreateDialogWithoutDependencies<TCreateArgs>(
 }
 
 function CreateDialogWithDependencies<TCreateArgs, TDependencies = object>(
-	{ title, buttonText, query, mutation, render }: CreateDialogWithDependenciesProps<TCreateArgs, TDependencies>) {
+	{ title, buttonText, query, mutation, render, options }: CreateDialogWithDependenciesProps<TCreateArgs, TDependencies>) {
 	const [ open, setOpen ] = useState(false)
 		, [ error, onError ] = useError()
 	const close = () => setOpen(false)
@@ -66,7 +67,7 @@ function CreateDialogWithDependencies<TCreateArgs, TDependencies = object>(
 
 	return (
 		<>
-			<Button type='primary' shape='round' icon={<PlusOutlined/>} onClick={() => get()}>
+			<Button type='primary' shape='round' icon={<PlusOutlined/>} onClick={() => get(options)}>
 				{buttonText || title}
 			</Button>
 			<Modal
@@ -92,6 +93,7 @@ type CreateDialogProps<TCreateArgs, TDependencies> = {
 	buttonText?:	string
 	render:			(submit: (args: TCreateArgs) => void, close: () => void, data: TDependencies, refetch: () => void) => React.ReactNode
 	query?:			DocumentNode
+	options?:		object
 	mutation:		DocumentNode
 }
 
