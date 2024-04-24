@@ -1,11 +1,11 @@
 
 import { useState } from 'react'
 import { useSubscription } from '@apollo/client'
-import { Button, Form, Input, Space, TreeSelect } from 'antd'
+import { Button, Form, Input, Select, Space, TreeSelect } from 'antd'
 
 import { CreateDialog, UpdateDialog } from '../../../components'
 import { useAntdHelp } from '../../../hooks'
-import { User, Group, UpdateProps } from '../../../types'
+import { User, Group, UpdateProps, Clerk } from '../../../types'
 
 import { subscription as groupSubscription } from '../group/group.constant'
 import { mutation, query } from './user.constant'
@@ -20,10 +20,13 @@ interface IUserCreateArgs {
 
 	password?:			string
 	confirmPassword?:	string
+
+	clerkId?:			number
 }
 
 interface IUserDependencies {
 	groups:	Array<Group>
+	clerks: Array<Clerk>
 	user?:	User
 }
 
@@ -45,13 +48,14 @@ function UserForm({ mode, data, onSubmit, onCancel, onRefetch }: UserFormProps) 
 	const onFinish = () => onSubmit(touched(form))
 	const format = (payload?: User) => {
 		if (!payload) return undefined
-		const { groups, ...remaining } = payload
-		return { ...remaining, groups: groups.map(group => group.id) }
+		const { groups, clerk, ...remaining } = payload
+		return { ...remaining, groups: groups.map(group => group.id), clerkId: clerk ? clerk.id : undefined }
 	}
 
 	useSubscription(groupSubscription.GROUP_UPSERTED, { onData: onRefetch })
 
 	const groups = data ? data.groups : []
+		, clerks = data ? data.clerks : []
 
 	return (
 		<Form layout='vertical' autoComplete='off' onFinish={onFinish} form={form} initialValues={format(user)}>
@@ -75,6 +79,14 @@ function UserForm({ mode, data, onSubmit, onCancel, onRefetch }: UserFormProps) 
 				name='groups'
 				label='Grupos'>
 				<TreeSelect treeCheckable={true} treeData={groups.map(rec => ({ title: rec.name, value: rec.id }))}/>
+			</Item>
+			<Item
+				name='clerkId'
+				label='Funcionario'>
+				<Select
+					placeholder='Funcionario'
+					options={clerks.map(({ id, person }) => ({ label: `${person.firstName} ${person.lastName}`, value: id }))}
+				/>
 			</Item>
 
 			<Item

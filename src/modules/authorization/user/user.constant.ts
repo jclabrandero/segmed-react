@@ -8,6 +8,10 @@ export const query = {
 			users {
 				id userName displayName email status
 				groups { id name }
+				clerk {
+					ein
+					person { firstName lastName }
+				}
 			}
 		}
 	`,
@@ -33,6 +37,10 @@ export const query = {
 			groups: activeGroups {
 				id name
 			}
+			clerks: activeClerks {
+				id
+				person { firstName lastName }
+			}
 		}
 	`,
 	UPDATE_DEPENDENCIES: gql`
@@ -40,9 +48,14 @@ export const query = {
 			groups: activeGroups {
 				id name
 			}
+			clerks: activeClerks {
+				id
+				person { firstName lastName }
+			}
 			user(id: $id) {
 				id userName displayName email
 				groups { id }
+				clerk { id }
 			}
 		}
 	`

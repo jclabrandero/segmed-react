@@ -42,15 +42,18 @@ export function UserList() {
 				<Column title='Usuario' dataIndex='userName'/>
 				<Column title='Nombre' dataIndex='displayName'/>
 				<Column title='Correo electrónico' dataIndex='email'/>
-				<Column title='Grupos' render={user => user.groups.map((group: Group) => (
-					<div key={`user${user.id}-group${group.id}`}>
+				<Column title='Grupos' render={({ id, groups }) => groups.map((group: Group) => (
+					<div key={`user${id}-group${group.id}`}>
 						<Tag>{ group.name }</Tag>
 					</div>
 				))}/>
+				<Column title='Funcionario' render={({ clerk }) => clerk ?
+					(<Tag>{clerk.person.firstName} {clerk.person.lastName}</Tag>) : null
+				}/>
 				<Column title='Estado' render={tableStatus}/>
-				<Column title='Acciones' width='7rem' render={record => (
+				<Column title='Acciones' width='7rem' render={({ id }) => (
 					<Space>
-						{ has('W_USR', <UpdateUser id={record.id}/>) }
+						{ has('W_USR', <UpdateUser id={id}/>) }
 					</Space>
 				)}/>
 			</Table>
