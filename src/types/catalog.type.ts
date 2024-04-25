@@ -65,3 +65,13 @@ export type MedicalGroup = {
 
 	specialties: Array<MedicalSpecialty>
 }
+
+export type ClinicalCareState = {
+	id:				number
+	name:			string
+	description?:	string
+	color:			string
+	lock:			boolean
+
+	status:			number
+}
