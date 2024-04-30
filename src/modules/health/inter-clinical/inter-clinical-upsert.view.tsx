@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useLazyQuery, useQuery } from '@apollo/client'
 import { Button, Form, FormInstance, Input, Select, Spin, Space, TreeSelect, Upload } from 'antd'
-import { CheckOutlined, FolderFilled, UploadOutlined } from '@ant-design/icons'
+import { CheckOutlined, FolderOpenFilled, UploadOutlined } from '@ant-design/icons'
 
 import { CreateDialog, DeleteDialog, Loader, ModalFileViewer, UpdateDialog } from '../../../components'
 import { useAntdHelp } from '../../../hooks'
@@ -321,7 +321,7 @@ export function UploadFileInterclinical({ id, clinicCareId, disabled = false }: 
 			title='Archivos de la interconsulta'
 			query={query.INTERCLINICAL}
 			mutation={mutation.UPDATE_INTERCLINICAL}
-			icon={<FolderFilled/>}
+			icon={<FolderOpenFilled/>}
 			render={(submit, close, data) => <UploadFileInterclinicalForm data={{clinicCareId, ...data}} onSubmit={submit} onCancel={close} disabled={disabled}/>}
 		/>
 	)

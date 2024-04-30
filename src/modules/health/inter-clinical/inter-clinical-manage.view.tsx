@@ -1,5 +1,6 @@
 
-import { Space, Table, Tree, Tag } from 'antd'
+import { Space, Table, Tree } from 'antd'
+import { CheckCircleFilled, InfoCircleFilled, WarningFilled } from '@ant-design/icons'
 
 import { Interclinical, MedicalSpecialty, ClinicCareId } from '../../../types'
 import { useAntdHelp, useDate } from '../../../hooks'
@@ -10,7 +11,7 @@ import {
 	DeleteInterclinical,
 	ConfirmInterclinical, UploadFileInterclinical
 } from './inter-clinical-upsert.view'
-import { InfoCircleOutlined } from '@ant-design/icons'
+
 
 
 type InterclinicalProps = {
@@ -58,8 +59,13 @@ export function InterclinicalManage({ clinicCareId, interclinicals, edit }: Inte
 				)}/>
 				<Column title='Observaciones' dataIndex='remark'/>
 				<Column title='' render={({ approvedState }) => {
-					const colors = ['#f50','#EBEB52','#52EB5B']
-					return <Tag color={colors[approvedState]}><InfoCircleOutlined /></Tag>
+					const fontSize = '22px'
+					const stateIcon = [
+						<WarningFilled style={{ color:'#f50', fontSize }}/>,
+						<InfoCircleFilled style={{ color:'#EBD252', fontSize }}/>,
+						<CheckCircleFilled style={{ color:'#52EB5B', fontSize }}/>
+					]
+					return stateIcon[approvedState]
 				}}/>
 				<Column title='Acciones' width='7rem' render={({ id, approvedState, files }: Interclinical) => {
 					const stateOptions = [
