@@ -4,10 +4,22 @@ import {
 	PersonDocumentType,
 	EmployeePosition, EmployeeType,
 	InsuredType,
-	MedicalSubspecialty, MedicalSpecialty, MedicalGroup
+	MedicalSubspecialty, MedicalSpecialty, MedicalGroup,
+	DrugClass, DrugUnit,
+	ClinicalCareState
 } from './catalog.type'
-import { Belonging, MedicalOffice } from './reference.type'
+import { Belonging, MedicalOffice, Provider } from './reference.type'
 import { Person, Clerk, Insured } from './folk.type'
+import { Medication, MedicationStock, Pharmacy } from './drugstore.type'
+import {
+	ClinicCarePrimary,
+	Interclinical,
+	Prescription,
+	PrescriptionExtern,
+	ClinicCareId
+} from './health.type'
+import { FileInfo, FileBase64 } from './system.type'
+
 
 type UpdateProps = {
 	id: number
@@ -21,8 +33,20 @@ export type {
 	EmployeePosition, EmployeeType,
 	InsuredType,
 	MedicalSubspecialty, MedicalSpecialty, MedicalGroup,
+	DrugClass, DrugUnit,
+	ClinicalCareState,
 
-	Belonging, MedicalOffice,
+	Belonging, MedicalOffice, Provider,
 
-	Person, Clerk, Insured
+	Person, Clerk, Insured,
+
+	Medication, MedicationStock, Pharmacy,
+
+	ClinicCarePrimary,
+	Interclinical,
+	Prescription,
+	PrescriptionExtern,
+	ClinicCareId,
+
+	FileInfo, FileBase64
 }

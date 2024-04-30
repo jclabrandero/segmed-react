@@ -3,7 +3,7 @@ import { useRef } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import { useMutation } from '@apollo/client'
 import { Avatar, Dropdown, Menu } from 'antd'
-import { ApartmentOutlined, CarryOutOutlined, MenuOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
+import { ApartmentOutlined, CarryOutOutlined, DatabaseOutlined, MedicineBoxOutlined, MenuOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
 
 import { ErrorDialog, Loader, NavAction, NavBar, NavBrand, NavMenu } from '../components'
 import { useAuth, useError } from '../hooks'
@@ -16,10 +16,14 @@ import {
 	PersonDocumentTypeList,
 	EmployeePositionList, EmployeeTypeList,
 	InsuredTypeList,
-	MedicalSubspecialtyList, MedicalSpecialtyList, MedicalGroupList
+	MedicalSubspecialtyList, MedicalSpecialtyList, MedicalGroupList,
+	DrugClassList, DrugUnitList,
+	ClinicalCareStateList
 } from '../modules/catalog'
-import { BelongingList, MedicalOfficeList } from '../modules/reference'
+import { BelongingList, MedicalOfficeList, ProviderList } from '../modules/reference'
 import { PersonList, ClerkList, InsuredList } from '../modules/folk'
+import { MedicationList, PharmacyList } from '../modules/drugstore'
+import { ClinicCareList, ClinicCareManage } from '../modules/health'
 
 
 function useAuthorized() {
@@ -94,6 +98,14 @@ export function Authorized() {
 						defaultOpenKeys={['identidad', 'servicios']}
 						items={[
 							{
+								label: 'Servicios',
+								key: 'servicios',
+								icon: <MedicineBoxOutlined/>,
+								children: [
+									{ label: 'Consulta médica', key: '/consulta' }
+								]
+							},
+							{
 								label: 'Identidad',
 								key: 'identidad',
 								icon: <UserOutlined/>,
@@ -101,6 +113,15 @@ export function Authorized() {
 									{ label: 'Personas', key: '/identidad/personas' },
 									{ label: 'Funcionarios', key: '/identidad/funcionarios' },
 									{ label: 'Beneficiarios', key: '/identidad/beneficiarios' }
+								]
+							},
+							{
+								label: 'Almacenes',
+								key: 'almacenes',
+								icon: <DatabaseOutlined/>,
+								children: [
+									{ label: 'Medicamentos', key: '/almacenes/medicamentos' },
+									{ label: 'Farmacias', key: '/almacenes/farmacias' }
 								]
 							},
 							{
@@ -114,7 +135,10 @@ export function Authorized() {
 									{ label: 'Tipos de beneficiarios', key: '/catalogo/tipos-beneficiarios' },
 									{ label: 'Unidades médicas', key: '/catalogo/unidades-medicas' },
 									{ label: 'Especialidades médicas', key: '/catalogo/especialidades-medicas' },
-									{ label: 'Sub-especialidades médicas', key: '/catalogo/sub-especialidades-medicas' }
+									{ label: 'Sub-especialidades médicas', key: '/catalogo/sub-especialidades-medicas' },
+									{ label: 'Clases de medicamentos', key: '/catalogo/clases-medicamentos' },
+									{ label: 'Unidades de medicamentos', key: '/catalogo/unidades-medicamentos' },
+									{ label: 'Estados consultas', key: '/catalogo/estados-consultas' }
 								]
 							},
 							{
@@ -123,7 +147,8 @@ export function Authorized() {
 								icon: <ApartmentOutlined/>,
 								children: [
 									{ label: 'Pertinencias', key: '/referencia/pertinencias' },
-									{ label: 'Consultorios', key: '/referencia/consultorios' }
+									{ label: 'Consultorios', key: '/referencia/consultorios' },
+									{ label: 'Proveedores', key: '/referencia/proveedores' }
 								]
 							},
 							{
@@ -156,15 +181,27 @@ export function Authorized() {
 							<Route path="unidades-medicas" element={<MedicalGroupList/>}/>
 							<Route path='especialidades-medicas' element={<MedicalSpecialtyList/>}/>
 							<Route path='sub-especialidades-medicas' element={<MedicalSubspecialtyList/>}/>
+							<Route path='clases-medicamentos' element={<DrugClassList/>}/>
+							<Route path='unidades-medicamentos' element={<DrugUnitList/>}/>
+							<Route path="estados-consultas" element={<ClinicalCareStateList/>}/>
 						</Route>
 						<Route path="referencia">
 							<Route path="pertinencias" element={<BelongingList/>}/>
 							<Route path="consultorios" element={<MedicalOfficeList/>}/>
+							<Route path="proveedores" element={<ProviderList/>}/>
+						</Route>
+						<Route path="almacenes">
+							<Route path="medicamentos" element={<MedicationList/>}/>
+							<Route path="farmacias" element={<PharmacyList/>}/>
 						</Route>
 						<Route path="configuracion">
 							<Route path="usuarios" element={<UserList/>}/>
 							<Route path="grupos" element={<GroupList/>}/>
 							<Route path="permisos" element={<PermissionList/>}/>
+						</Route>
+						<Route path='consulta'>
+							<Route path='' element={<ClinicCareList/>}/>
+							<Route path='atencion/:id' element={<ClinicCareManage/>}/>
 						</Route>
 
 						<Route path="*" element={<NotFound/>}/>
