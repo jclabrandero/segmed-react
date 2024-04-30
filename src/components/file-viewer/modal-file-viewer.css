@@ -1,0 +1,53 @@
+
+.modal-file-viewer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: auto;
+
+	position: fixed;
+	left: 0%;
+	top: 0%;
+
+	width: 100%;
+	height: 100%;
+
+	background-color: rgba(10, 10, 10, 0.6);
+	z-index: 11000;
+}
+
+.modal-file-viewer .tools {
+	position: fixed;
+	top: 1rem;
+	right: 2rem;
+}
+
+.modal-file-viewer .tools .btn {
+	width: 2rem;
+	height: 2rem;
+	background-color: #424242;
+	border: none;
+	border-radius: 50%;
+	cursor: default;
+	outline: none;
+	margin: 0 0.2rem;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.modal-file-viewer .tools .btn:hover {
+	background-color: #8B8B8B;
+}
+
+.modal-file-viewer .tools .btn svg {
+	fill: white;
+}
+
+.modal-file-viewer .wrapper {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+}
