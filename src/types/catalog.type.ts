@@ -66,6 +66,22 @@ export type MedicalGroup = {
 	specialties: Array<MedicalSpecialty>
 }
 
+export type DrugClass = {
+	id:				number
+	name:			string
+	description?:	string
+	
+	status:			number
+}
+
+export type DrugUnit = {
+	id:				number
+	name:			string
+	description?:	string
+	
+	status:			number
+}
+
 export type ClinicalCareState = {
 	id:				number
 	name:			string

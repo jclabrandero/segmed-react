@@ -6,6 +6,9 @@ import { InsuredTypeList } from './insured-type/insured-type-list.view'
 import { MedicalSubspecialtyList } from './medical-subspecialty/medical-subspecialty-list.view'
 import { MedicalSpecialtyList } from './medical-specialty/medical-specialty-list.view'
 import { MedicalGroupList } from './medical-group/medical-group-list.view'
+import { DrugClassList } from './drug-class/drug-class-list.view'
+import { DrugUnitList } from './drug-unit/drug-unit-list.view'
+import { ClinicalCareStateList } from './clinical-care-state/clinical-care-state-list.view'
 
 export {
 	EmployeePositionList,
@@ -14,5 +17,8 @@ export {
 	InsuredTypeList,
 	MedicalSubspecialtyList,
 	MedicalSpecialtyList,
-	MedicalGroupList
+	MedicalGroupList,
+	DrugClassList,
+	DrugUnitList,
+	ClinicalCareStateList
 }
