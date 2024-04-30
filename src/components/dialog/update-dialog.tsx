@@ -51,7 +51,6 @@ export function UpdateDialog<TUpdateArgs, TDependencies>({ id, title, query, mut
 				centered
 				destroyOnClose
 				onCancel={close}
-				footer={() => null}
 			>
 				{ data && render(submit, close, data, () => refetch()) }
 			</Modal>

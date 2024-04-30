@@ -7,6 +7,8 @@ import { PlusOutlined } from '@ant-design/icons'
 import { ErrorDialog, Loader } from '../../components'
 import { useError } from '../../hooks'
 
+import './dialog.css'
+
 
 type CreateDialogWithoutDependenciesProps<TCreateArgs> = {
 	title:			string
@@ -44,7 +46,6 @@ function CreateDialogWithoutDependencies<TCreateArgs>(
 				centered
 				destroyOnClose
 				onCancel={close}
-				footer={() => null}
 			>
 				{ render(submit, close) }
 			</Modal>
@@ -77,7 +78,6 @@ function CreateDialogWithDependencies<TCreateArgs, TDependencies = object>(
 				centered
 				destroyOnClose
 				onCancel={close}
-				footer={() => null}
 			>
 				{ data && render(submit, close, data, () => refetch()) }
 			</Modal>

@@ -1,0 +1,11 @@
+
+.modal-dialog .ant-modal-content .ant-modal-footer {
+	display: none;
+}
+
+.modal-dialog .modal-dialog-footer {
+	display: flex;
+	flex-direction: row;
+	justify-content: right;
+	margin-top: 1.5rem;
+}
