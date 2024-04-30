@@ -35,7 +35,7 @@ export const query = {
 		}
 	`,
 	UPDATE_DEPENDENCIES: gql`
-		query dependencias($id: Int!) {
+		query dependencies($id: Int!) {
 			medicalSpecialty(id: $id) {
 				id name description
 				__typename @skip(if: true)

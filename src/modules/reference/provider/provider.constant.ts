@@ -12,7 +12,7 @@ export const query = {
 		}
 	`,
 	CREATE_DEPENDENCIES: gql`
-		query dependencias {
+		query dependencies {
 			belongings: activeBelongings {
 				id name
 			}
@@ -64,7 +64,7 @@ export const query = {
 				__typename @skip(if: true)
 			}
 		}
-	`,
+	`
 }
 
 export const mutation = {

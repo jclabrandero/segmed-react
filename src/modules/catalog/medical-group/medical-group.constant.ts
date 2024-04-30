@@ -28,14 +28,14 @@ export const query = {
 		}
 	`,
 	CREATE_DEPENDENCIES: gql`
-		query dependencias {
+		query dependencies {
 			specialties: activeMedicalSpecialties {
 				id name description
 			}
 		}
 	`,
 	UPDATE_DEPENDENCIES: gql`
-		query dependencias($id: Int!) {
+		query dependencies($id: Int!) {
 			medicalGroup(id: $id) {
 				id name description
 				__typename @skip(if: true)
