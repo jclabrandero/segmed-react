@@ -30,9 +30,9 @@ function main() {
 				return def.kind === 'OperationDefinition' && def.operation === 'subscription'
 			},
 			new GraphQLWsLink(createClient({
-				url: 'ws://localhost:3000/graphql'
+				url: import.meta.env.VITE_GRAPHQL_WS_URL
 			})),
-			concat(authLink, new HttpLink({ uri: 'http://localhost:3000/graphql' }))
+			concat(authLink, new HttpLink({ uri: import.meta.env.VITE_GRAPHQL_URI }))
 		),
 		cache: new InMemoryCache()
 	})
