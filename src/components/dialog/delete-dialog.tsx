@@ -14,9 +14,10 @@ type DeleteDialogProps<TDeleteArgs> = {
 	render:		(record: TDeleteArgs) => React.ReactNode
 	query:		DocumentNode
 	mutation:	DocumentNode
+	removeData?:		object
 }
 
-export function DeleteDialog<T>({ id, title, render, query, mutation }: DeleteDialogProps<T>) {
+export function DeleteDialog<T>({ id, title, render, query, mutation, removeData }: DeleteDialogProps<T>) {
 	const [ open, setOpen ] = useState(false)
 		, [ error, onError ] = useError()
 	const close = () => setOpen(false)
@@ -43,7 +44,7 @@ export function DeleteDialog<T>({ id, title, render, query, mutation }: DeleteDi
 				footer={() => (
 					<>
 						<Button type='default' onClick={close}>Cancelar</Button>
-						<Button type='primary' danger onClick={() => remove({ variables: { id }})}>Eliminar</Button>
+						<Button type='primary' danger onClick={() => removeData ? remove({ variables: { id, data: removeData }}) : remove({ variables: { id }})}>Eliminar</Button>
 					</>
 				)}
 			>
