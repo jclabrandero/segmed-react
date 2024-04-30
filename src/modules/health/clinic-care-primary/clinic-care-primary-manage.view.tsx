@@ -1,6 +1,8 @@
 
 import { ClinicCarePrimary, ClinicCareId } from '../../../types'
 
+import { ToolBar, ToolBarMenu } from '../../../components'
+
 import { UpsertClinicCarePrimary } from './clinic-care-primary-upsert'
 
 
@@ -12,13 +14,16 @@ type ClinicCarePrimaryProps = {
 export function ClinicCarePrimaryManage({ clinicCareId, primary, edit }: ClinicCarePrimaryProps) {
 	return (
 		<>
-			{ !edit && <UpsertClinicCarePrimary id={primary?.id || 0} clinicCareId={clinicCareId}/> }
-
-			<h5>Motivo</h5>
+			{
+				edit && <ToolBar><ToolBarMenu>
+					<UpsertClinicCarePrimary id={primary?.id || 0} clinicCareId={clinicCareId}/>
+				</ToolBarMenu></ToolBar>
+			}
+			<b>Motivo</b>
 			<p>{ primary?.reason || '(Sin información)'}</p>
-			<h5>Examen físico</h5>
+			<b>Examen físico</b>
 			<p>{ primary?.physicalExam || '(Sin información)'}</p>
-			<h5>Diagnóstico</h5>
+			<b>Diagnóstico</b>
 			<p>{ primary?.diagnosis || '(Sin información)'}</p>
 		</>
 	)

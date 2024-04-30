@@ -28,7 +28,7 @@ export function ClinicCareManage() {
 	if (!data) return null
 
 	const { startDate, insured, medicalOffice, primary, state, interclinicals, prescriptions, prescriptionExterns } = data.clinicCare
-	const edit = state.lock
+	const edit = !state.lock
 	const filterStates: boolean = Boolean(interclinicals.filter(({ approvedState }: Interclinical) => approvedState !== 2).length)
 
 	return (

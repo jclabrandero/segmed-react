@@ -1,7 +1,9 @@
 
 import { Button, Dropdown, Space, Table } from 'antd'
 
+import { ToolBar, ToolBarMenu } from '../../../components'
 import { Prescription, PrescriptionExtern, ClinicCareId } from '../../../types'
+
 import {
 	CreatePrescription, UpdatePrescription, DeletePrescription,
 	CreatePrescriptionExtern, UpdatePrescriptionExtern, DeletePrescriptionExtern
@@ -23,19 +25,22 @@ export function PrescriptionManage({ clinicCareId, prescriptions, prescriptionEx
 
 	return (
 		<>
-			{ !edit && <Dropdown menu={{
-				items: [
-					{
-						key: 'pharmacy',
-						label: <CreatePrescription clinicCareId={clinicCareId}/>
-					},
-					{
-						key: 'extern',
-						label: <CreatePrescriptionExtern clinicCareId={clinicCareId}/>
-					}
-				]
-			}}><Button type='primary' shape='round'>Agregar medicamento</Button></Dropdown>  }
-			<br/>
+			{
+				edit && <ToolBar><ToolBarMenu>
+					<Dropdown menu={{
+						items: [
+							{
+								key: 'pharmacy',
+								label: <CreatePrescription clinicCareId={clinicCareId}/>
+							},
+							{
+								key: 'extern',
+								label: <CreatePrescriptionExtern clinicCareId={clinicCareId}/>
+							}
+						]
+					}}><Button type='primary' shape='round'>Agregar medicamento</Button></Dropdown>
+				</ToolBarMenu></ToolBar>
+			}
 			<Table
 				size='middle'
 				pagination={false}

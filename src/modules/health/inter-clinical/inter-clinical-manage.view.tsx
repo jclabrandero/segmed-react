@@ -2,6 +2,7 @@
 import { Space, Table, Tree } from 'antd'
 import { CheckCircleFilled, InfoCircleFilled, WarningFilled } from '@ant-design/icons'
 
+import { ToolBar, ToolBarMenu } from '../../../components'
 import { Interclinical, MedicalSpecialty, ClinicCareId } from '../../../types'
 import { useAntdHelp, useDate } from '../../../hooks'
 
@@ -11,7 +12,6 @@ import {
 	DeleteInterclinical,
 	ConfirmInterclinical, UploadFileInterclinical
 } from './inter-clinical-upsert.view'
-
 
 
 type InterclinicalProps = {
@@ -26,8 +26,11 @@ export function InterclinicalManage({ clinicCareId, interclinicals, edit }: Inte
 
 	return (
 		<>
-			{ !edit && <CreateInterclinical clinicCareId={clinicCareId}/> }
-
+			{
+				edit && <ToolBar><ToolBarMenu>
+					<CreateInterclinical clinicCareId={clinicCareId}/>
+				</ToolBarMenu></ToolBar>
+			}
 			<Table
 				size='middle'
 				pagination={false}

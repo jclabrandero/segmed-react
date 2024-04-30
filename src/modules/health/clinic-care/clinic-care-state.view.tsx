@@ -45,7 +45,7 @@ function ClinicCareStateForm({ data: { state, states }, filterStates, onSubmit, 
 	)
 }
 
-function UpdsertClinicCareState({ id, filterStates }: UpdateProps & { filterStates: boolean}) {
+function UpsertClinicCareState({ id, filterStates }: UpdateProps & { filterStates: boolean}) {
 	return (
 		<UpdateDialog<{ stateId: number }, IClinicCareStateDependencies>
 			id={id}
@@ -69,7 +69,7 @@ export function ClinicCareState({ clinicCareId, state, edit, filterStates }: Cli
 	return (
 		<>
 			<Tag color={state.color}>{state.name}</Tag>
-			{ !edit && <UpdsertClinicCareState id={clinicCareId} filterStates={filterStates}/> }
+			{ edit && <UpsertClinicCareState id={clinicCareId} filterStates={filterStates}/> }
 		</>
 	)
 }
