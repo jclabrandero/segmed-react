@@ -6,7 +6,7 @@ import { Prescription, PrescriptionExtern, ClinicCareId } from '../../../types'
 
 import {
 	CreatePrescription, UpdatePrescription, DeletePrescription,
-	CreatePrescriptionExtern, UpdatePrescriptionExtern, DeletePrescriptionExtern
+	CreatePrescriptionExtern, UpdatePrescriptionExtern, DeletePrescriptionExtern, PrintPrescription
 } from './prescription-upsert.view'
 
 
@@ -39,7 +39,11 @@ export function PrescriptionManage({ clinicCareId, prescriptions, prescriptionEx
 							}
 						]
 					}}><Button type='primary' shape='round'>Agregar medicamento</Button></Dropdown>
-				</ToolBarMenu></ToolBar>
+				</ToolBarMenu>
+				<ToolBarMenu>
+					<PrintPrescription clinicCareId={clinicCareId}/>
+				</ToolBarMenu>
+				</ToolBar>
 			}
 			<Table
 				size='middle'

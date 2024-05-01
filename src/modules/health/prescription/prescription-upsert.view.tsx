@@ -1,10 +1,11 @@
 
 import { useState } from 'react'
-import { useQuery } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import { Button, Form, Input, InputNumber, Select, Space, Spin } from 'antd'
+import { PrinterFilled } from '@ant-design/icons'
 
-import { CreateDialog, DeleteDialog, UpdateDialog } from '../../../components'
-import { Pharmacy, MedicationStock, Medication, Prescription, PrescriptionExtern, ClinicCareId, UpdateProps } from '../../../types'
+import { CreateDialog, DeleteDialog, Loader, ModalFileViewer, UpdateDialog } from '../../../components'
+import { Pharmacy, MedicationStock, Medication, Prescription, PrescriptionExtern, ClinicCareId, UpdateProps, FileBase64 } from '../../../types'
 import { useAntdHelp } from '../../../hooks'
 
 import { query, mutation} from './prescription.constant'
@@ -232,5 +233,24 @@ export function DeletePrescriptionExtern({ id, clinicCareId }: UpdateProps & Cli
 			mutation={mutation.DELETE_PRESCRIPTION_EXTERN}
 			removeData={{ clinicCareId }}
 		/>
+	)
+}
+
+export function PrintPrescription({ clinicCareId }: ClinicCareId) {
+	const [ previewFile, setPreviewFile ] = useState<FileBase64 | null>(null)
+	const onLoadFile = ({ file }: { file: FileBase64 }) => setPreviewFile(file)
+		, [ print, { loading } ] = useMutation(mutation.PRINT_PRESCRIPTION, { onCompleted: onLoadFile })
+
+	return (
+		<>
+			<Button
+				shape='round'
+				type='primary'
+				icon={<PrinterFilled/>}
+				onClick={() => print({ variables: { data: { clinicCareId } } })}/>
+
+			<ModalFileViewer open={previewFile != null} file={previewFile} onCancel={() => setPreviewFile(null)}/>
+			<Loader show={loading}/>
+		</>
 	)
 }

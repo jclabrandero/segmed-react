@@ -144,5 +144,13 @@ export const mutation = {
 				id
 			}
 		}
+	`,
+	PRINT_PRESCRIPTION: gql`
+		mutation print($data: IPrescriptionPrintArgs!) {
+			file: printPrescription(data: $data) {
+				data
+				info { type }
+			}
+		}
 	`
 }
