@@ -1,8 +1,8 @@
 
 import { useEffect, useState } from 'react'
-import { useLazyQuery, useQuery } from '@apollo/client'
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import { Button, Form, FormInstance, Input, Select, Spin, Space, TreeSelect, Upload } from 'antd'
-import { CheckOutlined, FolderOpenFilled, UploadOutlined } from '@ant-design/icons'
+import { CheckOutlined, PrinterFilled, FolderOpenFilled, UploadOutlined } from '@ant-design/icons'
 
 import { CreateDialog, DeleteDialog, Loader, ModalFileViewer, UpdateDialog } from '../../../components'
 import { useAntdHelp } from '../../../hooks'
@@ -324,5 +324,26 @@ export function UploadFileInterclinical({ id, clinicCareId, disabled = false }: 
 			icon={<FolderOpenFilled/>}
 			render={(submit, close, data) => <UploadFileInterclinicalForm data={{clinicCareId, ...data}} onSubmit={submit} onCancel={close} disabled={disabled}/>}
 		/>
+	)
+}
+
+export function PrintInterclinical({ id }: { id: number }) {
+	const [ previewFile, setPreviewFile ] = useState<FileBase64 | null>(null)
+	const onLoadFile = ({ file }: { file: FileBase64 }) => setPreviewFile(file)
+		, [ print, { loading } ] = useMutation(mutation.PRINT_INTERCLINICAL, { onCompleted: onLoadFile })
+
+	return (
+		<>
+			<Button
+				shape='circle'
+				type='text'
+				size='small'
+				className='table-toolbtn'
+				icon={<PrinterFilled/>}
+				onClick={() => print({ variables: { id } })}/>
+
+			<ModalFileViewer open={previewFile != null} file={previewFile} onCancel={() => setPreviewFile(null)}/>
+			<Loader show={loading}/>
+		</>
 	)
 }

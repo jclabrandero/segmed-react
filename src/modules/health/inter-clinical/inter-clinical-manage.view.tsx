@@ -7,10 +7,8 @@ import { Interclinical, MedicalSpecialty, ClinicCareId } from '../../../types'
 import { useAntdHelp, useDate } from '../../../hooks'
 
 import {
-	CreateInterclinical,
-	UpdateInterclinical,
-	DeleteInterclinical,
-	ConfirmInterclinical, UploadFileInterclinical
+	CreateInterclinical, UpdateInterclinical, DeleteInterclinical,
+	ConfirmInterclinical, UploadFileInterclinical, PrintInterclinical
 } from './inter-clinical-upsert.view'
 
 
@@ -79,10 +77,12 @@ export function InterclinicalManage({ clinicCareId, interclinicals, edit }: Inte
 						</Space>),
 						(<Space>
 							<UploadFileInterclinical id={id} clinicCareId={clinicCareId}/>
+							<PrintInterclinical id={id}/>
 							{ (files.length > 0) && <ConfirmInterclinical id={id} clinicCareId={clinicCareId} approvedState={2}/> }
 						</Space>),
 						(<Space>
 							<UploadFileInterclinical id={id} clinicCareId={clinicCareId} disabled={true}/>
+							<PrintInterclinical id={id}/>
 						</Space>)
 					]
 					return stateOptions[approvedState]

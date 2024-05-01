@@ -79,5 +79,13 @@ export const mutation = {
 				id
 			}
 		}
+	`,
+	PRINT_INTERCLINICAL: gql`
+		mutation print($id: Int!) {
+			file: printInterclinical(id: $id) {
+				data
+				info { type }
+			}
+		}
 	`
 }
