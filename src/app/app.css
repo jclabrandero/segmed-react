@@ -1,20 +1,40 @@
 
-body {
+html, body {
 	margin: 0;
-
+	min-height: 100% !important;
+    height: 100%;
 	font-family: ui-sans-serif, sans-serif;
 }
 
+#root {
+	display: flex;
+	flex-flow: column;
+	height: 100%;
+	max-height: 100%;
+}
+
+.workspace {
+	padding-top: 46px;
+	height: 100%;
+	max-height: 100%;
+	overflow: auto;
+}
+
 header {
+	position: absolute;
+	top: 0;
 	height: 46px;
+	width: 100%;
 }
 
 .workspace-flat,
 .workspace-split {
 	display: grid;
+	height: 100%;
+	max-height: 100%;
 }
 .workspace-split {
-	grid-template-columns: 16rem 1fr;
+	grid-template-columns: 17rem 1fr;
 	animation: split-keyframes 0.3s;
 }
 .workspace-flat {
@@ -23,15 +43,22 @@ header {
 }
 
 .workspace-split aside {
+	display: flex;
 	overflow: auto;
+	height: 100%;
+	max-height: 100%;
 }
 .workspace-flat aside {
 	overflow: hidden;
 }
 
 main {
-	margin: 1rem;
+	display: flex;
+	flex-direction: column;
 	overflow: auto;
+	height: 100%;
+	max-height: 100%;
+	margin: 0;
 }
 
 @keyframes split-keyframes {
@@ -60,6 +87,9 @@ p {
 	color: white;
 }
 
+.segmed-page {
+	padding: 1rem;
+}
 
 
 .ant-form-item {
@@ -71,6 +101,31 @@ p {
 }
 
 
-.table-cell-nowrap {
-	text-wrap: nowrap;
+.ant-table-wrapper, 
+.ant-table-wrapper .ant-spin-nested-loading,
+.ant-table-wrapper .ant-spin-nested-loading .ant-spin-container,
+.ant-table-wrapper .ant-spin-nested-loading .ant-spin-container .ant-table,
+.ant-table-wrapper .ant-spin-nested-loading .ant-spin-container .ant-table .ant-table-container,
+.ant-table-wrapper .ant-spin-nested-loading .ant-spin-container .ant-table .ant-table-container .ant-table-content {
+	height: 100%;
+}
+
+.ant-table-wrapper {
+	margin: 8px;
+	overflow: hidden;
+}
+
+.ant-table-wrapper .ant-spin-nested-loading .ant-spin-container .ant-table {
+	padding-bottom: 38px;
+}
+
+.ant-table-wrapper .ant-spin-nested-loading .ant-spin-container .ant-table .ant-table-container .ant-table-content {
+	overflow-y: auto !important;
+}
+
+.ant-table-wrapper .ant-spin-nested-loading .ant-spin-container .ant-pagination {
+	position: absolute;
+	bottom: 0;
+	margin: 8px 0 6px 0;
+	width: 100%;
 }

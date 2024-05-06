@@ -51,7 +51,7 @@ export function Authorized() {
 	const navigate = useNavigate()
 
 	return (
-		<>
+		<div className='workspace'>
 			<header>
 				<NavBar>
 					<NavMenu>
@@ -210,7 +210,7 @@ export function Authorized() {
 			</div>
 
 			<Loader show={loading}/>
-			<ErrorDialog error={error}/>
-		</>
+			<ErrorDialog error={error}/> 
+		</div>
 	)
 }
