@@ -28,13 +28,14 @@ import { ClinicCareList, ClinicCareManage } from '../modules/health'
 
 function useAuthorized() {
 	const [ error, onError ] = useError()
-
-	const { user, auth } = useAuth()
+		, navigate = useNavigate()
+		, { user, auth } = useAuth()
 		, mainRef = useRef<HTMLDivElement>(null)
 	
 	const onCompleted = () => {
 		setAuth({ sessionId: 0, token: '' })
 		userState(getDefaultUser())
+		navigate('/')
 	}
 	const [ serverSignOut, { loading } ] = useMutation(mutation.SIGNOUT, { onCompleted, onError })
 
@@ -43,12 +44,11 @@ function useAuthorized() {
 			if (mainRef.current) mainRef.current.className = mainRef.current.className === 'workspace-flat' ? 'workspace-split' : 'workspace-flat'
 		}
 
-	return { loading, error, user, signOut, toggleSide, mainRef }
+	return { loading, error, user, navigate, signOut, toggleSide, mainRef }
 }
 
 export function Authorized() {
-	const { loading, error, user, signOut, toggleSide, mainRef } = useAuthorized()
-	const navigate = useNavigate()
+	const { loading, error, user, navigate, signOut, toggleSide, mainRef } = useAuthorized()
 
 	return (
 		<div className='workspace'>

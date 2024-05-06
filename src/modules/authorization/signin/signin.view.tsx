@@ -1,5 +1,6 @@
 
 import { useMutation } from '@apollo/client'
+import { useNavigate } from 'react-router-dom'
 import { Form, Input, Button } from 'antd'
 
 import { ErrorDialog, Loader } from '../../../components'
@@ -14,7 +15,11 @@ import './signin.style.css'
 
 export function SignIn() {
 	const [ error, onError ] = useError()
-	const onCompleted = ({ signIn }: { signIn: ISignInResponse }) => setAuth(signIn)
+		, navigate = useNavigate()
+	const onCompleted = ({ signIn }: { signIn: ISignInResponse }) => {
+		setAuth(signIn)
+		navigate('/')
+	}
 	const [ signIn, { loading } ] = useMutation(mutation.SIGNIN, { onCompleted, onError })
 	const onSubmit = (data: ISignInData) => signIn({ variables: { data }})
 	const { Item } = Form
