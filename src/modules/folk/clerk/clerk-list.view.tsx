@@ -2,7 +2,7 @@
 import { useQuery, useSubscription } from '@apollo/client'
 import { Input, Space, Tag, Table } from 'antd'
 
-import { ErrorDialog, Loader, ToolBar, ToolBarMenu } from '../../../components'
+import { ErrorDialog, ToolBar, ToolBarMenu } from '../../../components'
 import { useError, useAntdHelp, useFilter } from '../../../hooks'
 import { MedicalOffice } from '../../../types'
 
@@ -30,16 +30,16 @@ export function ClerkList() {
 				</ToolBarMenu>
 			</ToolBar>
 
-			<Table size='middle' dataSource={clerks} bordered={true} pagination={{ pageSize: 15 }}>
+			<Table size='middle' dataSource={clerks} bordered={true} pagination={{ pageSize: 15 }} scroll={{ x: true }} loading={loading}>
 				<Column title='Id' dataIndex='id'/>
-				<Column title='Ficha' dataIndex='ein'/>
-				<Column title='Nombre funcionario' render={clerk => (
+				<Column title='Ficha' dataIndex='ein' ellipsis/>
+				<Column title='Nombre funcionario' ellipsis render={clerk => (
 					<span>{clerk.person.firstName} {clerk.person.lastName}</span>
 				)}/>
-				<Column title='Cargo' render={clerk => (
+				<Column title='Cargo' ellipsis render={clerk => (
 					<span>{ clerk.position.name }</span>
 				)}/>
-				<Column title='Tipo' render={clerk => (
+				<Column title='Tipo' ellipsis render={clerk => (
 					<span>{ clerk.employeeType.name }</span>
 				)}/>
 				<Column title='Oficinas' render={() => (
@@ -51,7 +51,7 @@ export function ClerkList() {
 					</div>
 				))}/>
 				<Column title='Estado' render={tableStatus}/>
-				<Column title='Acciones' width='6rem' render={record => (
+				<Column title='Acciones' width='6rem' fixed='right' render={record => (
 					<Space>
 						<UpdateClerk id={record.id}/>
 						<DeleteClerk id={record.id}/>
@@ -59,7 +59,6 @@ export function ClerkList() {
 				)}/>
 			</Table>
 
-			<Loader show={loading}/>
 			<ErrorDialog error={error}/>
 		</>
 	)

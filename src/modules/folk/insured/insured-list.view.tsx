@@ -3,7 +3,7 @@ import { useQuery, useSubscription } from '@apollo/client'
 import { Button, Input, Space, Table, Tag, Tooltip } from 'antd'
 import { MedicineBoxFilled } from '@ant-design/icons'
 
-import { ErrorDialog, Loader, ToolBar, ToolBarMenu } from '../../../components'
+import { ErrorDialog, ToolBar, ToolBarMenu } from '../../../components'
 import { useDate, useError, useAntdHelp, useFilter } from '../../../hooks'
 import { Insured } from '../../../types'
 
@@ -39,6 +39,7 @@ export function InsuredList() {
 				bordered={true}
 				pagination={{ pageSize: 15 }}
 				scroll={{ x: true }}
+				loading={loading}
 				expandable={{
 					expandedRowRender: insured =>
 						<>
@@ -54,21 +55,21 @@ export function InsuredList() {
 					rowExpandable: insured => insured.dependents.length > 0
 				}}
 			>
-				<Column title='Código' dataIndex='code' className='table-cell-nowrap'/>
-				<Column title='Ficha' dataIndex='iin'/>
-				<Column title='Nombre beneficiario' className='table-cell-nowrap' render={({ person }) => (
+				<Column title='Código' dataIndex='code' ellipsis/>
+				<Column title='Ficha' dataIndex='iin' ellipsis/>
+				<Column title='Nombre beneficiario' ellipsis render={({ person }) => (
 					<span>{person.firstName} {person.lastName}</span>
 				)}/>
-				<Column title='Tipo' render={({ insuredType }) => (
+				<Column title='Tipo' ellipsis render={({ insuredType }) => (
 					<span>{ insuredType.name }</span>
 				)}/>
-				<Column title='Sindical' render={({ tradeUnion }) => (
+				<Column title='Sindical' ellipsis render={({ tradeUnion }) => (
 					<span>{ tradeUnion ? 'Sí' : 'No' }</span>
 				)}/>
-				<Column title='Fecha de alta' render={({ inletDate }) => (
+				<Column title='Fecha de alta' ellipsis render={({ inletDate }) => (
 					<span>{format(inletDate, 'dd/MM/yyyy')}</span>
 				)}/>
-				<Column title='Fecha de baja' render={({ outletDate }) => (
+				<Column title='Fecha de baja' ellipsis render={({ outletDate }) => (
 					<span>{format(outletDate, 'dd/MM/yyyy')}</span>
 				)}/>
 				<Column title='Dependientes' render={({ dependents }) => (
@@ -79,11 +80,11 @@ export function InsuredList() {
 					holderInsured &&
 					<Tag>{ holderInsured.code }</Tag>
 				)}/>
-				<Column title='Pertinencia' className='table-cell-nowrap' render={({ belonging }) => (
+				<Column title='Pertinencia' ellipsis render={({ belonging }) => (
 					<span>{ belonging.name }</span>
 				)}/>
-				<Column title='Dirección' dataIndex='address' className='table-cell-nowrap'/>
-				<Column title='Teléfono' dataIndex='phone' className='table-cell-nowrap'/>
+				<Column title='Dirección' ellipsis dataIndex='address'/>
+				<Column title='Teléfono' ellipsis dataIndex='phone'/>
 				<Column title='Estado' render={tableStatus}/>
 				<Column title='Acciones' width='7rem' fixed='right' render={({ id }) => (
 					<Space>
@@ -96,7 +97,6 @@ export function InsuredList() {
 				)}/>
 			</Table>
 
-			<Loader show={loading}/>
 			<ErrorDialog error={error}/>
 		</>
 	)
