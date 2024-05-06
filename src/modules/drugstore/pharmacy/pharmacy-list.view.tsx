@@ -2,7 +2,7 @@
 import { useQuery, useSubscription } from '@apollo/client'
 import { Input, Space, Table } from 'antd'
 
-import { ErrorDialog, Loader, ToolBar, ToolBarMenu } from '../../../components'
+import { ErrorDialog, ToolBar, ToolBarMenu } from '../../../components'
 import { useError, useAntdHelp, useFilter } from '../../../hooks'
 import { Pharmacy } from '../../../types'
 
@@ -36,21 +36,22 @@ export function PharmacyList() {
 				dataSource={pharmacies}
 				bordered={ true }
 				pagination={{ pageSize: 15 }}
+				scroll={{ x: true }}
+				loading={loading}
 			>
 				<Column title='Id' dataIndex='id'/>
-				<Column title='Nombre' dataIndex='name'/>
-				<Column title='Pertinencia' className='table-cell-nowrap' render={({ belonging }) => (
+				<Column title='Nombre' dataIndex='name' ellipsis/>
+				<Column title='Pertinencia' ellipsis render={({ belonging }) => (
 					<span>{ belonging.name }</span>
 				)}/>
 				<Column title='Estado' render={tableStatus}/>
-				<Column title='Acciones' width='7rem' render={({ id }) => (
+				<Column title='Acciones' width='6rem' fixed='right' render={({ id }) => (
 					<Space>
 						<UpdatePharmacy id={id}/>
 					</Space>
 				)}/>
 			</Table>
 
-			<Loader show={ loading }/>
 			<ErrorDialog error={ error } />
 		</>
 	)
