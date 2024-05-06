@@ -1,7 +1,7 @@
 
 export function NotFound() {
 	return (
-		<div>
+		<div className='segmed-page'>
 			<div>
 
 			</div>

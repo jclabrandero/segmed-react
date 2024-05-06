@@ -1,7 +1,7 @@
 
 export function NotAllowed() {
 	return (
-		<div>
+		<div className='segmed-page'>
 			<div>
 
 			</div>
