@@ -12,9 +12,9 @@ import { query } from './permission.constant'
 
 export function PermissionList() {
 	const { addKey, tableStatus } = useAntdHelp()
-	const [ error, onError ] = useError()
-	const { has } = useAuth()
-	const { loading, data } = useQuery(query.PERMISSIONS, { onError })
+		, [ error, onError ] = useError()
+		, { has } = useAuth()
+		, { loading, data } = useQuery(query.PERMISSIONS, { onError })
 		, [ permissions, filter ] = useFilter(addKey(data?.permissions), ['code', 'description'])
 	const { Column } = Table
 
@@ -31,10 +31,12 @@ export function PermissionList() {
 				dataSource={permissions}
 				bordered={true}
 				pagination={{ pageSize: 15 }}
+				scroll={{ x: true }}
+				loading={loading}
 			>
 				<Column title='Id' dataIndex='id'/>
 				<Column title='Código' dataIndex='code'/>
-				<Column title='Descripción' dataIndex='description'/>
+				<Column title='Descripción' dataIndex='description' ellipsis/>
 				<Column title='Estado' render={tableStatus}/>
 			</Table>
 

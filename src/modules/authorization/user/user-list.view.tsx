@@ -3,7 +3,7 @@
 import { useQuery, useSubscription } from '@apollo/client'
 import { Input, Table, Tag, Space } from 'antd'
 
-import { ErrorDialog, Loader, ToolBar, ToolBarMenu } from '../../../components'
+import { ErrorDialog, ToolBar, ToolBarMenu } from '../../../components'
 import { useAntdHelp, useAuth, useError, useFilter } from '../../../hooks'
 import { Group } from '../../../types'
 import { NotAllowed } from '../../basic'
@@ -14,11 +14,12 @@ import { CreateUser, UpdateUser } from './user-upsert.view'
 
 export function UserList() {
 	const { addKey, tableStatus } = useAntdHelp()
-	const [ error, onError ] = useError()
-	const { has } = useAuth()
-	const { loading, data, refetch } = useQuery(query.USERS, { onError })
+		, [ error, onError ] = useError()
+		, { has } = useAuth()
+		, { loading, data, refetch } = useQuery(query.USERS, { onError })
 		, [ users, filter ] = useFilter(addKey(data?.users), ['userName', 'displayName'])
 	const { Column } = Table
+
 	useSubscription(subscription.USER_UPSERTED, { onData: () => refetch() })
 
 	return has('R_USR',
@@ -37,11 +38,13 @@ export function UserList() {
 				dataSource={users}
 				bordered={true}
 				pagination={{ pageSize: 15 }}
+				scroll={{ x: true }}
+				loading={loading}
 			>
 				<Column title='Id' dataIndex='id'/>
 				<Column title='Usuario' dataIndex='userName'/>
-				<Column title='Nombre' dataIndex='displayName'/>
-				<Column title='Correo electrónico' dataIndex='email'/>
+				<Column title='Nombre' dataIndex='displayName' ellipsis/>
+				<Column title='Correo electrónico' dataIndex='email' ellipsis/>
 				<Column title='Grupos' render={({ id, groups }) => groups.map((group: Group) => (
 					<div key={`user${id}-group${group.id}`}>
 						<Tag>{ group.name }</Tag>
@@ -51,14 +54,13 @@ export function UserList() {
 					(<Tag>{clerk.person.firstName} {clerk.person.lastName}</Tag>) : null
 				}/>
 				<Column title='Estado' render={tableStatus}/>
-				<Column title='Acciones' width='7rem' render={({ id }) => (
+				<Column title='Acciones' width='6rem' fixed='right' render={({ id }) => (
 					<Space>
 						{ has('W_USR', <UpdateUser id={id}/>) }
 					</Space>
 				)}/>
 			</Table>
 
-			<Loader show={loading}/>
 			<ErrorDialog error={error} />
 		</>,
 		<NotAllowed/>

@@ -3,7 +3,7 @@
 import { useQuery, useSubscription } from '@apollo/client'
 import { Input, Table, Tag, Space } from 'antd'
 
-import { ErrorDialog, Loader, ToolBar, ToolBarMenu } from '../../../components'
+import { ErrorDialog, ToolBar, ToolBarMenu } from '../../../components'
 import { useAntdHelp, useAuth, useError, useFilter } from '../../../hooks'
 import { Permission, User } from '../../../types'
 import { NotAllowed } from '../../basic'
@@ -14,11 +14,12 @@ import { CreateGroup, UpdateGroup } from './group-upsert.view'
 
 export function GroupList() {
 	const { addKey, tableStatus } = useAntdHelp()
-	const [ error, onError ] = useError()
-	const { has } = useAuth()
-	const { loading, data, refetch } = useQuery(query.GROUPS, { onError })
+		, [ error, onError ] = useError()
+		, { has } = useAuth()
+		, { loading, data, refetch } = useQuery(query.GROUPS, { onError })
 		, [ groups, filter ] = useFilter(addKey(data?.groups), ['name', 'description'])
 	const { Column } = Table
+
 	useSubscription(subscription.GROUP_UPSERTED, { onData: () => refetch() })
 
 	return has('R_GRP',
@@ -37,10 +38,12 @@ export function GroupList() {
 				dataSource={groups}
 				bordered={true}
 				pagination={{ pageSize: 15 }}
+				scroll={{ x: true }}
+				loading={loading}
 			>
 				<Column title='Id' dataIndex='id'/>
-				<Column title='Nombre' dataIndex='name'/>
-				<Column title='Descripción' dataIndex='description'/>
+				<Column title='Nombre' dataIndex='name' ellipsis/>
+				<Column title='Descripción' dataIndex='description' ellipsis/>
 				<Column title='Permisos' render={group => group.permissions.map((permission: Permission) => (
 					<div key={`group${group.id}-permission${permission.id}`}>
 						<Tag>{ permission.description }</Tag>
@@ -52,14 +55,13 @@ export function GroupList() {
 					</div>
 				))}/>
 				<Column title='Estado' render={tableStatus}/>
-				<Column title='Acciones' width='7rem' render={record => (
+				<Column title='Acciones' width='6rem' fixed='right' render={record => (
 					<Space>
 						{ has('W_GRP', <UpdateGroup id={record.id}/>) }
 					</Space>
 				)}/>
 			</Table>
 
-			<Loader show={loading}/>
 			<ErrorDialog error={error} />
 		</>,
 		<NotAllowed/>
