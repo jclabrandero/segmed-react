@@ -2,7 +2,7 @@
 import { useQuery, useSubscription } from '@apollo/client'
 import { Input, Space, Table } from 'antd'
 
-import { ErrorDialog, Loader, ToolBar, ToolBarMenu } from '../../../components'
+import { ErrorDialog, ToolBar, ToolBarMenu } from '../../../components'
 import { useError, useAntdHelp, useFilter } from '../../../hooks'
 
 import { query, subscription } from './medical-office.constant'
@@ -15,6 +15,7 @@ export function MedicalOfficeList() {
 		, { loading, data, refetch } = useQuery(query.MEDICAL_OFFICES, { onError })
 		, [ medicalOffices, filter ] = useFilter(addKey(data?.medicalOffices), ['name'])
 	const { Column } = Table
+
 	useSubscription(subscription.MEDICAL_OFFICE_UPSERTED, { onData: () => refetch() })
 
 	return (
@@ -32,14 +33,16 @@ export function MedicalOfficeList() {
 			<Table
 				size='middle'
 				dataSource={medicalOffices}
-				bordered={true}>
+				bordered={true}
+				scroll={{ x: true }}
+				loading={loading}>
 				<Column title='Id' dataIndex='id'/>
-				<Column title='Nombre' dataIndex='name'/>
-				<Column title='Pertinencia' render={({ belonging }) => (
+				<Column title='Nombre' dataIndex='name' ellipsis/>
+				<Column title='Pertinencia' ellipsis render={({ belonging }) => (
 					<span>{ belonging.name }</span>
 				)}/>
 				<Column title='Estado' render={tableStatus}/>
-				<Column title='Acciones' width='7rem' render={record => (
+				<Column title='Acciones' width='6rem' fixed='right' render={record => (
 					<Space>
 						<UpdateMedicalOffice id={record.id}/>
 						<DeleteMedicalOffice id={record.id}/>
@@ -47,7 +50,6 @@ export function MedicalOfficeList() {
 				)}/>
 			</Table>
 
-			<Loader show={loading}/>
 			<ErrorDialog error={error}/>
 		</>
 	)

@@ -16,6 +16,7 @@ export function MedicationList() {
 		, { loading, data, refetch } = useQuery(query.MEDICATIONS, { onError })
 		, [ medications, filter ] = useFilter(addKey<Medication>(data?.medications), ['code', 'name'])
 	const { Column } = Table
+
 	useSubscription(subscription.MEDICATION_UPSERTED, { onData: () => refetch() })
 
 	return (

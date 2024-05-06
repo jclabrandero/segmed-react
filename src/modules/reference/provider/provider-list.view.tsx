@@ -2,7 +2,7 @@
 import { useQuery, useSubscription } from '@apollo/client'
 import { Input, Space, Table } from 'antd'
 
-import { ErrorDialog, Loader, ToolBar, ToolBarMenu } from '../../../components'
+import { ErrorDialog, ToolBar, ToolBarMenu } from '../../../components'
 import { useError, useAntdHelp, useFilter } from '../../../hooks'
 
 import { CreateProvider, UpdateProvider } from './provider-upsert.view'
@@ -35,25 +35,24 @@ export function ProviderList() {
 				bordered={ true }
 				pagination={{ pageSize: 15 }}
 				scroll={{x: true}}
-			>
+				loading={loading}>
 				<Column title='Id' dataIndex='id'/>
-				<Column title='Código vendor' dataIndex='vendorCode' className='table-cell-nowrap'/>
-				<Column title='Razón social' dataIndex='businessName' className='table-cell-nowrap'/>
-				<Column title='Pertinencia' className='table-cell-nowrap' render={({ belonging }) => (
+				<Column title='Código vendor' dataIndex='vendorCode' ellipsis/>
+				<Column title='Razón social' dataIndex='businessName' ellipsis/>
+				<Column title='Pertinencia' ellipsis render={({ belonging }) => (
 					<span>{ belonging.name }</span>
 				)}/>
-				<Column title='NIT' dataIndex='nit'/>
-				<Column title='Dirección' dataIndex='address' className='table-cell-nowrap'/>
-				<Column title='Teléfono' dataIndex='phone' className='table-cell-nowrap'/>
+				<Column title='NIT' dataIndex='nit' ellipsis/>
+				<Column title='Dirección' dataIndex='address' ellipsis/>
+				<Column title='Teléfono' dataIndex='phone' ellipsis/>
 				<Column title='Estado' render={tableStatus}/>
-				<Column title='Acciones' width='7rem' fixed='right' render={({ id }) => (
+				<Column title='Acciones' width='6rem' fixed='right' render={({ id }) => (
 					<Space>
 						<UpdateProvider id={id}/>
 					</Space>
 				)}/>
 			</Table>
 
-			<Loader show={loading}/>
 			<ErrorDialog error={error} />
 		</>
 	)
