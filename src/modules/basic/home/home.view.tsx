@@ -1,7 +1,7 @@
 
 export function Home() {
 	return (
-		<div>
+		<div className='segmed-page'>
 			<h3>Seguro Médico</h3>
 		</div>
 	)

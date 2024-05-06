@@ -9,7 +9,7 @@ import { SignIn } from '../modules/authorization'
 
 export function Guest() {
 	return (
-		<>
+		<div className='workspace'>
 			<header>
 				<NavBar>
 					<NavMenu>
@@ -29,6 +29,6 @@ export function Guest() {
 					<Route path="*" element={<NotFound/>}/>
 				</Routes>
 			</main>
-		</>
+		</div>
 	)
 }
