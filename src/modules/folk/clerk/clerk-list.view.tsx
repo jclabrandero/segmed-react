@@ -3,8 +3,9 @@ import { useQuery, useSubscription } from '@apollo/client'
 import { Input, Space, Tag, Table } from 'antd'
 
 import { ErrorDialog, ToolBar, ToolBarMenu } from '../../../components'
-import { useError, useAntdHelp, useFilter } from '../../../hooks'
+import { useError, useAntdHelp, useFilter, useAuth } from '../../../hooks'
 import { MedicalOffice } from '../../../types'
+import { NotAllowed } from '../../basic'
 
 import { query, subscription } from './clerk.constant'
 import { CreateClerk, DeleteClerk, UpdateClerk } from './clerk-upsert.view'
@@ -12,6 +13,7 @@ import { CreateClerk, DeleteClerk, UpdateClerk } from './clerk-upsert.view'
 
 export function ClerkList() {
 	const { addKey, tableStatus } = useAntdHelp()
+		, { has } = useAuth()
 		, [ error, onError ] = useError()
 		, { loading, data, refetch } = useQuery(query.CLERKS, { onError })
 		, [ clerks, filter ] = useFilter(addKey(data?.clerks), ['ein'])
@@ -19,14 +21,14 @@ export function ClerkList() {
 
 	useSubscription(subscription.CLERK_UPSERTED, { onData: () => refetch() })
 
-	return (
+	return has('R_CLRK',
 		<>
 			<ToolBar>
 				<ToolBarMenu>
 					<Input.Search enterButton allowClear onSearch={filter}/>
 				</ToolBarMenu>
 				<ToolBarMenu>
-					<CreateClerk/>
+					{ has('W_CLRK', <CreateClerk/>) }
 				</ToolBarMenu>
 			</ToolBar>
 
@@ -51,7 +53,7 @@ export function ClerkList() {
 					</div>
 				))}/>
 				<Column title='Estado' render={tableStatus}/>
-				<Column title='Acciones' width='6rem' fixed='right' render={record => (
+				<Column title='Acciones' width='6rem' fixed='right' render={record => has('W_CLRK',
 					<Space>
 						<UpdateClerk id={record.id}/>
 						<DeleteClerk id={record.id}/>
@@ -60,6 +62,7 @@ export function ClerkList() {
 			</Table>
 
 			<ErrorDialog error={error}/>
-		</>
+		</>,
+		<NotAllowed/>
 	)
 }

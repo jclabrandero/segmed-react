@@ -4,8 +4,9 @@ import { Button, Input, Space, Table, Tag, Tooltip } from 'antd'
 import { MedicineBoxFilled } from '@ant-design/icons'
 
 import { ErrorDialog, ToolBar, ToolBarMenu } from '../../../components'
-import { useDate, useError, useAntdHelp, useFilter } from '../../../hooks'
+import { useDate, useError, useAntdHelp, useFilter, useAuth } from '../../../hooks'
 import { Insured } from '../../../types'
+import { NotAllowed } from '../../basic'
 
 import { query, subscription } from './insured.constant'
 import { CreateInsured, DeleteInsured, UpdateInsured } from './insured-upsert.view'
@@ -13,6 +14,7 @@ import { CreateInsured, DeleteInsured, UpdateInsured } from './insured-upsert.vi
 
 export function InsuredList() {
 	const { addKey, tableStatus } = useAntdHelp()
+		, { has } = useAuth()
 		, { format } = useDate()
 		, [ error, onError ] = useError()
 		, { loading, data, refetch } = useQuery(query.INSUREDS, { onError })
@@ -21,7 +23,7 @@ export function InsuredList() {
 
 	useSubscription(subscription.INSURED_UPSERTED, { onData: () => refetch() })
 
-	return (
+	return has('R_NSRD',
 		<>
 			<ToolBar>
 				<ToolBarMenu>
@@ -29,7 +31,7 @@ export function InsuredList() {
 				</ToolBarMenu>
 
 				<ToolBarMenu>
-					<CreateInsured/>
+					{ has('W_NSRD', <CreateInsured/>) }
 				</ToolBarMenu>
 			</ToolBar>
 
@@ -86,7 +88,7 @@ export function InsuredList() {
 				<Column title='Dirección' ellipsis dataIndex='address'/>
 				<Column title='Teléfono' ellipsis dataIndex='phone'/>
 				<Column title='Estado' render={tableStatus}/>
-				<Column title='Acciones' width='7rem' fixed='right' render={({ id }) => (
+				<Column title='Acciones' width='7rem' fixed='right' render={({ id }) => has('W_NSRD',
 					<Space>
 						<Tooltip title='Generar consulta médica'>
 							<Button shape='circle' type='text' size='small' icon={ <MedicineBoxFilled style={{ color: '#2F8923' }}/> }/>
@@ -98,6 +100,7 @@ export function InsuredList() {
 			</Table>
 
 			<ErrorDialog error={error}/>
-		</>
+		</>,
+		<NotAllowed/>
 	)
 }
