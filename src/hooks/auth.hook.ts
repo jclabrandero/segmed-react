@@ -9,7 +9,7 @@ export function useAuth() {
 	const user = useReactiveVar(userState)
 		, auth = useReactiveVar(authState)
 
-	const has = (permission: string, component: ReactNode, unauthorized: ReactNode = null) => {
+	const has = <T = ReactNode>(permission: string, component: T, unauthorized: T | null = null) => {
 		if (user.permissions.includes(permission)) {
 			return component
 		}
