@@ -2,51 +2,62 @@
 import { useQuery, useSubscription } from '@apollo/client'
 import { Input, Space, Table } from 'antd'
 
-import { ErrorDialog, Loader, ToolBar, ToolBarMenu } from '../../../components'
-import { useError, useAntdHelp, useFilter } from '../../../hooks'
+import { ErrorDialog, ToolBar, ToolBarMenu } from '../../../components'
+import { useError, useAntdHelp, useFilter, useAuth } from '../../../hooks'
+import { NotAllowed } from '../../basic'
 
 import { query, subscription } from './employee-position.constant'
-import { CreateEmployeePosition, DeleteEmployeePosition, UpdateEmployeePosition } from './employee-position-upsert.view'
+import { CreateEmployeePosition, DeleteEmployeePosition, InspectEmployeePosition, UpdateEmployeePosition } from './employee-position-upsert.view'
 
 
 export function EmployeePositionList() {
 	const { addKey, tableStatus } = useAntdHelp()
+		, { has } = useAuth()
 		, [ error, onError ] = useError()
 		, { loading, data, refetch } = useQuery(query.EMPLOYEE_POSITIONS, { onError })
 		, [ employeePositions, filter ] = useFilter(addKey(data?.employeePositions), ['name', 'description'])
 	const { Column } = Table
+
 	useSubscription(subscription.EMPLOYEE_POSITION_UPSERTED, { onData: () => refetch() })
 
-	return (
+	return has('ReadEmployeePosition',
 		<>
 			<ToolBar>
 				<ToolBarMenu>
 					<Input.Search enterButton allowClear onSearch={filter}/>
 				</ToolBarMenu>
-
 				<ToolBarMenu>
-					<CreateEmployeePosition/>
+					{ has('WriteEmployeePosition', <CreateEmployeePosition/>) }
 				</ToolBarMenu>
 			</ToolBar>
 
 			<Table
 				size='middle'
 				dataSource={employeePositions}
-				bordered={true}>
+				bordered={true}
+				pagination={{ pageSize: 15 }}
+				scroll={{ x: true }}
+				loading={loading}
+			>
 				<Column title='Id' dataIndex='id'/>
-				<Column title='Nombre' dataIndex='name'/>
-				<Column title='Descripción' dataIndex='description'/>
+				<Column title='Nombre' dataIndex='name' ellipsis/>
+				<Column title='Descripción' dataIndex='description' ellipsis/>
 				<Column title='Estado' render={tableStatus}/>
-				<Column title='Acciones' width='7rem' render={record => (
+				<Column title='Acciones' width='6rem' render={({ id }) => (
 					<Space>
-						<UpdateEmployeePosition id={record.id}/>
-						<DeleteEmployeePosition id={record.id}/>
+						{
+							has('WriteEmployeePosition',<>
+								<UpdateEmployeePosition id={id}/>
+								<DeleteEmployeePosition id={id}/>
+							</>)
+						}
+						<InspectEmployeePosition id={id}/>
 					</Space>
 				)}/>
 			</Table>
 
-			<Loader show={loading}/>
 			<ErrorDialog error={error}/>
-		</>
+		</>,
+		<NotAllowed/>
 	)
 }

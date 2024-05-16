@@ -1,7 +1,7 @@
 
-import { Button, Form, Input, Space } from 'antd'
+import { Button, Card, Form, Input, Space } from 'antd'
 
-import { CreateDialog, DeleteDialog, UpdateDialog } from '../../../components'
+import { CreateDialog, DeleteDialog, InspectDialog, UpdateDialog } from '../../../components'
 import { useAntdHelp } from '../../../hooks'
 import { PersonDocumentType, UpdateProps } from '../../../types'
 
@@ -89,6 +89,21 @@ export function DeletePersonDocumentType({ id }: UpdateProps) {
 			render={({ personDocumentType }) => `el tipo de documento identidad: ${personDocumentType.name}`}
 			query={query.PERSON_DOCUMENT_TYPE}
 			mutation={mutation.DELETE_PERSON_DOCUMENT_TYPE}
+		/>
+	)
+}
+
+export function InspectPersonDocumentType({ id }: UpdateProps) {
+	return (
+		<InspectDialog<{ personDocumentType: PersonDocumentType }>
+			id={id}
+			title='Sub-especialidad médica'
+			render={({personDocumentType}) => <>
+				<Card>
+					<b>Nombre: </b><div>{personDocumentType.name}</div>
+				</Card>
+			</>}
+			query={query.PERSON_DOCUMENT_TYPE}
 		/>
 	)
 }

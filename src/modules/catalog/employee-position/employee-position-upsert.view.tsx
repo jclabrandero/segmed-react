@@ -1,7 +1,7 @@
 
-import { Button, Form, Input, Space } from 'antd'
+import { Button, Card, Form, Input, Space } from 'antd'
 
-import { CreateDialog, DeleteDialog, UpdateDialog } from '../../../components'
+import { CreateDialog, DeleteDialog, InspectDialog, UpdateDialog } from '../../../components'
 import { useAntdHelp } from '../../../hooks'
 import { EmployeePosition, UpdateProps } from '../../../types'
 
@@ -89,6 +89,21 @@ export function DeleteEmployeePosition({ id }: UpdateProps) {
 			render={({ employeePosition }) => `el cargo de funcionario: ${employeePosition.name}`}
 			query={query.EMPLOYEE_POSITION}
 			mutation={mutation.DELETE_EMPLOYEE_POSITION}
+		/>
+	)
+}
+
+export function InspectEmployeePosition({ id }: UpdateProps) {
+	return (
+		<InspectDialog<{ employeePosition: EmployeePosition }>
+			id={id}
+			title='Sub-especialidad médica'
+			render={({employeePosition}) => <>
+				<Card>
+					<b>Nombre: </b><div>{employeePosition.name}</div>
+				</Card>
+			</>}
+			query={query.EMPLOYEE_POSITION}
 		/>
 	)
 }

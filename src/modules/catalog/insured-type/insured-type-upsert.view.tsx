@@ -1,8 +1,8 @@
 
 
-import { Button, Checkbox, Form, Input, Space } from 'antd'
+import { Button, Card, Checkbox, Form, Input, Space } from 'antd'
 
-import { CreateDialog, DeleteDialog, UpdateDialog } from '../../../components'
+import { CreateDialog, DeleteDialog, InspectDialog, UpdateDialog } from '../../../components'
 import { useAntdHelp } from '../../../hooks'
 import { InsuredType, UpdateProps } from '../../../types'
 
@@ -93,6 +93,21 @@ export function DeleteInsuredType({ id }: UpdateProps) {
 			render={({insuredType}) => `el tipo de beneficiario: ${insuredType.name}`}
 			query={query.INSURED_TYPE}
 			mutation={mutation.DELETE_INSURED_TYPE}
+		/>
+	)
+}
+
+export function InspectInsuredType({ id }: UpdateProps) {
+	return (
+		<InspectDialog<{ insuredType: InsuredType }>
+			id={id}
+			title='Sub-especialidad médica'
+			render={({insuredType}) => <>
+				<Card>
+					<b>Nombre: </b><div>{insuredType.name}</div>
+				</Card>
+			</>}
+			query={query.INSURED_TYPE}
 		/>
 	)
 }
