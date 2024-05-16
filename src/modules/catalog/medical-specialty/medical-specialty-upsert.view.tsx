@@ -1,9 +1,10 @@
 
 import { useSubscription } from '@apollo/client'
-import { Button, Divider, Form, Input, Space, TreeSelect } from 'antd'
+import { Button, Card, Divider, Form, Input, Space, TreeSelect } from 'antd'
 
-import { CreateDialog, DeleteDialog, UpdateDialog } from '../../../components'
+import { CreateDialog, DeleteDialog, InspectDialog, UpdateDialog } from '../../../components'
 import { MedicalSpecialty, MedicalSubspecialty, UpdateProps } from '../../../types'
+import { useAuth } from '../../../hooks'
 
 import { CreateMedicalSubspecialty } from '../medical-subspecialty/medical-subspecialty-upsert.view'
 import { subscription as medicalSubspecialtySubscription } from '../medical-subspecialty/medical-subspecialty.constant'
@@ -32,8 +33,9 @@ type MedicalSpecialtyFormProps = {
 
 function MedicalSpecialtyForm({ data, onSubmit, onCancel, onRefetch }: MedicalSpecialtyFormProps) {
 	const { medicalSpecialty } = data
-	const { Item } = Form
-	const [ form ] = Form.useForm()
+		, { Item } = Form
+		, [ form ] = Form.useForm()
+		, { has } = useAuth()
 	const onFinish = () => onSubmit(form.getFieldsValue({ filter: (meta) => meta.touched }))
 	const format = (payload?: MedicalSpecialty) => {
 		if (!payload) return undefined
@@ -64,8 +66,12 @@ function MedicalSpecialtyForm({ data, onSubmit, onCancel, onRefetch }: MedicalSp
 					dropdownRender={(menu) => (
 						<>
 							{menu}
-							<Divider style={{ margin: '8px 0' }}/>
-							<div style={{ margin: '6px' }}><CreateMedicalSubspecialty/></div>
+							{
+								has('WriteMedicalSubspecialty', <div>
+									<Divider style={{ margin: '8px 0' }}/>
+									<CreateMedicalSubspecialty/>
+								</div>)
+							}
 						</>
 					)}
 					treeData={subspecialties.map(sb => ({ title: sb.name, value: sb.id }))}/>
@@ -111,6 +117,21 @@ export function DeleteMedicalSpecialty({ id }: UpdateProps) {
 			render={({medicalSpecialty}) => `la especialidad médica: ${medicalSpecialty.name}`}
 			query={query.MEDICAL_SPECIALTY}
 			mutation={mutation.DELETE_MEDICAL_SPECIALTY}
+		/>
+	)
+}
+
+export function InspectMedicalSpecialty({ id }: UpdateProps) {
+	return (
+		<InspectDialog<{ medicalSpecialty: MedicalSpecialty }>
+			id={id}
+			title='Sub-especialidad médica'
+			render={({medicalSpecialty}) => <>
+				<Card>
+					<b>Nombre: </b><div>{medicalSpecialty.name}</div>
+				</Card>
+			</>}
+			query={query.MEDICAL_SPECIALTY}
 		/>
 	)
 }

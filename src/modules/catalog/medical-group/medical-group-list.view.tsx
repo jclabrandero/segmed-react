@@ -1,52 +1,73 @@
 
 import { useQuery, useSubscription } from '@apollo/client'
-import { Input, Space, Table, Tag } from 'antd'
+import { Input, Space, Table, Tree } from 'antd'
 
-import { ErrorDialog, Loader, ToolBar, ToolBarMenu } from '../../../components'
-import { useError, useAntdHelp, useFilter } from '../../../hooks'
+import { ErrorDialog, ToolBar, ToolBarMenu } from '../../../components'
+import { useError, useAntdHelp, useFilter, useAuth } from '../../../hooks'
+import { MedicalSpecialty } from '../../../types'
+import { NotAllowed } from '../../basic'
 
 import { query, subscription } from './medical-group.constant'
-import { CreateMedicalGroup, DeleteMedicalGroup, UpdateMedicalGroup } from './medical-group-upsert.view'
+import { CreateMedicalGroup, DeleteMedicalGroup, InspectMedicalGroup, UpdateMedicalGroup } from './medical-group-upsert.view'
 
 
 export function MedicalGroupList() {
 	const { addKey, tableStatus } = useAntdHelp()
+		, { has } = useAuth()
 		, [ error, onError ] = useError()
 		, { loading, data, refetch } = useQuery(query.MEDICAL_GROUPS, { onError })
-		, [ medicalGroups, filter ] = useFilter(addKey(data?.medicalGroups), ['name'])
+		, [ medicalGroups, filter ] = useFilter(addKey(data?.medicalGroups), ['name', 'description'])
 	const { Column } = Table
 
 	useSubscription(subscription.MEDICAL_GROUP_UPSERTED, { onData: () => refetch() })
 
-	return (
+	return has('ReadMedicalGroup',
 		<>
 			<ToolBar>
 				<ToolBarMenu>
 					<Input.Search enterButton allowClear onSearch={filter}/>
 				</ToolBarMenu>
 				<ToolBarMenu>
-					<CreateMedicalGroup/>
+					{ has('WriteMedicalGroup', <CreateMedicalGroup/>) }
 				</ToolBarMenu>
 			</ToolBar>
 
-			<Table size='middle' dataSource={medicalGroups} bordered={true} pagination={{ pageSize: 15 }}>
+			<Table
+				size='middle'
+				dataSource={medicalGroups}
+				bordered={true}
+				scroll={{ x: true }}
+				loading={loading}
+			>
 				<Column title='Id' dataIndex='id'/>
-				<Column title='Nombre' dataIndex='name'/>
-				<Column title='Descripción' dataIndex='description'/>
-				<Column title='Especialidades' render={({ id, specialties }) => specialties.map((sp: { id: number, name: string }) => (
-					<Tag key={`${id}-${sp.id}`}>{sp.name}</Tag>
-				))}/>
+				<Column title='Nombre' dataIndex='name' ellipsis/>
+				<Column title='Descripción' dataIndex='description' ellipsis/>
+				<Column title='Especialidades' ellipsis render={({ id, specialties }) => (
+					<Tree treeData={specialties.map((specialty: MedicalSpecialty) => ({
+						key: `${id}-${specialty.id}`,
+						title: specialty.name,
+						children: specialty.subspecialties.map(sbsp => ({
+							key: `${id}-${specialty.id}-${sbsp.id}`,
+							title: sbsp.name
+						}))
+					}))}/>
+				)}/>
 				<Column title='Estado' render={tableStatus}/>
 				<Column title='Acciones' width='6rem' render={({ id }) => (
 					<Space>
-						<UpdateMedicalGroup id={id}/>
-						<DeleteMedicalGroup id={id}/>
+						{
+							has('WriteMedicalGroup', <>
+								<UpdateMedicalGroup id={id}/>
+								<DeleteMedicalGroup id={id}/>
+							</>)
+						}
+						<InspectMedicalGroup id={id}/>
 					</Space>
 				)}/>
 			</Table>
 
-			<Loader show={loading}/>
 			<ErrorDialog error={error}/>
-		</>
+		</>,
+		<NotAllowed/>
 	)
 }

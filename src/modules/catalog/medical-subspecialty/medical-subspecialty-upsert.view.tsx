@@ -1,7 +1,7 @@
 
-import { Button, Form, Input, Select, Space } from 'antd'
+import { Button, Card, Form, Input, Select, Space } from 'antd'
 
-import { CreateDialog, DeleteDialog, UpdateDialog } from '../../../components'
+import { CreateDialog, DeleteDialog, InspectDialog, UpdateDialog } from '../../../components'
 import { MedicalSubspecialty, UpdateProps } from '../../../types'
 
 import { mutation, query } from './medical-subspecialty.constant'
@@ -112,6 +112,21 @@ export function DeleteMedicalSubspecialty({ id }: UpdateProps) {
 			render={({medicalSubspecialty}) => `la sub-especialidad médica: ${medicalSubspecialty.name}`}
 			query={query.MEDICAL_SUBSPECIALTY}
 			mutation={mutation.DELETE_MEDICAL_SUBSPECIALTY}
+		/>
+	)
+}
+
+export function InspectMedicalSubspecialty({ id }: UpdateProps) {
+	return (
+		<InspectDialog<{ medicalSubspecialty: MedicalSubspecialty }>
+			id={id}
+			title='Sub-especialidad médica'
+			render={({medicalSubspecialty}) => <>
+				<Card>
+					<b>Nombre: </b><div>{medicalSubspecialty.name}</div>
+				</Card>
+			</>}
+			query={query.MEDICAL_SUBSPECIALTY}
 		/>
 	)
 }

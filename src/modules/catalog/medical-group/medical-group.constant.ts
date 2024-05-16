@@ -10,6 +10,10 @@ export const query = {
 				__typename @skip(if: true)
 				specialties {
 					id name
+					subspecialties {
+						id name
+						__typename @skip(if: true)
+					}
 					__typename @skip(if: true)
 				}
 			}

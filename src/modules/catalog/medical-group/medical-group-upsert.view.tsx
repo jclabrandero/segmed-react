@@ -1,8 +1,8 @@
 
 import { useSubscription } from '@apollo/client'
-import { Button, Divider, Form, Input, Space, TreeSelect } from 'antd'
+import { Button, Card, Divider, Form, Input, Space, TreeSelect } from 'antd'
 
-import { CreateDialog, DeleteDialog, UpdateDialog } from '../../../components'
+import { CreateDialog, DeleteDialog, InspectDialog, UpdateDialog } from '../../../components'
 import { MedicalGroup, MedicalSpecialty, UpdateProps } from '../../../types'
 
 import { CreateMedicalSpecialty } from '../medical-specialty/medical-specialty-upsert.view'
@@ -109,6 +109,21 @@ export function DeleteMedicalGroup({ id }: UpdateProps) {
 			render={({medicalGroup}) => `la unidad médica: ${medicalGroup.name}`}
 			query={query.MEDICAL_GROUP}
 			mutation={mutation.DELETE_MEDICAL_GROUP}
+		/>
+	)
+}
+
+export function InspectMedicalGroup({ id }: UpdateProps) {
+	return (
+		<InspectDialog<{ medicalGroup: MedicalGroup }>
+			id={id}
+			title='Sub-especialidad médica'
+			render={({medicalGroup}) => <>
+				<Card>
+					<b>Nombre: </b><div>{medicalGroup.name}</div>
+				</Card>
+			</>}
+			query={query.MEDICAL_GROUP}
 		/>
 	)
 }
