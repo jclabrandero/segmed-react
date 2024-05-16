@@ -97,7 +97,7 @@ export function InspectEmployeePosition({ id }: UpdateProps) {
 	return (
 		<InspectDialog<{ employeePosition: EmployeePosition }>
 			id={id}
-			title='Sub-especialidad médica'
+			title='Cargo de funcionario'
 			render={({employeePosition}) => <>
 				<Card>
 					<b>Nombre: </b><div>{employeePosition.name}</div>

@@ -125,7 +125,7 @@ export function InspectMedicalSpecialty({ id }: UpdateProps) {
 	return (
 		<InspectDialog<{ medicalSpecialty: MedicalSpecialty }>
 			id={id}
-			title='Sub-especialidad médica'
+			title='Especialidad médica'
 			render={({medicalSpecialty}) => <>
 				<Card>
 					<b>Nombre: </b><div>{medicalSpecialty.name}</div>

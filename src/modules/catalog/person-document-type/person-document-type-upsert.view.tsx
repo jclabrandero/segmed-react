@@ -97,7 +97,7 @@ export function InspectPersonDocumentType({ id }: UpdateProps) {
 	return (
 		<InspectDialog<{ personDocumentType: PersonDocumentType }>
 			id={id}
-			title='Sub-especialidad médica'
+			title='Tipo de documento identidad'
 			render={({personDocumentType}) => <>
 				<Card>
 					<b>Nombre: </b><div>{personDocumentType.name}</div>

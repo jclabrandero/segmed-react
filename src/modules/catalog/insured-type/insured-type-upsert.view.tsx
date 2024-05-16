@@ -101,7 +101,7 @@ export function InspectInsuredType({ id }: UpdateProps) {
 	return (
 		<InspectDialog<{ insuredType: InsuredType }>
 			id={id}
-			title='Sub-especialidad médica'
+			title='Tipo de beneficiario'
 			render={({insuredType}) => <>
 				<Card>
 					<b>Nombre: </b><div>{insuredType.name}</div>

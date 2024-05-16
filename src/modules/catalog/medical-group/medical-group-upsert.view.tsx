@@ -123,7 +123,7 @@ export function InspectMedicalGroup({ id }: UpdateProps) {
 	return (
 		<InspectDialog<{ medicalGroup: MedicalGroup }>
 			id={id}
-			title='Sub-especialidad médica'
+			title='Unidad médica'
 			render={({medicalGroup}) => <>
 				<Card>
 					<b>Nombre: </b><div>{medicalGroup.name}</div>

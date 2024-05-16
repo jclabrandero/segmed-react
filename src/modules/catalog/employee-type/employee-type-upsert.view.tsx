@@ -97,7 +97,7 @@ export function InspectEmployeeType({ id }: UpdateProps) {
 	return (
 		<InspectDialog<{ employeeType: EmployeeType }>
 			id={id}
-			title='Sub-especialidad médica'
+			title='Tipo de funcionario'
 			render={({employeeType}) => <>
 				<Card>
 					<b>Nombre: </b><div>{employeeType.name}</div>
