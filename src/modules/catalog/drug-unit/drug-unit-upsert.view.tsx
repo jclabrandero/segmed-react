@@ -1,7 +1,7 @@
 
-import { Button, Form, Input, Space } from 'antd'
+import { Button, Card, Form, Input, Space } from 'antd'
 
-import { CreateDialog, DeleteDialog, UpdateDialog } from '../../../components'
+import { CreateDialog, DeleteDialog, InspectDialog, UpdateDialog } from '../../../components'
 import { useAntdHelp } from '../../../hooks'
 import { DrugUnit, UpdateProps } from '../../../types'
 
@@ -84,6 +84,21 @@ export function DeleteDrugUnit({ id }: UpdateProps) {
 			render={({ drugUnit }) => `unidad medicamento: ${drugUnit.name}`}
 			query={query.DRUG_UNIT}
 			mutation={mutation.DELETE_DRUG_UNIT}
+		/>
+	)
+}
+
+export function InspectDrugUnit({ id }: UpdateProps) {
+	return (
+		<InspectDialog<{ drugUnit: DrugUnit }>
+			id={id}
+			title='Unidad medicamento'
+			render={({drugUnit}) => <>
+				<Card>
+					<b>Nombre: </b><div>{drugUnit.name}</div>
+				</Card>
+			</>}
+			query={query.DRUG_UNIT}
 		/>
 	)
 }
