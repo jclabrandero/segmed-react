@@ -67,10 +67,10 @@ function MedicalSpecialtyForm({ data, onSubmit, onCancel, onRefetch }: MedicalSp
 						<>
 							{menu}
 							{
-								has('WriteMedicalSubspecialty', <div>
+								has('WriteMedicalSubspecialty', <>
 									<Divider style={{ margin: '8px 0' }}/>
 									<CreateMedicalSubspecialty/>
-								</div>)
+								</>)
 							}
 						</>
 					)}

@@ -4,6 +4,7 @@ import { Button, Card, Divider, Form, Input, Space, TreeSelect } from 'antd'
 
 import { CreateDialog, DeleteDialog, InspectDialog, UpdateDialog } from '../../../components'
 import { MedicalGroup, MedicalSpecialty, UpdateProps } from '../../../types'
+import { useAuth } from '../../../hooks'
 
 import { CreateMedicalSpecialty } from '../medical-specialty/medical-specialty-upsert.view'
 import { subscription as medicalSpecialtySubscription } from '../medical-specialty/medical-specialty.constant'
@@ -30,8 +31,9 @@ type MedicalGroupFormProps = {
 
 function MedicalGroupForm({ data, onSubmit, onCancel, onRefetch }: MedicalGroupFormProps) {
 	const { medicalGroup } = data
-	const { Item } = Form
-	const [ form ] = Form.useForm()
+		, { Item } = Form
+		, [ form ] = Form.useForm()
+		, { has } = useAuth()
 	const onFinish = () => onSubmit(form.getFieldsValue({ filter: (meta) => meta.touched }))
 	const format = (payload?: MedicalGroup) => {
 		if (!payload) return undefined
@@ -62,8 +64,12 @@ function MedicalGroupForm({ data, onSubmit, onCancel, onRefetch }: MedicalGroupF
 					dropdownRender={(menu) => (
 						<>
 							{menu}
-							<Divider style={{ margin: '8px 0' }}/>
-							<div style={{ margin: '6px' }}><CreateMedicalSpecialty/></div>
+							{
+								has('WriteMedicalSpecialty', <>
+									<Divider style={{ margin: '8px 0' }}/>
+									<CreateMedicalSpecialty/>
+								</>)
+							}
 						</>
 					)}
 					treeData={specialties.map(rec => ({ title: rec.name, value: rec.id }))}/>
