@@ -11,6 +11,14 @@ export const query = {
 			}
 		}
 	`,
+	PHARMACY: gql`
+		query pharmacy($id: Int!) {
+			pharmacy(id: $id) {
+				id name status
+				belonging { id name }
+			}
+		}
+	`,
 	CREATE_DEPENDENCIES: gql`
 		query dependencies {
 			belongings: activeBelongings {

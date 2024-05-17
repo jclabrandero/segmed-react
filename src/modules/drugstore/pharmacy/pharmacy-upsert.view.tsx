@@ -1,10 +1,10 @@
 
 import { useSubscription } from '@apollo/client'
-import { Button, Divider, Form, Input, Select, Space } from 'antd'
+import { Button, Card, Divider, Form, Input, Select, Space } from 'antd'
 
-import { CreateDialog, UpdateDialog } from '../../../components'
+import { CreateDialog, InspectDialog, UpdateDialog } from '../../../components'
 import { Belonging, Pharmacy, UpdateProps } from '../../../types'
-import { useAntdHelp } from '../../../hooks'
+import { useAntdHelp, useAuth } from '../../../hooks'
 
 import { CreateBelonging } from '../../reference/belonging/belonging-upsert.view'
 import { subscription as belongingSubscription } from '../../reference/belonging/belonging.constant'
@@ -33,9 +33,10 @@ type PharmacyFormProps = {
 
 function PharmacyForm({ data, onSubmit, onCancel, onRefetch }: PharmacyFormProps) {
 	const { pharmacy } = data
-	const { Item } = Form
-	const [ form ] = Form.useForm()
-	const { touched, map, toLV } = useAntdHelp()
+		, { Item } = Form
+		, [ form ] = Form.useForm()
+		, { touched, map, toLV } = useAntdHelp()
+		, { has } = useAuth()
 	const onFinish = () => onSubmit(touched(form))
 	const format = (payload?: Pharmacy) => {
 		if (!payload) return undefined
@@ -62,11 +63,15 @@ function PharmacyForm({ data, onSubmit, onCancel, onRefetch }: PharmacyFormProps
 				<Select
 					placeholder='Pertinencia'
 					options={map(data.belongings, toLV)}
-					dropdownRender={(menu) => (
+					dropdownRender={menu => (
 						<>
 							{menu}
-							<Divider style={{ margin: '8px 0' }}/>
-							<div style={{ margin: '6px' }}><CreateBelonging/></div>
+							{
+								has('WriteBelonging', <>
+									<Divider style={{ margin: '8px 0' }}/>
+									<CreateBelonging/>
+								</>)
+							}
 						</>
 					)}/>
 			</Item>
@@ -99,6 +104,21 @@ export function UpdatePharmacy({ id }: UpdateProps) {
 			query={query.UPDATE_DEPENDENCIES}
 			mutation={mutation.UPDATE_PHARMACY}
 			render={(submit, close, data, refetch) => <PharmacyForm mode='update' data={data} onSubmit={submit} onCancel={close} onRefetch={refetch}/>}
+		/>
+	)
+}
+
+export function InspectPharmacy({ id }: UpdateProps) {
+	return (
+		<InspectDialog<{ pharmacy: Pharmacy }>
+			id={id}
+			title='Farmacia'
+			render={({pharmacy}) => <>
+				<Card>
+					<b>Nombre: </b><div>{pharmacy.name}</div>
+				</Card>
+			</>}
+			query={query.PHARMACY}
 		/>
 	)
 }

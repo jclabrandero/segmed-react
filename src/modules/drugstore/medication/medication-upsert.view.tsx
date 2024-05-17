@@ -1,9 +1,9 @@
 
-import { Button, Checkbox, Divider, Form, Input, Select, Space } from 'antd'
+import { Button, Card, Checkbox, Divider, Form, Input, Select, Space } from 'antd'
 
-import { CreateDialog, UpdateDialog } from '../../../components'
+import { CreateDialog, InspectDialog, UpdateDialog } from '../../../components'
 import { Medication, DrugClass, DrugUnit, UpdateProps } from '../../../types'
-import { useAntdHelp } from '../../../hooks'
+import { useAntdHelp, useAuth } from '../../../hooks'
 
 import { CreateDrugUnit } from '../../catalog/drug-unit/drug-unit-upsert.view'
 import { CreateDrugClass } from '../../catalog/drug-class/drug-class-upsert.view'
@@ -38,9 +38,10 @@ type MedicationFormProps = {
 
 function MedicationForm({ data, onSubmit, onCancel }: MedicationFormProps) {
 	const { medication } = data
-	const { Item } = Form
-	const [ form ] = Form.useForm()
-	const { touched, map, toLV } = useAntdHelp()
+		, { Item } = Form
+		, [ form ] = Form.useForm()
+		, { touched, map, toLV } = useAntdHelp()
+		, { has } = useAuth()
 	const onFinish = () => onSubmit(touched(form))
 	const format = (payload?: Medication) => {
 		if (!payload) return undefined
@@ -82,11 +83,15 @@ function MedicationForm({ data, onSubmit, onCancel }: MedicationFormProps) {
 				<Select
 					placeholder='Unidad medicamento'
 					options={map(data.units, toLV)}
-					dropdownRender={(menu) => (
+					dropdownRender={menu => (
 						<>
 							{menu}
-							<Divider style={{ margin: '8px 0' }}/>
-							<div style={{ margin: '6px' }}><CreateDrugUnit/></div>
+							{
+								has('WriteDrugUnit', <>
+									<Divider style={{ margin: '8px 0' }}/>
+									<CreateDrugUnit/>
+								</>)
+							}
 						</>
 					)}/>
 			</Item>
@@ -97,11 +102,15 @@ function MedicationForm({ data, onSubmit, onCancel }: MedicationFormProps) {
 				<Select
 					placeholder='Clase medicamento'
 					options={map(data.clasess, toLV)}
-					dropdownRender={(menu) => (
+					dropdownRender={menu => (
 						<>
 							{menu}
-							<Divider style={{ margin: '8px 0' }}/>
-							<div style={{ margin: '6px' }}><CreateDrugClass/></div>
+							{
+								has('WriteDrugClass', <>
+									<Divider style={{ margin: '8px 0' }}/>
+									<CreateDrugClass/>
+								</>)
+							}
 						</>
 					)}/>
 			</Item>
@@ -134,6 +143,21 @@ export function UpdateMedication({ id }: UpdateProps) {
 			query={query.UPDATE_DEPENDENCIES}
 			mutation={mutation.UPDATE_MEDICATION}
 			render={(submit, close, data, refetch) => <MedicationForm mode='update' data={data} onSubmit={submit} onCancel={close} onRefetch={refetch}/>}
+		/>
+	)
+}
+
+export function InspectMedication({ id }: UpdateProps) {
+	return (
+		<InspectDialog<{ medication: Medication }>
+			id={id}
+			title='Medicamento'
+			render={({medication}) => <>
+				<Card>
+					<b>Nombre: </b><div>{medication.name}</div>
+				</Card>
+			</>}
+			query={query.MEDICATION}
 		/>
 	)
 }

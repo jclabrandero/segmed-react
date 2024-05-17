@@ -3,15 +3,17 @@ import { useQuery, useSubscription } from '@apollo/client'
 import { Input, Space, Table } from 'antd'
 
 import { ErrorDialog, ToolBar, ToolBarMenu } from '../../../components'
-import { useError, useAntdHelp, useFilter } from '../../../hooks'
+import { useError, useAntdHelp, useFilter, useAuth } from '../../../hooks'
 import { Medication } from '../../../types'
+import { NotAllowed } from '../../basic'
 
-import { CreateMedication, UpdateMedication } from './medication-upsert.view'
+import { CreateMedication, InspectMedication, UpdateMedication } from './medication-upsert.view'
 import { query, subscription } from './medication.constant'
 
 
 export function MedicationList() {
 	const { addKey, tableStatus } = useAntdHelp()
+		, { has } = useAuth()
 		, [ error, onError ] = useError()
 		, { loading, data, refetch } = useQuery(query.MEDICATIONS, { onError })
 		, [ medications, filter ] = useFilter(addKey<Medication>(data?.medications), ['code', 'name'])
@@ -19,15 +21,14 @@ export function MedicationList() {
 
 	useSubscription(subscription.MEDICATION_UPSERTED, { onData: () => refetch() })
 
-	return (
+	return has('ReadMedication',
 		<>
 			<ToolBar>
 				<ToolBarMenu>
 					<Input.Search enterButton allowClear onSearch={filter}/>
 				</ToolBarMenu>
-
 				<ToolBarMenu>
-					<CreateMedication/>
+					{ has('WriteMedication', <CreateMedication/>) }
 				</ToolBarMenu>
 			</ToolBar>
 
@@ -55,12 +56,18 @@ export function MedicationList() {
 				<Column title='Estado' render={tableStatus}/>
 				<Column title='Acciones' width='6rem' fixed='right' render={({ id }) => (
 					<Space>
-						<UpdateMedication id={id}/>
+						{
+							has('WriteMedication', <>
+								<UpdateMedication id={id}/>
+							</>)
+						}
+						<InspectMedication id={id}/>
 					</Space>
 				)}/>
 			</Table>
 
 			<ErrorDialog error={error}/>
-		</>
+		</>,
+		<NotAllowed/>
 	)
 }

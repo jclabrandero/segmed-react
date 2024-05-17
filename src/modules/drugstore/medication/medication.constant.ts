@@ -12,6 +12,15 @@ export const query = {
 			}
 		}
 	`,
+	MEDICATION: gql`
+		query medication($id: Int!) {
+			medication(id: $id) {
+				id code name concentration liname status
+				class { id name }
+				unit { id name }
+			}
+		}
+	`,
 	CREATE_DEPENDENCIES: gql`
 		query dependencies {
 			clasess: activeDrugClasess {
