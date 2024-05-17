@@ -2,6 +2,7 @@
 import { CreateDialog } from './dialog/create-dialog'
 import { DeleteDialog } from './dialog/delete-dialog'
 import { ErrorDialog } from './dialog/error-dialog'
+import { InspectDialog } from './dialog/inspect-dialog'
 import { Loader } from './loader/loader'
 import { ModalFileViewer } from './file-viewer/modal-file-viewer'
 import { NavAction } from './navbar/nav-action'
@@ -19,6 +20,7 @@ export {
 	CreateDialog,
 	DeleteDialog,
 	ErrorDialog,
+	InspectDialog,
 	Loader,
 	ModalFileViewer,
 	NavAction,
