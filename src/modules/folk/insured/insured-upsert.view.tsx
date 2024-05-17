@@ -1,12 +1,12 @@
 
 import { useState } from 'react'
 import { useSubscription } from '@apollo/client'
-import { Button, Checkbox, DatePicker, Divider, Form, Input, InputNumber, Select, Space } from 'antd'
+import { Button, Card, Checkbox, DatePicker, Divider, Form, Input, InputNumber, Select, Space } from 'antd'
 import dayjs from 'dayjs'
 
-import { CreateDialog, DeleteDialog, UpdateDialog } from '../../../components'
+import { CreateDialog, DeleteDialog, InspectDialog, UpdateDialog } from '../../../components'
 import { Person, Insured, Belonging, InsuredType, UpdateProps } from '../../../types'
-import { useAntdHelp } from '../../../hooks'
+import { useAntdHelp, useAuth } from '../../../hooks'
 
 import { subscription as insuredTypeSubscription } from '../../catalog/insured-type/insured-type.constant'
 import { subscription as belongingSubscription } from '../../reference/belonging/belonging.constant'
@@ -65,9 +65,10 @@ type InsuredFormProps<TArgs> = {
 
 function InsuredForm<TArgs>({ mode, data, onSubmit, onCancel, onRefetch }: InsuredFormProps<TArgs>) {
 	const { insured } = data
-	const { Item } = Form
-	const [ form ] = Form.useForm()
-	const { touched } = useAntdHelp()
+		, { Item } = Form
+		, [ form ] = Form.useForm()
+		, { touched } = useAntdHelp()
+		, { has } = useAuth()
 	const [ selectedInsuredType, setSelectedInsuredType ] = useState<InsuredType | undefined>(insured ? insured.insuredType : undefined)
 	const onFinish = () => onSubmit(touched(form))
 	const format = (payload?: Insured) => {
@@ -116,8 +117,12 @@ function InsuredForm<TArgs>({ mode, data, onSubmit, onCancel, onRefetch }: Insur
 					dropdownRender={menu => (
 						<>
 							{menu}
-							<Divider style={{ margin: '8px 0' }}/>
-							<div style={{ margin: '6px' }}><CreatePerson/></div>
+							{
+								has('WritePerson', <>
+									<Divider style={{ margin: '8px 0' }}/>
+									<CreatePerson/>
+								</>)
+							}
 						</>
 					)}/>
 			</Item>
@@ -131,8 +136,12 @@ function InsuredForm<TArgs>({ mode, data, onSubmit, onCancel, onRefetch }: Insur
 					dropdownRender={menu => (
 						<>
 							{menu}
-							<Divider style={{ margin: '8px 0' }}/>
-							<div style={{ margin: '6px' }}><CreateInsuredType/></div>
+							{
+								has('WriteInsuredType', <>
+									<Divider style={{ margin: '8px 0' }}/>
+									<CreateInsuredType/>
+								</>)
+							}
 						</>
 					)}/>
 			</Item>
@@ -173,8 +182,12 @@ function InsuredForm<TArgs>({ mode, data, onSubmit, onCancel, onRefetch }: Insur
 					dropdownRender={menu => (
 						<>
 							{menu}
-							<Divider style={{ margin: '8px 0' }}/>
-							<div style={{ margin: '6px' }}><CreateBelonging/></div>
+							{
+								has('WriteBelonging', <>
+									<Divider style={{ margin: '8px 0' }}/>
+									<CreateBelonging/>
+								</>)
+							}
 						</>
 					)}/>
 			</Item>
@@ -227,8 +240,23 @@ export function DeleteInsured({ id }: UpdateProps) {
 			id={id}
 			title='Eliminar beneficiario'
 			render={({ insured }) => `datos del beneficiario: ${insured.person.firstName} ${insured.person.lastName}`}
-			query={query.UPDATE_DEPENDENCIES}
+			query={query.INSURED}
 			mutation={mutation.DELETE_INSURED}
+		/>
+	)
+}
+
+export function InspectInsured({ id }: UpdateProps) {
+	return (
+		<InspectDialog<{ insured: Insured }>
+			id={id}
+			title='Datos de beneficiario'
+			render={({insured}) => <>
+				<Card>
+					<b>Nombre: </b><div>{insured.person.firstName} {insured.person.lastName}</div>
+				</Card>
+			</>}
+			query={query.INSURED}
 		/>
 	)
 }

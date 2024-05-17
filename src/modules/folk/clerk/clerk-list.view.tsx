@@ -8,7 +8,7 @@ import { MedicalOffice } from '../../../types'
 import { NotAllowed } from '../../basic'
 
 import { query, subscription } from './clerk.constant'
-import { CreateClerk, DeleteClerk, UpdateClerk } from './clerk-upsert.view'
+import { CreateClerk, DeleteClerk, InspectClerk, UpdateClerk } from './clerk-upsert.view'
 
 
 export function ClerkList() {
@@ -21,18 +21,25 @@ export function ClerkList() {
 
 	useSubscription(subscription.CLERK_UPSERTED, { onData: () => refetch() })
 
-	return has('R_CLRK',
+	return has('ReadClerk',
 		<>
 			<ToolBar>
 				<ToolBarMenu>
 					<Input.Search enterButton allowClear onSearch={filter}/>
 				</ToolBarMenu>
 				<ToolBarMenu>
-					{ has('W_CLRK', <CreateClerk/>) }
+					{ has('WriteClerk', <CreateClerk/>) }
 				</ToolBarMenu>
 			</ToolBar>
 
-			<Table size='middle' dataSource={clerks} bordered={true} pagination={{ pageSize: 15 }} scroll={{ x: true }} loading={loading}>
+			<Table
+				size='middle'
+				dataSource={clerks}
+				bordered={true}
+				pagination={{ pageSize: 15 }}
+				scroll={{ x: true }}
+				loading={loading}
+			>
 				<Column title='Id' dataIndex='id'/>
 				<Column title='Ficha' dataIndex='ein' ellipsis/>
 				<Column title='Nombre funcionario' ellipsis render={clerk => (
@@ -53,10 +60,15 @@ export function ClerkList() {
 					</div>
 				))}/>
 				<Column title='Estado' render={tableStatus}/>
-				<Column title='Acciones' width='6rem' fixed='right' render={record => has('W_CLRK',
+				<Column title='Acciones' width='6rem' fixed='right' render={({ id }) => (
 					<Space>
-						<UpdateClerk id={record.id}/>
-						<DeleteClerk id={record.id}/>
+						{
+							has('WriteClerk', <>
+								<UpdateClerk id={id}/>
+								<DeleteClerk id={id}/>
+							</>)
+						}
+						<InspectClerk id={id}/>
 					</Space>
 				)}/>
 			</Table>

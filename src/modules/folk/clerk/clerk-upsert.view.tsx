@@ -1,17 +1,19 @@
 
 import { useSubscription } from '@apollo/client'
-import { Button, Divider, Form, InputNumber, Select, Space, TreeSelect } from 'antd'
+import { Button, Card, Divider, Form, InputNumber, Select, Space, TreeSelect } from 'antd'
 
-import { CreateDialog, DeleteDialog, UpdateDialog } from '../../../components'
-import { useAntdHelp } from '../../../hooks'
+import { CreateDialog, DeleteDialog, InspectDialog, UpdateDialog } from '../../../components'
+import { useAntdHelp, useAuth } from '../../../hooks'
 import { EmployeePosition, EmployeeType, MedicalOffice, Person, Clerk, UpdateProps } from '../../../types'
 
 import { CreatePerson } from '../person/person-upsert.view'
 import { CreateEmployeePosition } from '../../catalog/employee-position/employee-position-upsert.view'
 import { CreateEmployeeType } from '../../catalog/employee-type/employee-type-upsert.view'
+import { CreateMedicalOffice } from '../../reference/medical-office/medical-office-upsert.view'
 import { subscription as personSubscription } from '../person/person.constant'
 import { subscription as employeePositionSubscription } from '../../catalog/employee-position/employee-position.constant'
 import { subscription as employeeTypeSubscription } from '../../catalog/employee-type/employee-type.constant'
+import { subscription as medicalOfficeSubscription } from '../../reference/medical-office/medical-office.constant'
 
 import { query, mutation } from './clerk.constant'
 
@@ -45,9 +47,10 @@ type ClerkFormProps = {
 
 function ClerkForm({ mode, data, onSubmit, onCancel, onRefetch }: ClerkFormProps) {
 	const { clerk } = data
-	const { Item } = Form
-	const [ form ] = Form.useForm()
-	const { touched } = useAntdHelp()
+		, { Item } = Form
+		, [ form ] = Form.useForm()
+		, { touched } = useAntdHelp()
+		, { has } = useAuth()
 	const onFinish = () => onSubmit(touched(form))
 	const format = (payload?: Clerk) => {
 		if (!payload) return undefined
@@ -58,6 +61,7 @@ function ClerkForm({ mode, data, onSubmit, onCancel, onRefetch }: ClerkFormProps
 	useSubscription(personSubscription.PERSON_UPSERTED, { onData: onRefetch })
 	useSubscription(employeePositionSubscription.EMPLOYEE_POSITION_UPSERTED, { onData: onRefetch })
 	useSubscription(employeeTypeSubscription.EMPLOYEE_TYPE_UPSERTED, { onData: onRefetch })
+	useSubscription(medicalOfficeSubscription.MEDICAL_OFFICE_UPSERTED, { onData: onRefetch })
 
 	const people = data ? data.people : []
 		, employeePositions = data ? data.employeePositions : []
@@ -79,11 +83,15 @@ function ClerkForm({ mode, data, onSubmit, onCancel, onRefetch }: ClerkFormProps
 					placeholder='Datos de persona'
 					options={people.map(p => ({ label: `${p.firstName} ${p.lastName}`, value: p.id }))}
 					showSearch={true}
-					dropdownRender={(menu) => (
+					dropdownRender={menu => (
 						<>
 							{menu}
-							<Divider style={{ margin: '8px 0' }}/>
-							<div style={{ margin: '6px' }}><CreatePerson/></div>
+							{
+								has('WritePerson', <>
+									<Divider style={{ margin: '8px 0' }}/>
+									<CreatePerson/>
+								</>)
+							}
 						</>
 					)}/>
 			</Item>
@@ -93,11 +101,15 @@ function ClerkForm({ mode, data, onSubmit, onCancel, onRefetch }: ClerkFormProps
 				<Select
 					placeholder='Tipo de funcionario'
 					options={employeeTypes.map(t => ({ label: t.name, value: t.id }))}
-					dropdownRender={(menu) => (
+					dropdownRender={menu => (
 						<>
 							{menu}
-							<Divider style={{ margin: '8px 0' }}/>
-							<div style={{ margin: '6px' }}><CreateEmployeeType/></div>
+							{
+								has('WriteEmployeeType', <>
+									<Divider style={{ margin: '8px 0' }}/>
+									<CreateEmployeeType/>
+								</>)
+							}
 						</>
 					)}/>
 			</Item>
@@ -107,11 +119,15 @@ function ClerkForm({ mode, data, onSubmit, onCancel, onRefetch }: ClerkFormProps
 				<Select
 					placeholder='Cargo del funcionario'
 					options={employeePositions.map(pos => ({ label: pos.name, value: pos.id }))}
-					dropdownRender={(menu) => (
+					dropdownRender={menu => (
 						<>
 							{menu}
-							<Divider style={{ margin: '8px 0' }}/>
-							<div style={{ margin: '6px' }}><CreateEmployeePosition/></div>
+							{
+								has('WriteEmployeePosition', <>
+									<Divider style={{ margin: '8px 0' }}/>
+									<CreateEmployeePosition/>
+								</>)
+							}
 						</>
 					)}/>
 			</Item>
@@ -121,7 +137,20 @@ function ClerkForm({ mode, data, onSubmit, onCancel, onRefetch }: ClerkFormProps
 			</Item>
 			<Item name='medicalOffices'
 				label='Consultorios'>
-				<TreeSelect treeCheckable={true} treeData={medicalOffices.map(mo => ({ title: mo.name, value: mo.id }))}/>
+				<TreeSelect
+					treeCheckable={true}
+					treeData={medicalOffices.map(mo => ({ title: mo.name, value: mo.id }))}
+					dropdownRender={menu => (
+						<>
+							{menu}
+							{
+								has('WriteMedicalOffice', <>
+									<Divider style={{ margin: '8px 0' }}/>
+									<CreateMedicalOffice/>
+								</>)
+							}
+						</>
+					)}/>
 			</Item>
 			<div className='modal-dialog-footer'>
 				<Space>
@@ -164,6 +193,21 @@ export function DeleteClerk({ id }: UpdateProps) {
 			render={({clerk}) => `el funcionario: ${clerk.person.firstName} ${clerk.person.lastName}`}
 			query={query.CLERK}
 			mutation={mutation.DELETE_CLERK}
+		/>
+	)
+}
+
+export function InspectClerk({ id }: UpdateProps) {
+	return (
+		<InspectDialog<{ clerk: Clerk }>
+			id={id}
+			title='Datos de funcionario'
+			render={({clerk}) => <>
+				<Card>
+					<b>Nombre: </b><div>{clerk.person.firstName} {clerk.person.lastName}</div>
+				</Card>
+			</>}
+			query={query.CLERK}
 		/>
 	)
 }

@@ -8,7 +8,7 @@ import { NotAllowed } from '../../basic'
 
 import { subscription as pdtSubscription } from '../../catalog/person-document-type/person-document-type.constant'
 import { query, subscription } from './person.constant'
-import { CreatePerson, DeletePerson, UpdatePerson } from './person-upsert.view'
+import { CreatePerson, DeletePerson, InspectPerson, UpdatePerson } from './person-upsert.view'
 
 
 export function PersonList() {
@@ -23,34 +23,46 @@ export function PersonList() {
 	useSubscription(pdtSubscription.PERSON_DOCUMENT_TYPE_UPSERTED, { onData: () => refetch() })
 	useSubscription(subscription.PERSON_UPSERTED, { onData: () => refetch() })
 
-	return has('R_PRSN',
+	return has('ReadPerson',
 		<>
 			<ToolBar>
 				<ToolBarMenu>
 					<Input.Search enterButton allowClear onSearch={filter}/>
 				</ToolBarMenu>
 				<ToolBarMenu>
-					{ has('W_PRSN', <CreatePerson/>) }
+					{ has('WritePerson', <CreatePerson/>) }
 				</ToolBarMenu>
 			</ToolBar>
 
-			<Table size='middle' dataSource={persons} bordered={true} pagination={{ pageSize: 15 }} scroll={{ x: true }} loading={loading}>
+			<Table
+				size='middle'
+				dataSource={persons}
+				bordered={true}
+				pagination={{ pageSize: 15 }}
+				scroll={{ x: true }}
+				loading={loading}
+			>
 				<Column title='Id' dataIndex='id'/>
 				<Column title='Nombres' dataIndex='firstName' ellipsis/>
 				<Column title='Apellidos' dataIndex='lastName' ellipsis/>
 				<Column title='Sexo' dataIndex='sex' ellipsis/>
-				<Column title='Nacimiento' ellipsis render={record => (
-					<span>{format(record.birthDate, 'dd/MM/yyyy')}</span>
+				<Column title='Nacimiento' ellipsis render={({ birthDate }) => (
+					<span>{format(birthDate, 'dd/MM/yyyy')}</span>
 				)}/>
 				<Column title='Tipo DI' ellipsis render={record => (
 					<span>{record.personDocumentType?.name}</span>
 				)}/>
 				<Column title='Número DI' ellipsis dataIndex='documentNumber'/>
 				<Column title='Estado' render={tableStatus}/>
-				<Column title='Acciones' width='6rem' fixed='right' render={record => has('W_PRSN',
+				<Column title='Acciones' width='6rem' fixed='right' render={({ id }) => (
 					<Space>
-						<UpdatePerson id={record.id}/>
-						<DeletePerson id={record.id}/>
+						{
+							has('WritePerson', <>
+								<UpdatePerson id={id}/>
+								<DeletePerson id={id}/>
+							</>)
+						}
+						<InspectPerson id={id}/>
 					</Space>
 				)}/>
 			</Table>

@@ -15,6 +15,18 @@ export const query = {
 			}
 		}
 	`,
+	INSURED: gql`
+		query insured($id: Int!) {
+			insured(id: $id) {
+				id code iin inletDate outletDate tradeUnion address phone status
+				person { id firstName lastName }
+				insuredType { id name }
+				holderInsured { id code }
+				dependents { id code }
+				belonging { id name }
+			}
+		}
+	`,
 	CREATE_DEPENDENCIES: gql`
 		query dependencies {
 			people: activePersons {

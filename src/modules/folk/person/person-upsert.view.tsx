@@ -1,10 +1,10 @@
 
 import { useSubscription } from '@apollo/client'
-import { Button, DatePicker, Divider, Form, Input, Select, Space } from 'antd'
+import { Button, Card, DatePicker, Divider, Form, Input, Select, Space } from 'antd'
 import dayjs from 'dayjs'
 
-import { CreateDialog, DeleteDialog, UpdateDialog } from '../../../components'
-import { useAntdHelp } from '../../../hooks'
+import { CreateDialog, DeleteDialog, InspectDialog, UpdateDialog } from '../../../components'
+import { useAntdHelp, useAuth } from '../../../hooks'
 import { Person, PersonDocumentType, UpdateProps } from '../../../types'
 
 import { CreatePersonDocumentType } from '../../catalog/person-document-type/person-document-type-upsert.view'
@@ -37,9 +37,10 @@ type PersonFormProps = {
 
 function PersonForm({ data, onSubmit, onCancel, onRefetch }: PersonFormProps) {
 	const { person } = data
-	const { Item } = Form
-	const [ form ] = Form.useForm()
-	const { touched } = useAntdHelp()
+		, { Item } = Form
+		, [ form ] = Form.useForm()
+		, { touched } = useAntdHelp()
+		, { has } = useAuth()
 	const onFinish = () => {
 		const { birthDate, ...remaining } = touched(form)
 		onSubmit(birthDate ? { ...remaining, birthDate: birthDate.$d } : { ...remaining })
@@ -85,11 +86,15 @@ function PersonForm({ data, onSubmit, onCancel, onRefetch }: PersonFormProps) {
 				<Select
 					placeholder='Tipo documento de identidad'
 					options={personDocumentTypes.map(rec => ({ label: rec.name, value: rec.id }))}
-					dropdownRender={(menu) => (
+					dropdownRender={menu => (
 						<>
 							{menu}
-							<Divider style={{ margin: '8px 0' }}/>
-							<div style={{ margin: '6px' }}><CreatePersonDocumentType/></div>
+							{
+								has('WritePersonDocumentType', <>
+									<Divider style={{ margin: '8px 0' }}/>
+									<CreatePersonDocumentType/>
+								</>)
+							}
 						</>
 					)}/>
 			</Item>
@@ -139,6 +144,21 @@ export function DeletePerson({ id }: UpdateProps) {
 			render={({ person }) => `datos de persona: ${person.firstName} ${person.lastName}`}
 			query={query.PERSON}
 			mutation={mutation.DELETE_PERSON}
+		/>
+	)
+}
+
+export function InspectPerson({ id }: UpdateProps) {
+	return (
+		<InspectDialog<{ person: Person }>
+			id={id}
+			title='Datos de persona'
+			render={({person}) => <>
+				<Card>
+					<b>Nombre: </b><div>{person.firstName} {person.lastName}</div>
+				</Card>
+			</>}
+			query={query.PERSON}
 		/>
 	)
 }

@@ -9,7 +9,7 @@ import { Insured } from '../../../types'
 import { NotAllowed } from '../../basic'
 
 import { query, subscription } from './insured.constant'
-import { CreateInsured, DeleteInsured, UpdateInsured } from './insured-upsert.view'
+import { CreateInsured, DeleteInsured, InspectInsured, UpdateInsured } from './insured-upsert.view'
 
 
 export function InsuredList() {
@@ -23,7 +23,7 @@ export function InsuredList() {
 
 	useSubscription(subscription.INSURED_UPSERTED, { onData: () => refetch() })
 
-	return has('R_NSRD',
+	return has('ReadInsured',
 		<>
 			<ToolBar>
 				<ToolBarMenu>
@@ -31,7 +31,7 @@ export function InsuredList() {
 				</ToolBarMenu>
 
 				<ToolBarMenu>
-					{ has('W_NSRD', <CreateInsured/>) }
+					{ has('WriteInsured', <CreateInsured/>) }
 				</ToolBarMenu>
 			</ToolBar>
 
@@ -43,8 +43,9 @@ export function InsuredList() {
 				scroll={{ x: true }}
 				loading={loading}
 				expandable={{
-					expandedRowRender: insured =>
-						<>
+					expandedRowRender: insured => {
+						console.log('osidhfihn')
+						return (<>
 							<h5>Dependientes</h5>
 							{
 								insured.dependents.map(dep => (
@@ -53,7 +54,8 @@ export function InsuredList() {
 									</div>
 								))
 							}
-						</>,
+						</>)
+					},
 					rowExpandable: insured => insured.dependents.length > 0
 				}}
 			>
@@ -88,13 +90,22 @@ export function InsuredList() {
 				<Column title='Dirección' ellipsis dataIndex='address'/>
 				<Column title='Teléfono' ellipsis dataIndex='phone'/>
 				<Column title='Estado' render={tableStatus}/>
-				<Column title='Acciones' width='7rem' fixed='right' render={({ id }) => has('W_NSRD',
+				<Column title='Acciones' width='6rem' fixed='right' render={({ id }) => (
 					<Space>
-						<Tooltip title='Generar consulta médica'>
-							<Button shape='circle' type='text' size='small' icon={ <MedicineBoxFilled style={{ color: '#2F8923' }}/> }/>
-						</Tooltip>
-						<UpdateInsured id={id}/>
-						<DeleteInsured id={id}/>
+						{
+							has('WriteClinicCare',
+								<Tooltip title='Generar consulta médica'>
+									<Button shape='circle' type='text' size='small' icon={ <MedicineBoxFilled style={{ color: '#2F8923' }}/> }/>
+								</Tooltip>
+							)
+						}
+						{
+							has('WriteInsured', <>
+								<UpdateInsured id={id}/>
+								<DeleteInsured id={id}/>
+							</>)
+						}
+						<InspectInsured id={id}/>
 					</Space>
 				)}/>
 			</Table>
