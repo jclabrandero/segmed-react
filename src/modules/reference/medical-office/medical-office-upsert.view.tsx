@@ -1,9 +1,9 @@
 
 import { useSubscription } from '@apollo/client'
-import { Button, Divider, Form, Input, Select, Space } from 'antd'
+import { Button, Card, Divider, Form, Input, Select, Space } from 'antd'
 
-import { CreateDialog, DeleteDialog, UpdateDialog } from '../../../components'
-import { useAntdHelp } from '../../../hooks'
+import { CreateDialog, DeleteDialog, InspectDialog, UpdateDialog } from '../../../components'
+import { useAntdHelp, useAuth } from '../../../hooks'
 import { Belonging, MedicalOffice, UpdateProps } from '../../../types'
 
 import { CreateBelonging } from '../belonging/belonging-upsert.view'
@@ -31,9 +31,10 @@ type MedicalOfficeFormProps = {
 
 function MedicalOfficeForm({ data, onSubmit, onCancel, onRefetch }: MedicalOfficeFormProps) {
 	const { medicalOffice } = data
-	const { Item } = Form
-	const [ form ] = Form.useForm()
-	const { touched } = useAntdHelp()
+		, { Item } = Form
+		, [ form ] = Form.useForm()
+		, { touched } = useAntdHelp()
+		, { has } = useAuth()
 	const onFinish = () => onSubmit(touched(form))
 	const format = (payload?: MedicalOffice) => {
 		if (!payload) return undefined
@@ -58,11 +59,15 @@ function MedicalOfficeForm({ data, onSubmit, onCancel, onRefetch }: MedicalOffic
 				<Select
 					placeholder='Pertinencia'
 					options={belongings.map(t => ({ label: t.name, value: t.id }))}
-					dropdownRender={(menu) => (
+					dropdownRender={menu => (
 						<>
 							{menu}
-							<Divider style={{ margin: '8px 0' }}/>
-							<div style={{ margin: '6px' }}><CreateBelonging/></div>
+							{
+								has('WriteBelonging', <>
+									<Divider style={{ margin: '8px 0' }}/>
+									<CreateBelonging/>
+								</>)
+							}
 						</>
 					)}/>
 			</Item>
@@ -107,6 +112,21 @@ export function DeleteMedicalOffice({ id }: UpdateProps) {
 			render={({ medicalOffice }) => `el consultorio: ${medicalOffice.name}`}
 			query={query.MEDICAL_OFFICE}
 			mutation={mutation.DELETE_MEDICAL_OFFICE}
+		/>
+	)
+}
+
+export function InspectMedicalOffice({ id }: UpdateProps) {
+	return (
+		<InspectDialog<{ medicalOffice: MedicalOffice }>
+			id={id}
+			title='Consultorio'
+			render={({medicalOffice}) => <>
+				<Card>
+					<b>Nombre: </b><div>{medicalOffice.name}</div>
+				</Card>
+			</>}
+			query={query.MEDICAL_OFFICE}
 		/>
 	)
 }

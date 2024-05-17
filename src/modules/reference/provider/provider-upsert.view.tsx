@@ -1,10 +1,10 @@
 
 import { useSubscription } from '@apollo/client'
-import { Button, Divider, Form, Input, Select, Space, TreeSelect } from 'antd'
+import { Button, Card, Divider, Form, Input, Select, Space, Tree, TreeSelect } from 'antd'
 
-import { CreateDialog, UpdateDialog } from '../../../components'
+import { CreateDialog, InspectDialog, UpdateDialog } from '../../../components'
 import { Provider, Belonging, MedicalGroup, UpdateProps } from '../../../types'
-import { useAntdHelp } from '../../../hooks'
+import { useAntdHelp, useAuth } from '../../../hooks'
 
 import { CreateBelonging } from '../belonging/belonging-upsert.view'
 import { subscription as belongingSubscription } from '../belonging/belonging.constant'
@@ -45,8 +45,9 @@ type ProviderFormProps = {
 
 function ProviderForm({ mode, data, onSubmit, onCancel, onRefetch }: ProviderFormProps) {
 	const { provider } = data
-	const { Item } = Form
-	const [ form ] = Form.useForm()
+		, { Item } = Form
+		, [ form ] = Form.useForm()
+		, { has } = useAuth()
 	const { touched, encodeMedicalGroups, decodeMedicalGroups, formatMedicalGroups } = useAntdHelp()
 	const onFinish = () => {
 		const { medicalGroups, ...remaining } = touched(form)
@@ -90,11 +91,15 @@ function ProviderForm({ mode, data, onSubmit, onCancel, onRefetch }: ProviderFor
 				<Select
 					placeholder='Pertinencia'
 					options={belongings.map(t => ({ label: t.name, value: t.id }))}
-					dropdownRender={(menu) => (
+					dropdownRender={menu => (
 						<>
 							{menu}
-							<Divider style={{ margin: '8px 0' }}/>
-							<div style={{ margin: '6px' }}><CreateBelonging/></div>
+							{
+								has('WriteBelonging', <>
+									<Divider style={{ margin: '8px 0' }}/>
+									<CreateBelonging/>
+								</>)
+							}
 						</>
 					)}/>
 			</Item>
@@ -147,6 +152,39 @@ export function UpdateProvider({ id }: UpdateProps) {
 			query={query.UPDATE_DEPENDENCIES}
 			mutation={mutation.UPDATE_PROVIDER}
 			render={(submit, close, data, refetch) => <ProviderForm mode='update' data={data} onSubmit={submit} onCancel={close} onRefetch={refetch}/>}
+		/>
+	)
+}
+
+export function InspectProvider({ id }: UpdateProps) {
+	return (
+		<InspectDialog<{ provider: Provider }>
+			id={id}
+			title='Proveedor'
+			render={({provider}) => <>
+				<Card>
+					<b>Código vendor: </b><div>{provider.vendorCode}</div>
+					<b>Razón social: </b><div>{provider.businessName}</div>
+				</Card>
+				<Card>
+					<b>Unidades y especialidades: </b>
+					<Tree
+						defaultExpandAll
+						treeData={provider.medicalGroups.map((group: MedicalGroup) => ({
+							key: `${id}-${group.id}`,
+							title: group.name,
+							children: group.specialties.map(specialty => ({
+								key: `${id}-${group.id}-${specialty.id}`,
+								title: specialty.name,
+								children: specialty.subspecialties.map(sbsp => ({
+									key: `${id}-${group.id}-${specialty.id}-${sbsp.id}`,
+									title: sbsp.name
+								}))
+							}))
+						}))}/>
+				</Card>
+			</>}
+			query={query.PROVIDER}
 		/>
 	)
 }

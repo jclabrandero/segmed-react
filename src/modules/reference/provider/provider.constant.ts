@@ -11,6 +11,26 @@ export const query = {
 			}
 		}
 	`,
+	PROVIDER: gql`
+		query provider($id: Int!) {
+			provider(id: $id) {
+				id vendorCode businessName nit address phone
+				belonging { id name }
+				medicalGroups {
+					id name
+					specialties {
+						id name
+						subspecialties {
+							id name
+							__typename @skip(if: true)
+						}
+						__typename @skip(if: true)
+					}
+					__typename @skip(if: true)
+				}
+			}
+		}
+	`,
 	CREATE_DEPENDENCIES: gql`
 		query dependencies {
 			belongings: activeBelongings {

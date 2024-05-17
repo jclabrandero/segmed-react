@@ -3,14 +3,17 @@ import { useQuery, useSubscription } from '@apollo/client'
 import { Input, Space, Table } from 'antd'
 
 import { ErrorDialog, ToolBar, ToolBarMenu } from '../../../components'
-import { useError, useAntdHelp, useFilter } from '../../../hooks'
+import { useError, useAntdHelp, useFilter, useAuth } from '../../../hooks'
+import { NotAllowed } from '../../basic'
+import { Provider } from '../../../types'
 
-import { CreateProvider, UpdateProvider } from './provider-upsert.view'
+import { CreateProvider, InspectProvider, UpdateProvider } from './provider-upsert.view'
 import { query, subscription } from './provider.constant'
 
 
 export function ProviderList() {
 	const { addKey, tableStatus } = useAntdHelp()
+		, { has } = useAuth()
 		, [ error, onError ] = useError()
 		, { loading, data, refetch } = useQuery(query.PROVIDERS, { onError })
 		, [ providers, filter ] = useFilter(addKey(data?.providers), ['vendorCode', 'businessName', 'nit'])
@@ -18,24 +21,25 @@ export function ProviderList() {
 
 	useSubscription(subscription.PROVIDER_UPSERTED, { onData: () => refetch() })
 
-	return (
+	return has('ReadProvider',
 		<>
 			<ToolBar>
 				<ToolBarMenu>
 					<Input.Search enterButton allowClear onSearch={filter}/>
 				</ToolBarMenu>
 				<ToolBarMenu>
-					<CreateProvider/>
+					{ has('WriteProvider', <CreateProvider/>) }
 				</ToolBarMenu>
 			</ToolBar>
 
 			<Table
 				size='middle'
-				dataSource={providers}
+				dataSource={providers as Array<Provider>}
 				bordered={ true }
 				pagination={{ pageSize: 15 }}
 				scroll={{x: true}}
-				loading={loading}>
+				loading={loading}
+			>
 				<Column title='Id' dataIndex='id'/>
 				<Column title='Código vendor' dataIndex='vendorCode' ellipsis/>
 				<Column title='Razón social' dataIndex='businessName' ellipsis/>
@@ -48,12 +52,18 @@ export function ProviderList() {
 				<Column title='Estado' render={tableStatus}/>
 				<Column title='Acciones' width='6rem' fixed='right' render={({ id }) => (
 					<Space>
-						<UpdateProvider id={id}/>
+						{
+							has('WriteProvider', <>
+								<UpdateProvider id={id}/>
+							</>)
+						}
+						<InspectProvider id={id}/>
 					</Space>
 				)}/>
 			</Table>
 
 			<ErrorDialog error={error} />
-		</>
+		</>,
+		<NotAllowed/>
 	)
 }

@@ -1,7 +1,7 @@
 
-import { Button, Form, Input, Space } from 'antd'
+import { Button, Card, Form, Input, Space } from 'antd'
 
-import { CreateDialog, DeleteDialog, UpdateDialog } from '../../../components'
+import { CreateDialog, DeleteDialog, InspectDialog, UpdateDialog } from '../../../components'
 import { useAntdHelp } from '../../../hooks'
 import { Belonging, UpdateProps } from '../../../types'
 
@@ -25,9 +25,9 @@ type BelongingFormProps = {
 
 function BelongingForm({ data, onSubmit, onCancel }: BelongingFormProps) {
 	const { belonging } = data
-	const { Item } = Form
-	const [ form ] = Form.useForm()
-	const { touched } = useAntdHelp()
+		, { Item } = Form
+		, [ form ] = Form.useForm()
+		, { touched } = useAntdHelp()
 	const onFinish = () => onSubmit(touched(form))
 	const format = (payload?: Belonging) => {
 		if (!payload) return undefined
@@ -83,6 +83,21 @@ export function DeleteBelonging({ id }: UpdateProps) {
 			render={({ belonging }) => `pertinencia: ${belonging.name}`}
 			query={query.BELONGING}
 			mutation={mutation.DELETE_BELONGING}
+		/>
+	)
+}
+
+export function InspectBelonging({ id }: UpdateProps) {
+	return (
+		<InspectDialog<{ belonging: Belonging }>
+			id={id}
+			title='Pertinencia'
+			render={({belonging}) => <>
+				<Card>
+					<b>Nombre: </b><div>{belonging.name}</div>
+				</Card>
+			</>}
+			query={query.BELONGING}
 		/>
 	)
 }

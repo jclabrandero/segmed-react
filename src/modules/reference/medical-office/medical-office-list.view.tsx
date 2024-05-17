@@ -3,14 +3,16 @@ import { useQuery, useSubscription } from '@apollo/client'
 import { Input, Space, Table } from 'antd'
 
 import { ErrorDialog, ToolBar, ToolBarMenu } from '../../../components'
-import { useError, useAntdHelp, useFilter } from '../../../hooks'
+import { useError, useAntdHelp, useFilter, useAuth } from '../../../hooks'
+import { NotAllowed } from '../../basic'
 
 import { query, subscription } from './medical-office.constant'
-import { CreateMedicalOffice, DeleteMedicalOffice, UpdateMedicalOffice } from './medical-office-upsert.view'
+import { CreateMedicalOffice, DeleteMedicalOffice, InspectMedicalOffice, UpdateMedicalOffice } from './medical-office-upsert.view'
 
 
 export function MedicalOfficeList() {
 	const { addKey, tableStatus } = useAntdHelp()
+		, { has } = useAuth()
 		, [ error, onError ] = useError()
 		, { loading, data, refetch } = useQuery(query.MEDICAL_OFFICES, { onError })
 		, [ medicalOffices, filter ] = useFilter(addKey(data?.medicalOffices), ['name'])
@@ -18,15 +20,14 @@ export function MedicalOfficeList() {
 
 	useSubscription(subscription.MEDICAL_OFFICE_UPSERTED, { onData: () => refetch() })
 
-	return (
+	return has('ReadMedicalOffice',
 		<>
 			<ToolBar>
 				<ToolBarMenu>
 					<Input.Search enterButton allowClear onSearch={filter}/>
 				</ToolBarMenu>
-
 				<ToolBarMenu>
-					<CreateMedicalOffice/>
+					{ has('WriteMedicalOffice', <CreateMedicalOffice/>) }
 				</ToolBarMenu>
 			</ToolBar>
 
@@ -34,23 +35,31 @@ export function MedicalOfficeList() {
 				size='middle'
 				dataSource={medicalOffices}
 				bordered={true}
+				pagination={{ pageSize: 15 }}
 				scroll={{ x: true }}
-				loading={loading}>
+				loading={loading}
+			>
 				<Column title='Id' dataIndex='id'/>
 				<Column title='Nombre' dataIndex='name' ellipsis/>
 				<Column title='Pertinencia' ellipsis render={({ belonging }) => (
 					<span>{ belonging.name }</span>
 				)}/>
 				<Column title='Estado' render={tableStatus}/>
-				<Column title='Acciones' width='6rem' fixed='right' render={record => (
+				<Column title='Acciones' width='6rem' fixed='right' render={({ id }) => (
 					<Space>
-						<UpdateMedicalOffice id={record.id}/>
-						<DeleteMedicalOffice id={record.id}/>
+						{
+							has('WriteMedicalOffice', <>
+								<UpdateMedicalOffice id={id}/>
+								<DeleteMedicalOffice id={id}/>
+							</>)
+						}
+						<InspectMedicalOffice id={id}/>
 					</Space>
 				)}/>
 			</Table>
 
 			<ErrorDialog error={error}/>
-		</>
+		</>,
+		<NotAllowed/>
 	)
 }
