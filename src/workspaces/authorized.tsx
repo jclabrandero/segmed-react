@@ -29,7 +29,7 @@ import { ClinicCareList, ClinicCareManage } from '../modules/health'
 function useAuthorized() {
 	const [ error, onError ] = useError()
 		, navigate = useNavigate()
-		, { user, auth } = useAuth()
+		, { user, auth, has } = useAuth()
 		, mainRef = useRef<HTMLDivElement>(null)
 	
 	const onCompleted = () => {
@@ -44,11 +44,48 @@ function useAuthorized() {
 			if (mainRef.current) mainRef.current.className = mainRef.current.className === 'workspace-flat' ? 'workspace-split' : 'workspace-flat'
 		}
 
-	return { loading, error, user, navigate, signOut, toggleSide, mainRef }
+	const menu = {
+		configuration: [
+			has('ReadUser', { label: 'Usuarios', key: '/configuracion/usuarios' }),
+			has('ReadGroup', { label: 'Grupos', key: '/configuracion/grupos' }),
+			has('ReadPermission', { label: 'Permisos', key: '/configuracion/permisos' })
+		].filter(e => e != null),
+		catalog: [
+			has('ReadPersonDocumentType', { label: 'Tipos de documento identidad', key: '/catalogo/tipos-documento-identidad' }),
+			has('ReadEmployeePosition', { label: 'Cargos funcionarios', key: '/catalogo/cargos-funcionarios' }),
+			has('ReadEmployeeType', { label: 'Tipos de funcionarios', key: '/catalogo/tipos-funcionarios' }),
+			has('ReadInsuredType', { label: 'Tipos de beneficiarios', key: '/catalogo/tipos-beneficiarios' }),
+			has('ReadMedicalGroup', { label: 'Unidades médicas', key: '/catalogo/unidades-medicas' }),
+			has('ReadMedicalSpecialty', { label: 'Especialidades médicas', key: '/catalogo/especialidades-medicas' }),
+			has('ReadMedicalSubspecialty', { label: 'Sub-especialidades médicas', key: '/catalogo/sub-especialidades-medicas' }),
+			has('ReadDrugClass', { label: 'Clases de medicamentos', key: '/catalogo/clases-medicamentos' }),
+			has('ReadDrugUnit', { label: 'Unidades de medicamentos', key: '/catalogo/unidades-medicamentos' }),
+			has('ReadClinicalCareState', { label: 'Estados de consultas', key: '/catalogo/estados-consultas' })
+		].filter(e => e != null),
+		folk: [
+			has('ReadPerson', { label: 'Personas', key: '/identidad/personas' }),
+			has('ReadClerk', { label: 'Funcionarios', key: '/identidad/funcionarios' }),
+			has('ReadInsured', { label: 'Beneficiarios', key: '/identidad/beneficiarios' })
+		].filter(e => e != null),
+		reference: [
+			has('ReadBelonging', { label: 'Pertinencias', key: '/referencia/pertinencias' }),
+			has('ReadMedicalOffice', { label: 'Consultorios', key: '/referencia/consultorios' }),
+			has('ReadProvider', { label: 'Proveedores', key: '/referencia/proveedores' })
+		].filter(e => e != null),
+		drugstore: [
+			has('ReadMedication', { label: 'Medicamentos', key: '/almacenes/medicamentos' }),
+			has('ReadPharmacy', { label: 'Farmacias', key: '/almacenes/farmacias' })
+		].filter(e => e != null),
+		health: [
+			has('ReadClinicCare', { label: 'Consulta médica', key: '/consulta' })
+		].filter(e => e != null)
+	}
+
+	return { loading, error, user, navigate, signOut, toggleSide, mainRef, menu }
 }
 
 export function Authorized() {
-	const { loading, error, user, navigate, signOut, toggleSide, mainRef } = useAuthorized()
+	const { loading, error, user, navigate, signOut, toggleSide, mainRef, menu } = useAuthorized()
 
 	return (
 		<div className='workspace'>
@@ -97,70 +134,42 @@ export function Authorized() {
 						onClick={(e) => navigate(e.key)}
 						defaultOpenKeys={['identidad', 'servicios']}
 						items={[
-							{
+							menu.health.length ? {
 								label: 'Servicios',
 								key: 'servicios',
 								icon: <MedicineBoxOutlined/>,
-								children: [
-									{ label: 'Consulta médica', key: '/consulta' }
-								]
-							},
-							{
+								children: menu.health
+							} : null,
+							menu.folk.length ? {
 								label: 'Identidad',
 								key: 'identidad',
 								icon: <UserOutlined/>,
-								children: [
-									{ label: 'Personas', key: '/identidad/personas' },
-									{ label: 'Funcionarios', key: '/identidad/funcionarios' },
-									{ label: 'Beneficiarios', key: '/identidad/beneficiarios' }
-								]
-							},
-							{
-								label: 'Almacenes',
-								key: 'almacenes',
-								icon: <DatabaseOutlined/>,
-								children: [
-									{ label: 'Medicamentos', key: '/almacenes/medicamentos' },
-									{ label: 'Farmacias', key: '/almacenes/farmacias' }
-								]
-							},
-							{
-								label: 'Catálogo',
-								key: 'catalogo',
-								icon: <CarryOutOutlined/>,
-								children: [
-									{ label: 'Cargos funcionarios', key: '/catalogo/cargos-funcionarios' },
-									{ label: 'Tipos de funcionarios', key: '/catalogo/tipos-funcionarios' },
-									{ label: 'Tipos de documento identidad', key: '/catalogo/tipos-documento-identidad' },
-									{ label: 'Tipos de beneficiarios', key: '/catalogo/tipos-beneficiarios' },
-									{ label: 'Unidades médicas', key: '/catalogo/unidades-medicas' },
-									{ label: 'Especialidades médicas', key: '/catalogo/especialidades-medicas' },
-									{ label: 'Sub-especialidades médicas', key: '/catalogo/sub-especialidades-medicas' },
-									{ label: 'Clases de medicamentos', key: '/catalogo/clases-medicamentos' },
-									{ label: 'Unidades de medicamentos', key: '/catalogo/unidades-medicamentos' },
-									{ label: 'Estados consultas', key: '/catalogo/estados-consultas' }
-								]
-							},
-							{
+								children: menu.folk
+							} : null,
+							menu.reference.length ? {
 								label: 'Referencia',
 								key: 'referencia',
 								icon: <ApartmentOutlined/>,
-								children: [
-									{ label: 'Pertinencias', key: '/referencia/pertinencias' },
-									{ label: 'Consultorios', key: '/referencia/consultorios' },
-									{ label: 'Proveedores', key: '/referencia/proveedores' }
-								]
-							},
-							{
+								children: menu.reference
+							} : null,
+							menu.drugstore.length ? {
+								label: 'Almacenes',
+								key: 'almacenes',
+								icon: <DatabaseOutlined/>,
+								children: menu.drugstore
+							} : null,
+							menu.catalog.length ? {
+								label: 'Catálogo',
+								key: 'catalogo',
+								icon: <CarryOutOutlined/>,
+								children: menu.catalog
+							} : null,
+							menu.configuration.length ? {
 								label: 'Configuración',
 								key: 'configuracion',
 								icon: <SettingOutlined/>,
-								children: [
-									{ label: 'Usuarios', key: '/configuracion/usuarios' },
-									{ label: 'Grupos', key: '/configuracion/grupos' },
-									{ label: 'Permisos', key: '/configuracion/permisos' }
-								]
-							}
+								children: menu.configuration
+							} : null
 						]}
 					/>
 				</aside>
@@ -174,9 +183,9 @@ export function Authorized() {
 							<Route path="beneficiarios" element={<InsuredList/>}/>
 						</Route>
 						<Route path="catalogo">
+							<Route path="tipos-documento-identidad" element={<PersonDocumentTypeList/>}/>
 							<Route path="cargos-funcionarios" element={<EmployeePositionList/>}/>
 							<Route path='tipos-funcionarios' element={<EmployeeTypeList/>}/>
-							<Route path="tipos-documento-identidad" element={<PersonDocumentTypeList/>}/>
 							<Route path='tipos-beneficiarios' element={<InsuredTypeList/>}/>
 							<Route path="unidades-medicas" element={<MedicalGroupList/>}/>
 							<Route path='especialidades-medicas' element={<MedicalSpecialtyList/>}/>
