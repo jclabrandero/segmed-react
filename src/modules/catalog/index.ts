@@ -9,6 +9,7 @@ import { MedicalGroupList } from './medical-group/medical-group-list.view'
 import { DrugClassList } from './drug-class/drug-class-list.view'
 import { DrugUnitList } from './drug-unit/drug-unit-list.view'
 import { ClinicalCareStateList } from './clinical-care-state/clinical-care-state-list.view'
+import { DisabilityTypeList } from './disability-type/disability-type-list.view'
 
 export {
 	EmployeePositionList,
@@ -20,5 +21,6 @@ export {
 	MedicalGroupList,
 	DrugClassList,
 	DrugUnitList,
-	ClinicalCareStateList
+	ClinicalCareStateList,
+	DisabilityTypeList
 }

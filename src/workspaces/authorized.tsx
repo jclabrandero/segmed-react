@@ -18,7 +18,7 @@ import {
 	InsuredTypeList,
 	MedicalSubspecialtyList, MedicalSpecialtyList, MedicalGroupList,
 	DrugClassList, DrugUnitList,
-	ClinicalCareStateList
+	ClinicalCareStateList, DisabilityTypeList
 } from '../modules/catalog'
 import { BelongingList, MedicalOfficeList, ProviderList } from '../modules/reference'
 import { PersonList, ClerkList, InsuredList } from '../modules/folk'
@@ -60,7 +60,8 @@ function useAuthorized() {
 			has('ReadMedicalSubspecialty', { label: 'Sub-especialidades médicas', key: '/catalogo/sub-especialidades-medicas' }),
 			has('ReadDrugClass', { label: 'Clases de medicamentos', key: '/catalogo/clases-medicamentos' }),
 			has('ReadDrugUnit', { label: 'Unidades de medicamentos', key: '/catalogo/unidades-medicamentos' }),
-			has('ReadClinicalCareState', { label: 'Estados de consultas', key: '/catalogo/estados-consultas' })
+			has('ReadClinicalCareState', { label: 'Estados de consultas', key: '/catalogo/estados-consultas' }),
+			has('ReadDisabilityType', { label: 'Tipos de discapacidades', key: '/catalogo/tipos-discapacidades' })
 		].filter(e => e != null),
 		folk: [
 			has('ReadPerson', { label: 'Personas', key: '/identidad/personas' }),
@@ -193,6 +194,7 @@ export function Authorized() {
 							<Route path='clases-medicamentos' element={<DrugClassList/>}/>
 							<Route path='unidades-medicamentos' element={<DrugUnitList/>}/>
 							<Route path="estados-consultas" element={<ClinicalCareStateList/>}/>
+							<Route path="tipos-discapacidades" element={<DisabilityTypeList/>}/>
 						</Route>
 						<Route path="referencia">
 							<Route path="pertinencias" element={<BelongingList/>}/>

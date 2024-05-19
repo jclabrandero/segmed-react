@@ -6,7 +6,7 @@ import {
 	InsuredType,
 	MedicalSubspecialty, MedicalSpecialty, MedicalGroup,
 	DrugClass, DrugUnit,
-	ClinicalCareState
+	ClinicalCareState, DisabilityType
 } from './catalog.type'
 import { Belonging, MedicalOffice, Provider } from './reference.type'
 import { Person, Clerk, Insured } from './folk.type'
@@ -34,7 +34,7 @@ export type {
 	InsuredType,
 	MedicalSubspecialty, MedicalSpecialty, MedicalGroup,
 	DrugClass, DrugUnit,
-	ClinicalCareState,
+	ClinicalCareState, DisabilityType,
 
 	Belonging, MedicalOffice, Provider,
 

@@ -91,3 +91,11 @@ export type ClinicalCareState = {
 
 	status:			number
 }
+
+export type DisabilityType = {
+	id:				number
+	name:			string
+	description?:	string
+	
+	status:			number
+}
