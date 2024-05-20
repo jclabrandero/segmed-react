@@ -15,10 +15,10 @@ export function PermissionList() {
 		, [ error, onError ] = useError()
 		, { has } = useAuth()
 		, { loading, data } = useQuery(query.PERMISSIONS, { onError })
-		, [ permissions, filter ] = useFilter(addKey(data?.permissions), ['code', 'description'])
+		, [ permissions, filter ] = useFilter(addKey(data?.permissions), ['code', 'name', 'description'])
 	const { Column } = Table
 
-	return has('R_PRMSSN',
+	return has('ReadPermission',
 		<>
 			<ToolBar>
 				<ToolBarMenu>
@@ -36,6 +36,7 @@ export function PermissionList() {
 			>
 				<Column title='Id' dataIndex='id'/>
 				<Column title='Código' dataIndex='code'/>
+				<Column title='Nombre' dataIndex='name'/>
 				<Column title='Descripción' dataIndex='description' ellipsis/>
 				<Column title='Estado' render={tableStatus}/>
 			</Table>

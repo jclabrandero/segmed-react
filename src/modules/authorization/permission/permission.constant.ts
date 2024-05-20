@@ -6,7 +6,7 @@ export const query = {
 	PERMISSIONS: gql`
 		query permissions {
 			permissions {
-				id code description status
+				id code name description status
 			}
 		}
 	`

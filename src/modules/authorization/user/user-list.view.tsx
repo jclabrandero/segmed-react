@@ -22,14 +22,14 @@ export function UserList() {
 
 	useSubscription(subscription.USER_UPSERTED, { onData: () => refetch() })
 
-	return has('R_USR',
+	return has('ReadUser',
 		<>
 			<ToolBar>
 				<ToolBarMenu>
 					<Input.Search enterButton onSearch={filter}/>
 				</ToolBarMenu>
 				<ToolBarMenu>
-					{ has('W_USR', <CreateUser/>) }
+					{ has('WriteUser', <CreateUser/>) }
 				</ToolBarMenu>
 			</ToolBar>
 
@@ -56,7 +56,7 @@ export function UserList() {
 				<Column title='Estado' render={tableStatus}/>
 				<Column title='Acciones' width='6rem' fixed='right' render={({ id }) => (
 					<Space>
-						{ has('W_USR', <UpdateUser id={id}/>) }
+						{ has('WriteUser', <UpdateUser id={id}/>) }
 					</Space>
 				)}/>
 			</Table>

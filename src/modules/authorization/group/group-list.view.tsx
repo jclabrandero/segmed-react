@@ -22,14 +22,14 @@ export function GroupList() {
 
 	useSubscription(subscription.GROUP_UPSERTED, { onData: () => refetch() })
 
-	return has('R_GRP',
+	return has('ReadGroup',
 		<>
 			<ToolBar>
 				<ToolBarMenu>
 					<Input.Search enterButton onSearch={filter}/>
 				</ToolBarMenu>
 				<ToolBarMenu>
-					{ has('W_GRP', <CreateGroup/>) }
+					{ has('WriteGroup', <CreateGroup/>) }
 				</ToolBarMenu>
 			</ToolBar>
 
@@ -57,7 +57,7 @@ export function GroupList() {
 				<Column title='Estado' render={tableStatus}/>
 				<Column title='Acciones' width='6rem' fixed='right' render={record => (
 					<Space>
-						{ has('W_GRP', <UpdateGroup id={record.id}/>) }
+						{ has('WriteGroup', <UpdateGroup id={record.id}/>) }
 					</Space>
 				)}/>
 			</Table>

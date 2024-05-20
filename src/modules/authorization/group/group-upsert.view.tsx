@@ -57,7 +57,7 @@ function GroupForm({ data, onSubmit, onCancel }: GroupFormProps) {
 			<Item
 				name='permissions'
 				label='Permisos'>
-				<TreeSelect treeCheckable={true} treeData={permissions.map(rec => ({ title: `${rec.code} (${rec.description})`, value: rec.id }))}/>
+				<TreeSelect treeCheckable={true} treeData={permissions.map(rec => ({ title: `${rec.description}`, value: rec.id }))}/>
 			</Item>
 
 			<div className='modal-dialog-footer'>
