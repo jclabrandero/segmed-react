@@ -3,6 +3,7 @@ import { Button, Dropdown, Space, Table } from 'antd'
 
 import { ToolBar, ToolBarMenu } from '../../../components'
 import { Prescription, PrescriptionExtern, ClinicCareId } from '../../../types'
+import { useAuth } from '../../../hooks'
 
 import {
 	CreatePrescription, UpdatePrescription, DeletePrescription,
@@ -17,6 +18,7 @@ type PrescriptionProps = {
 } & ClinicCareId
 
 export function PrescriptionManage({ clinicCareId, prescriptions, prescriptionExterns, edit }: PrescriptionProps) {
+	const { has } = useAuth()
 	const { Column } = Table
 	const dataset = [
 		...prescriptions.map(p => ({ ...p, key: `${p.pharmacy.id} ${p.id}`})), 
@@ -27,7 +29,7 @@ export function PrescriptionManage({ clinicCareId, prescriptions, prescriptionEx
 		<>
 			{
 				edit && <ToolBar><ToolBarMenu>
-					<Dropdown menu={{
+					{ has('WriteClinicCare', <Dropdown menu={{
 						items: [
 							{
 								key: 'pharmacy',
@@ -38,7 +40,9 @@ export function PrescriptionManage({ clinicCareId, prescriptions, prescriptionEx
 								label: <CreatePrescriptionExtern clinicCareId={clinicCareId}/>
 							}
 						]
-					}}><Button type='primary' shape='round'>Agregar medicamento</Button></Dropdown>
+					}}>
+						<Button type='primary' shape='round'>Agregar medicamento</Button>
+					</Dropdown>) }
 				</ToolBarMenu>
 				<ToolBarMenu>
 					<PrintPrescription clinicCareId={clinicCareId}/>
@@ -49,27 +53,28 @@ export function PrescriptionManage({ clinicCareId, prescriptions, prescriptionEx
 				size='middle'
 				pagination={false}
 				bordered={true}
+				scroll={{ x: true }}
 				dataSource={dataset}
 			>
-				<Column title='Farmacia' render={({ pharmacy }) => (
+				<Column title='Farmacia' ellipsis render={({ pharmacy }) => (
 					<span>{ pharmacy ? pharmacy.name : 'Externa' }</span>
 				)}/>
 				<Column title='Codigo' render={({ medication }) => (
 					<span>{ medication.code }</span>
 				)}/>
-				<Column title='Nombre' render={({ medication }) => (
+				<Column title='Nombre' ellipsis render={({ medication }) => (
 					<span>{ medication.name }</span>
 				)}/>
-				<Column title='Concentración' className='table-cell-nowrap' render={({ medication }) => (
+				<Column title='Concentración' ellipsis render={({ medication }) => (
 					<span>{ medication.concentration }</span>
 				)}/>
-				<Column title='Unidad' className='table-cell-nowrap' render={({ medication }) => (
+				<Column title='Unidad' ellipsis render={({ medication }) => (
 					<span>{ medication.unit.name }</span>
 				)}/>
 				<Column title='Cantidad' dataIndex='quantity'/>
 				<Column title='Indicaciones' dataIndex='indications'/>
 				{
-					edit ? <Column title='Acciones' width='7rem' render={({ id, pharmacy }: Prescription) =>
+					edit ? has('WriteClinicCare', <Column title='Acciones' width='6rem' fixed='right' render={({ id, pharmacy }: Prescription) =>
 						pharmacy
 							? <Space>
 								<UpdatePrescription id={id} clinicCareId={clinicCareId}/>
@@ -79,7 +84,7 @@ export function PrescriptionManage({ clinicCareId, prescriptions, prescriptionEx
 								<UpdatePrescriptionExtern id={id} clinicCareId={clinicCareId}/>
 								<DeletePrescriptionExtern id={id} clinicCareId={clinicCareId}/>
 							</Space>
-					}/> : null
+					}/>) : null
 				}
 			</Table>
 		</>

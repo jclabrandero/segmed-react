@@ -4,9 +4,9 @@ import { useMutation, useQuery } from '@apollo/client'
 import { Button, Form, Input, InputNumber, Select, Space, Spin } from 'antd'
 import { PrinterFilled } from '@ant-design/icons'
 
-import { CreateDialog, DeleteDialog, Loader, ModalFileViewer, UpdateDialog } from '../../../components'
+import { CreateDialog, DeleteDialog, ErrorDialog, Loader, ModalFileViewer, UpdateDialog } from '../../../components'
 import { Pharmacy, MedicationStock, Medication, Prescription, PrescriptionExtern, ClinicCareId, UpdateProps, FileBase64 } from '../../../types'
-import { useAntdHelp } from '../../../hooks'
+import { useAntdHelp, useError } from '../../../hooks'
 
 import { query, mutation} from './prescription.constant'
 
@@ -48,22 +48,27 @@ function PrescriptionMedicationFormFields({ medications, onCancel }: Prescriptio
 
 function PrescriptionPharmacyMedication({ pharmacyId, onCancel }: { pharmacyId:	number, onCancel: () => void }) {
 	const { map } = useAntdHelp()
-	const { loading, data } = useQuery(query.PHARMACY_STOCK, { variables: { pharmacyId }, fetchPolicy: 'network-only' })
+		, [ error, onError ] = useError()
+	const { loading, data } = useQuery(query.PHARMACY_STOCK, { onError, variables: { pharmacyId }, fetchPolicy: 'network-only' })
+	const pharmacyStock = data ? data.pharmacyStock : []
 
 	return loading ? <Spin/> : (
-		<PrescriptionMedicationFormFields
-			onCancel={onCancel}
-			medications={map(
-				data.pharmacyStock.filter((stock: MedicationStock) => stock.total > 0),
-				(stock: MedicationStock) => {
-					const { id, code, name, concentration, unit} = stock.medication
-					return {
-						...stock,
-						label: `${code} - ${name} - ${concentration} - ${unit.name}`,
-						value: id
+		<>
+			<PrescriptionMedicationFormFields
+				onCancel={onCancel}
+				medications={map(
+					pharmacyStock.filter((stock: MedicationStock) => stock.total > 0),
+					(stock: MedicationStock) => {
+						const { id, code, name, concentration, unit} = stock.medication
+						return {
+							...stock,
+							label: `${code} - ${name} - ${concentration} - ${unit.name}`,
+							value: id
+						}
 					}
-				}
-			)}/>
+				)}/>
+			<ErrorDialog error={error}/>
+		</>
 	)
 }
 
