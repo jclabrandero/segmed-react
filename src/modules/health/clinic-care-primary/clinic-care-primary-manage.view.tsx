@@ -2,6 +2,7 @@
 import { ClinicCarePrimary, ClinicCareId } from '../../../types'
 
 import { ToolBar, ToolBarMenu } from '../../../components'
+import { useAuth } from '../../../hooks'
 
 import { UpsertClinicCarePrimary } from './clinic-care-primary-upsert'
 
@@ -12,12 +13,14 @@ type ClinicCarePrimaryProps = {
 } & ClinicCareId
 
 export function ClinicCarePrimaryManage({ clinicCareId, primary, edit }: ClinicCarePrimaryProps) {
+	const { has } = useAuth()
+
 	return (
 		<>
 			{
-				edit && <ToolBar><ToolBarMenu>
+				edit && has('WriteClinicCare', <ToolBar><ToolBarMenu>
 					<UpsertClinicCarePrimary id={primary?.id || 0} clinicCareId={clinicCareId}/>
-				</ToolBarMenu></ToolBar>
+				</ToolBarMenu></ToolBar>)
 			}
 			<b>Motivo</b>
 			<p>{ primary?.reason || '(Sin información)'}</p>
