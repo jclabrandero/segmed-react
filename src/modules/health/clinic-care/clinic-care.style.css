@@ -1,0 +1,9 @@
+
+.clinic-care {
+	padding: 0.6rem;
+}
+
+.clinic-care .toolbar,
+.clinic-care .ant-table-wrapper {
+	margin: 0;
+}
