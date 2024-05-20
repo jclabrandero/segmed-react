@@ -16,7 +16,8 @@ import {
 	Interclinical,
 	Prescription,
 	PrescriptionExtern,
-	ClinicCareId
+	ClinicCareId,
+	MedicalLeave
 } from './health.type'
 import { FileInfo, FileBase64 } from './system.type'
 
@@ -47,6 +48,7 @@ export type {
 	Prescription,
 	PrescriptionExtern,
 	ClinicCareId,
+	MedicalLeave,
 
 	FileInfo, FileBase64
 }

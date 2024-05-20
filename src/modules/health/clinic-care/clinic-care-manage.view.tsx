@@ -1,22 +1,29 @@
 
-import { useQuery, useSubscription } from '@apollo/client'
+import { useQuery, useReactiveVar, useSubscription } from '@apollo/client'
 import { useParams } from 'react-router-dom'
 import { Card, Flex, Space, Tabs } from 'antd'
 
 import { ErrorDialog, Loader } from '../../../components'
-import { useError, useDate } from '../../../hooks'
+import { useError, useDate, useAuth } from '../../../hooks'
+import { userState } from '../../../utils'
+import { NotAllowed } from '../../basic'
 
 import { ClinicCarePrimaryManage } from '../clinic-care-primary/clinic-care-primary-manage.view'
 import { InterclinicalManage } from '../inter-clinical/inter-clinical-manage.view'
 import { PrescriptionManage } from '../prescription/prescription-manage.view'
+import { MedicalLeaveManage } from '../medical-leave/medical-leave-manage.view'
 
 import { ClinicCareState } from './clinic-care-state.view'
 import { query, subscription } from './clinic-care.constant'
-import { Interclinical } from '../../../types'
+import { Interclinical, MedicalLeave } from '../../../types'
+
+import './clinic-care.style.css'
 
 
 export function ClinicCareManage() {
 	const id = Number(useParams().id)
+		, user = useReactiveVar(userState)
+	const { has } = useAuth()
 		, [ error, onError ] = useError()
 		, { format } = useDate()
 	const { loading, data, refetch} = useQuery(query.CLINIC_CARE, { variables: { id }, onError  })
@@ -27,12 +34,13 @@ export function ClinicCareManage() {
 	if (error.has) return (<ErrorDialog error={ error } />)
 	if (!data) return null
 
-	const { startDate, insured, medicalOffice, primary, state, interclinicals, prescriptions, prescriptionExterns } = data.clinicCare
-	const edit = !state.lock
+	const { startDate, insured, medicalOffice, primary, state, interclinicals, prescriptions, prescriptionExterns, medicalLeaves } = data.clinicCare
+	const edit = !state.lock && data.clinicCare.creatorUser.userName == user.userName
 	const filterStates: boolean = Boolean(interclinicals.filter(({ approvedState }: Interclinical) => approvedState !== 2).length)
+		|| Boolean(medicalLeaves.filter(({ approvalState }: MedicalLeave) => approvalState !== 1).length)
 
-	return (
-		<Space direction='vertical' style={{ display: 'flex' }}>
+	return has('ReadClinicCare',
+		<Space direction='vertical' className='clinic-care'>
 			<Card size='small' title='Datos de la consulta'>
 				<Flex justify="space-between">
 					<div>
@@ -89,9 +97,15 @@ export function ClinicCareManage() {
 						key: 'a125',
 						label: 'Interconsulta',
 						children: <InterclinicalManage clinicCareId={id} interclinicals={interclinicals} edit={edit}/>
+					},
+					{
+						key: 'a126',
+						label: 'Baja médica',
+						children: <MedicalLeaveManage clinicCareId={id} medicalLeaves={medicalLeaves} edit={edit}/>
 					}
 				]}/>
 			</Card>
-		</Space>
+		</Space>,
+		<NotAllowed/>
 	)
 }

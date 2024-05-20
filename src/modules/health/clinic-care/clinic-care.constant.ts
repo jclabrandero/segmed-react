@@ -15,6 +15,7 @@ export const query = {
 				}
 				state { name color }
 				medicalOffice { name }
+				creatorUser { userName displayName }
 			}
 		}
 	`,
@@ -73,12 +74,23 @@ export const query = {
 						__typename @skip(if: true)
 					}
 				}
+				medicalLeaves {
+					id reason startDate endDate approvalState approvalDate
+					approvalUser {
+						userName displayName
+					}
+					disabilityType {
+						id name
+						__typename @skip(if: true)
+					}
+				}
+				creatorUser { userName displayName }
 			}
 		}
 	`,
 	DEPENDENCIES: gql`
 		query dependencies($userName: String!) {
-			user: userByUserName(userName: $userName) {
+			user: userByMyUserName(userName: $userName) {
 				clerk {
 					medicalOffices { id name }
 				}
