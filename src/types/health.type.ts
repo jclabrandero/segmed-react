@@ -1,5 +1,5 @@
 
-import { FileInfo, Medication, Pharmacy } from '.'
+import { DisabilityType, FileInfo, Medication, Pharmacy } from '.'
 
 
 
@@ -34,6 +34,17 @@ export type PrescriptionExtern = {
 	indications:	string
 	
 	medication:		Medication
+}
+
+export type MedicalLeave = {
+	id:				number
+	reason:			string
+	startDate:		Date
+	endDate:		Date
+	
+	disabilityType: DisabilityType
+
+	approvalState:	number
 }
 
 export type ClinicCareId = { clinicCareId: number }
