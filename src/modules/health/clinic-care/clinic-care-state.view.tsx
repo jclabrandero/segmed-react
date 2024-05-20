@@ -3,7 +3,7 @@ import { Button, Form, Select, Space, Tag } from 'antd'
 import { CheckCircleOutlined } from '@ant-design/icons'
 
 import { UpdateDialog } from '../../../components'
-import { useAntdHelp } from '../../../hooks'
+import { useAntdHelp, useAuth } from '../../../hooks'
 import { ClinicalCareState, UpdateProps } from '../../../types'
 
 import { query, mutation } from './clinic-care.constant'
@@ -66,10 +66,12 @@ type ClinicCareStateProps = {
 }
 
 export function ClinicCareState({ clinicCareId, state, edit, filterStates }: ClinicCareStateProps) {
+	const { has } = useAuth()
+
 	return (
 		<>
 			<Tag color={state.color}>{state.name}</Tag>
-			{ edit && <UpsertClinicCareState id={clinicCareId} filterStates={filterStates}/> }
+			{ edit && has('WriteClinicCare', <UpsertClinicCareState id={clinicCareId} filterStates={filterStates}/>) }
 		</>
 	)
 }
