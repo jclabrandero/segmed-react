@@ -4,7 +4,7 @@ import { CheckCircleFilled, InfoCircleFilled, WarningFilled } from '@ant-design/
 
 import { ToolBar, ToolBarMenu } from '../../../components'
 import { Interclinical, MedicalSpecialty, ClinicCareId } from '../../../types'
-import { useAntdHelp, useDate } from '../../../hooks'
+import { useAntdHelp, useAuth, useDate } from '../../../hooks'
 
 import {
 	CreateInterclinical, UpdateInterclinical, DeleteInterclinical,
@@ -18,6 +18,7 @@ type InterclinicalProps = {
 } & ClinicCareId
 
 export function InterclinicalManage({ clinicCareId, interclinicals, edit }: InterclinicalProps) {
+	const { has } = useAuth()
 	const { format } = useDate()
 		, { addKey } = useAntdHelp()
 	const { Column } = Table
@@ -25,21 +26,31 @@ export function InterclinicalManage({ clinicCareId, interclinicals, edit }: Inte
 	return (
 		<>
 			{
-				edit && <ToolBar><ToolBarMenu>
+				edit && has('WriteClinicCare', <ToolBar><ToolBarMenu>
 					<CreateInterclinical clinicCareId={clinicCareId}/>
-				</ToolBarMenu></ToolBar>
+				</ToolBarMenu></ToolBar>)
 			}
 			<Table
 				size='middle'
 				pagination={false}
 				bordered={true}
+				scroll={{ x: true }}
 				dataSource={addKey(interclinicals)}
 			>
+				<Column title='' render={({ approvedState }) => {
+					const fontSize = '20px'
+					const stateIcon = [
+						<WarningFilled style={{ color:'#f50', fontSize }}/>,
+						<InfoCircleFilled style={{ color:'#EBD252', fontSize }}/>,
+						<CheckCircleFilled style={{ color:'#52EB5B', fontSize }}/>
+					]
+					return stateIcon[approvedState]
+				}}/>
 				<Column title='Id' dataIndex='id'/>
-				<Column title='Proveedor' render={({ provider }) => (
+				<Column title='Proveedor' ellipsis render={({ provider }) => (
 					<span>{ provider.businessName }</span>
 				)}/>
-				<Column title='Especialidades' render={({ id, medicalGroup }) => (
+				<Column title='Especialidades' ellipsis render={({ id, medicalGroup }) => (
 					<Tree defaultExpandAll treeData={[
 						{
 							title: medicalGroup.name,
@@ -55,30 +66,24 @@ export function InterclinicalManage({ clinicCareId, interclinicals, edit }: Inte
 						}
 					]} blockNode/>
 				)}/>
-				<Column title='Fecha solicitud' render={({ driftDate }) => (
+				<Column title='Fecha solicitud' ellipsis render={({ driftDate }) => (
 					<span>{format(driftDate)}</span>
 				)}/>
 				<Column title='Observaciones' dataIndex='remark'/>
-				<Column title='' render={({ approvedState }) => {
-					const fontSize = '22px'
-					const stateIcon = [
-						<WarningFilled style={{ color:'#f50', fontSize }}/>,
-						<InfoCircleFilled style={{ color:'#EBD252', fontSize }}/>,
-						<CheckCircleFilled style={{ color:'#52EB5B', fontSize }}/>
-					]
-					return stateIcon[approvedState]
-				}}/>
-				<Column title='Acciones' width='7rem' render={({ id, approvedState, files }: Interclinical) => {
+				<Column title='Acciones' width='6rem' fixed='right' render={({ id, approvedState, files }: Interclinical) => {
 					const stateOptions = [
-						(<Space>
+						has('WriteClinicCare', edit && <Space>
 							<UpdateInterclinical id={id} clinicCareId={clinicCareId}/>
 							<DeleteInterclinical id={id} clinicCareId={clinicCareId}/>
 							<ConfirmInterclinical id={id} clinicCareId={clinicCareId} approvedState={1}/>
 						</Space>),
-						(<Space>
-							<UploadFileInterclinical id={id} clinicCareId={clinicCareId}/>
+						has('WriteClinicCare', <Space>
+							<UploadFileInterclinical id={id} clinicCareId={clinicCareId} disabled={!edit}/>
 							<PrintInterclinical id={id}/>
-							{ (files.length > 0) && <ConfirmInterclinical id={id} clinicCareId={clinicCareId} approvedState={2}/> }
+							{ (files.length > 0) && edit && <ConfirmInterclinical id={id} clinicCareId={clinicCareId} approvedState={2}/> }
+						</Space>, <Space>
+							<UploadFileInterclinical id={id} clinicCareId={clinicCareId} disabled={true}/>
+							<PrintInterclinical id={id}/>
 						</Space>),
 						(<Space>
 							<UploadFileInterclinical id={id} clinicCareId={clinicCareId} disabled={true}/>

@@ -4,8 +4,8 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import { Button, Form, FormInstance, Input, Select, Spin, Space, TreeSelect, Upload } from 'antd'
 import { CheckOutlined, PrinterFilled, FolderOpenFilled, UploadOutlined } from '@ant-design/icons'
 
-import { CreateDialog, DeleteDialog, Loader, ModalFileViewer, UpdateDialog } from '../../../components'
-import { useAntdHelp } from '../../../hooks'
+import { CreateDialog, DeleteDialog, ErrorDialog, Loader, ModalFileViewer, UpdateDialog } from '../../../components'
+import { useAntdHelp, useError } from '../../../hooks'
 import { Belonging, FileBase64, Interclinical, MedicalGroup, Provider, ClinicCareId, UpdateProps } from '../../../types'
 import { getAuth } from '../../../utils'
 
@@ -83,7 +83,8 @@ type InterclinicalProviderProps = {
 
 function InterclinicalProvider({ form, belongingId, medicalGroupId, onCancel }: InterclinicalProviderProps) {
 	const [ providerId, setProviderId ] = useState(0)
-		, { loading, data } = useQuery(query.PROVIDERS, { variables: { query: { belongingId, medicalGroupId } }, fetchPolicy: 'network-only' })
+		, [ error, onError ] = useError()
+		, { loading, data } = useQuery(query.PROVIDERS, { onError, variables: { query: { belongingId, medicalGroupId } }, fetchPolicy: 'network-only' })
 		, { map, toLV } = useAntdHelp()
 	const filter = (inputValue: string, option: { label: string } | undefined) => option?.label.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
 	const onSetProviderId = (value: number) => {
@@ -94,11 +95,12 @@ function InterclinicalProvider({ form, belongingId, medicalGroupId, onCancel }: 
 		setProviderId(0)
 		form.resetFields(['providerId', 'specialties'])
 	}, [form, belongingId, medicalGroupId])
+	const providers = data ? data.providers : []
 
 	return loading ? <Spin/> : (
 		<>
 			<Form.Item name='providerId' label='Proveedor'>
-				<Select options={map(data.providers, toLV)}
+				<Select options={map(providers, toLV)}
 					filterOption={filter}
 					showSearch={true}
 					onSelect={onSetProviderId}
@@ -106,6 +108,7 @@ function InterclinicalProvider({ form, belongingId, medicalGroupId, onCancel }: 
 				/>
 			</Form.Item>
 			{ (providerId != 0) && <InterclinicalSpecialties providerId={providerId} medicalGroupId={medicalGroupId} onCancel={onCancel}/> }
+			<ErrorDialog error={error}/>
 		</>
 	)
 }
