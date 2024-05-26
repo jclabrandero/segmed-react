@@ -22,12 +22,12 @@ export function ClinicCarePrimaryManage({ clinicCareId, primary, edit }: ClinicC
 					<UpsertClinicCarePrimary id={primary?.id || 0} clinicCareId={clinicCareId}/>
 				</ToolBarMenu></ToolBar>)
 			}
-			<b>Motivo</b>
-			<p>{ primary?.reason || '(Sin información)'}</p>
-			<b>Examen físico</b>
-			<p>{ primary?.physicalExam || '(Sin información)'}</p>
-			<b>Diagnóstico</b>
-			<p>{ primary?.diagnosis || '(Sin información)'}</p>
+			<p><strong>Motivo, descripción de la sintomatología</strong></p>
+			<pre>{ primary?.reason || '(Sin información)'}</pre>
+			<p><strong>Examen físico</strong></p>
+			<pre>{ primary?.physicalExam || '(Sin información)'}</pre>
+			<p><strong>Diagnóstico</strong></p>
+			<pre>{ primary?.diagnosis || '(Sin información)'}</pre>
 		</>
 	)
 }
