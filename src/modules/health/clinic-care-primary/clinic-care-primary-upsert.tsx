@@ -36,16 +36,13 @@ function ClinicCarePrimaryForm({ data: { primary, clinicCareId }, onSubmit, onCa
 	return (
 		<Form form={form} layout='vertical' onFinish={onFinish} initialValues={{ ...primary }}>
 			<Item label='Motivo, descripción de la sintomatología' name='reason'>
-				<Input.TextArea>
-				</Input.TextArea>
+				<Input.TextArea autoSize/>
 			</Item>
 			<Item label='Examen físico' name='physicalExam'>
-				<Input.TextArea>
-				</Input.TextArea>
+				<Input.TextArea autoSize/>
 			</Item>
 			<Item label='Diagnóstico' name='diagnosis'>
-				<Input.TextArea>
-				</Input.TextArea>
+				<Input.TextArea autoSize/>
 			</Item>
 			<div className='modal-dialog-footer'>
 				<Space>
