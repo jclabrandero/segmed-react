@@ -62,7 +62,9 @@ function ClinicCareForm({ data, onSubmit, onCancel }: ClinicCareFormProps) {
 				label='Nombre o numero de ficha del beneficiario'
 				rules={[{ required: true, message: 'Escriba nombre del beneficiario' }]}>
 				<Select
-					options={map(data.insureds, ({ id, person }) => ({ label: `${person.firstName} ${person.lastName}`, value: id }))}
+					options={map(data.insureds, ({ id, person, iin, holderInsured, insuredType }) =>
+						({ label: `${person.firstName} ${person.lastName} - ${iin || holderInsured?.iin} - ${insuredType.name}`, value: id })
+					)}
 					filterOption={filter}
 					showSearch={true}/>
 			</Item>
