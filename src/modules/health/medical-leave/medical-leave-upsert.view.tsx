@@ -43,11 +43,12 @@ function MedicalLeaveForm({ data: { clinicCareId, disabilityTypes, medicalLeave 
 	const { Item } = Form
 		, [ form ] = Form.useForm()
 		, { map, toLV, touched } = useAntdHelp()
+		, disabilityTypeRef = medicalLeave ? disabilityTypes.find(({ name }) => name == medicalLeave.disabilityType.name) : null
 	const onFinish = () => onSubmit({ ...touched(form), clinicCareId })
 		, format = () => {
 			if (!medicalLeave) return undefined
 			const { disabilityType, startDate, endDate, ...remaining } = medicalLeave
-			return { disabilityTypeId: disabilityType.id, startDate: dayjs(startDate), endDate: dayjs(endDate), ...remaining }
+			return { disabilityTypeId: disabilityTypeRef ? disabilityType.id : disabilityType.id * (-1), startDate: dayjs(startDate), endDate: dayjs(endDate), ...remaining }
 		}
 	return (
 		<Form form={form} layout='vertical' onFinish={onFinish} initialValues={format()}>
@@ -73,7 +74,7 @@ function MedicalLeaveForm({ data: { clinicCareId, disabilityTypes, medicalLeave 
 				name='disabilityTypeId'
 				label='Tipo de discapacidad'
 				rules={[{ required: true, message: 'Seleccione el tipo de discapacidad' }]}>
-				<Select options={map(disabilityTypes, toLV)}/>
+				<Select options={map((disabilityTypeRef || !medicalLeave) ? disabilityTypes : [ { id: medicalLeave.disabilityType.id * (-1), name: medicalLeave.disabilityType.name }, ...disabilityTypes ], toLV)}/>
 			</Item>
 			<div className='modal-dialog-footer'>
 				<Space>

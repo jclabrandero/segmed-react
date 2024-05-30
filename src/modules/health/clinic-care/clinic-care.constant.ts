@@ -99,7 +99,10 @@ export const query = {
 				id name color
 			}
 			insureds: activeInsureds {
-				id code iin person { firstName lastName }
+				id code iin
+				person { firstName lastName }
+				insuredType { name }
+				holderInsured { iin }
 			}
 		}
 	`,
