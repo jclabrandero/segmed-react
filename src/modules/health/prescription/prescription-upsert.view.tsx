@@ -14,22 +14,33 @@ import { query, mutation} from './prescription.constant'
 type TMedicationStock = { label: string, value: number } & MedicationStock
 
 type PrescriptionMedicationFormFieldsProps = {
+	mode: string
 	medications: Array<TMedicationStock>
 	onCancel: () => void
 }
 
-function PrescriptionMedicationFormFields({ medications, onCancel }: PrescriptionMedicationFormFieldsProps) {
+function PrescriptionMedicationFormFields({ mode, medications, onCancel }: PrescriptionMedicationFormFieldsProps) {
 	const { Item } = Form
 	const [ selectedMedication, setSelectedMedication ] = useState<TMedicationStock | null>(null)
+	const filter = (inputValue: string, option: { label: string } | undefined) => option?.label.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
 
 	return (
 		<>
-			<Item name='medicationId' label='Medicamento' rules={[{ required: true, message: 'Seleccione medicamento' }]}>
-				<Select
-					options={medications}
-					onSelect={(_, option) => setSelectedMedication(option)}
-				/>
-			</Item>
+			{
+				mode == 'create' ?
+					<Item name='medicationId' label='Medicamento' rules={[{ required: true, message: 'Seleccione medicamento' }]}>
+						<Select
+							options={medications}
+							filterOption={filter}
+							showSearch={true}
+							onSelect={(_, option) => setSelectedMedication(option)}
+						/>
+					</Item>
+					:
+					<Item name='medication' label='Medicamento'>
+						<Input disabled/>
+					</Item>
+			}
 			<Item name='quantity' label='Cantidad' rules={[{ required: true, message: 'Escriba la cantidad' }]}>
 				<InputNumber min={1} max={selectedMedication?.total}/>
 			</Item>
@@ -46,7 +57,7 @@ function PrescriptionMedicationFormFields({ medications, onCancel }: Prescriptio
 	)
 }
 
-function PrescriptionPharmacyMedication({ pharmacyId, onCancel }: { pharmacyId:	number, onCancel: () => void }) {
+function PrescriptionPharmacyMedication({ mode, pharmacyId, onCancel }: { mode: string, pharmacyId:	number, onCancel: () => void }) {
 	const { map } = useAntdHelp()
 		, [ error, onError ] = useError()
 	const { loading, data } = useQuery(query.PHARMACY_STOCK, { onError, variables: { pharmacyId }, fetchPolicy: 'network-only' })
@@ -55,6 +66,7 @@ function PrescriptionPharmacyMedication({ pharmacyId, onCancel }: { pharmacyId:	
 	return loading ? <Spin/> : (
 		<>
 			<PrescriptionMedicationFormFields
+				mode={mode}
 				onCancel={onCancel}
 				medications={map(
 					pharmacyStock.filter((stock: MedicationStock) => stock.total > 0),
@@ -95,12 +107,13 @@ interface IPrescriptionDependencies {
 }
 
 type PrescriptionFormProps = {
+	mode: string
 	data: IPrescriptionDependencies & ClinicCareId
 	onSubmit: (data: IPrescriptionCreateArgs) => void
 	onCancel: () => void
 }
 
-function PrescriptionPharmacyForm({ data, onSubmit, onCancel }: PrescriptionFormProps) {
+function PrescriptionPharmacyForm({ mode, data, onSubmit, onCancel }: PrescriptionFormProps) {
 	const pharmacy = data?.prescription?.pharmacy
 	const { Item } = Form
 		, [ form ] = Form.useForm()
@@ -110,20 +123,30 @@ function PrescriptionPharmacyForm({ data, onSubmit, onCancel }: PrescriptionForm
 		, format = () => {
 			if (!data.prescription) return undefined
 			const { medication, pharmacy, ...remaining } = data.prescription
-			return { medicationId: medication.id, pharmacyId: pharmacy.id, ...remaining }
+			return {
+				pharmacy: pharmacy.name,
+				medication: `${medication.code} - ${medication.name} - ${medication.concentration} - ${medication.unit.name}`,
+				...remaining
+			}
 		}
 
 	return (
 		<Form form={form} layout='vertical' autoComplete='off' onFinish={onFinish} initialValues={format()}>
-			<Item name='pharmacyId' label='Farmacia' style={{ width: '60%' }}>
-				<Select
-					disabled={Boolean(pharmacy)}
-					options={map(data.pharmacies, toLV)}
-					onChange={value => setPharmacyId(value)}/>
-			</Item>
+			{
+				mode == 'create' ?
+					<Item name='pharmacyId' label='Farmacia' style={{ width: '60%' }}>
+						<Select
+							options={map(data.pharmacies, toLV)}
+							onChange={value => setPharmacyId(value)}/>
+					</Item>
+					:
+					<Item name='pharmacy' label='Farmacia'>
+						<Input disabled/>
+					</Item>
+			}
 			{
 				(pharmacyId != 0) &&
-				<PrescriptionPharmacyMedication pharmacyId={pharmacyId} onCancel={onCancel}/>
+				<PrescriptionPharmacyMedication mode={mode} pharmacyId={pharmacyId} onCancel={onCancel}/>
 			}
 		</Form>
 	)
@@ -136,7 +159,7 @@ export function CreatePrescription({ clinicCareId }: ClinicCareId) {
 			buttonText='Farmacias propias'
 			query={query.CREATE_DEPENDENCIES}
 			mutation={mutation.CREATE_PRESCRIPTION}
-			render={(submit, close, data) => <PrescriptionPharmacyForm data={{clinicCareId, ...data}} onSubmit={submit} onCancel={close}/>}
+			render={(submit, close, data) => <PrescriptionPharmacyForm mode='create' data={{clinicCareId, ...data}} onSubmit={submit} onCancel={close}/>}
 		/>
 	)
 }
@@ -148,7 +171,7 @@ export function UpdatePrescription({ id, clinicCareId }: UpdateProps & ClinicCar
 			title='Editar receta médica'
 			query={query.UPDATE_DEPENDENCIES}
 			mutation={mutation.UPDATE_PRESCRIPTION}
-			render={(submit, close, data) => <PrescriptionPharmacyForm data={{clinicCareId, ...data}} onSubmit={submit} onCancel={close}/>}
+			render={(submit, close, data) => <PrescriptionPharmacyForm mode='update' data={{clinicCareId, ...data}} onSubmit={submit} onCancel={close}/>}
 		/>
 	)
 }
@@ -172,24 +195,28 @@ interface IPrescriptionExternDependencies {
 }
 
 type PrescriptionExternFormProps = {
+	mode: string
 	data: IPrescriptionExternDependencies & ClinicCareId
 	onSubmit: (data: IPrescriptionExternCreateArgs) => void
 	onCancel: () => void
 }
 
-function PrescriptionExternForm({ data, onSubmit, onCancel }: PrescriptionExternFormProps) {
+function PrescriptionExternForm({ mode, data, onSubmit, onCancel }: PrescriptionExternFormProps) {
 	const [ form ] = Form.useForm()
 		, { map, touched } = useAntdHelp()
 	const onFinish = () => onSubmit({ ...touched(form), clinicCareId: data.clinicCareId })
 		, format = () => {
 			if (!data.prescriptionExtern) return undefined
 			const { medication, ...remaining } = data.prescriptionExtern
-			return { medicationId: medication.id, ...remaining }
+			return {
+				medication: `${medication.code} - ${medication.name} - ${medication.concentration} - ${medication.unit.name}`,
+				...remaining
+			}
 		}
 
 	return (
 		<Form form={form} layout='vertical' autoComplete='off' onFinish={onFinish} initialValues={format()}>
-			<PrescriptionMedicationFormFields
+			<PrescriptionMedicationFormFields mode={mode}
 				medications={map(
 					data.medications,
 					(medication: Medication) => {
@@ -211,7 +238,7 @@ export function CreatePrescriptionExtern({ clinicCareId }: ClinicCareId) {
 			buttonText='Farmacias externas'
 			query={query.CREATE_EXTERN_DEPENDENCIES}
 			mutation={mutation.CREATE_PRESCRIPTION_EXTERN}
-			render={(submit, close, data) => <PrescriptionExternForm data={{clinicCareId, ...data}} onSubmit={submit} onCancel={close}/>}
+			render={(submit, close, data) => <PrescriptionExternForm mode='create' data={{clinicCareId, ...data}} onSubmit={submit} onCancel={close}/>}
 		/>
 	)
 }
@@ -223,7 +250,7 @@ export function UpdatePrescriptionExtern({ id, clinicCareId }: UpdateProps & Cli
 			title='Editar receta médica'
 			query={query.UPDATE_EXTERN_DEPENDENCIES}
 			mutation={mutation.UPDATE_PRESCRIPTION_EXTERN}
-			render={(submit, close, data) => <PrescriptionExternForm data={{clinicCareId, ...data}} onSubmit={submit} onCancel={close}/>}
+			render={(submit, close, data) => <PrescriptionExternForm mode='update' data={{clinicCareId, ...data}} onSubmit={submit} onCancel={close}/>}
 		/>
 	)
 }

@@ -45,7 +45,11 @@ export const query = {
 					__typename @skip(if: true)
 				}
 				medication {
-					id name
+					id code name concentration
+					unit {
+						id name
+						__typename @skip(if: true)
+					}
 					__typename @skip(if: true)
 				}
 			}
@@ -71,7 +75,11 @@ export const query = {
 			prescriptionExtern(id: $id) {
 				id quantity indications
 				medication {
-					id name
+					id code name concentration
+					unit {
+						id name
+						__typename @skip(if: true)
+					}
 					__typename @skip(if: true)
 				}
 			}
