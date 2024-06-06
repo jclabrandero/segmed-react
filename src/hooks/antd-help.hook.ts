@@ -68,7 +68,7 @@ export function useAntdHelp() {
 
 			return medicalGroups
 		},
-		formatMedicalGroups: (medicalGroups: Array<MedicalGroup>) => {
+		formatMedicalGroups: (medicalGroups: Array<MedicalGroup>, refGroups: Array<MedicalGroup>) => {
 			const result = []
 			for (const mg of medicalGroups) {
 				if (mg.specialties.length) {
@@ -78,11 +78,15 @@ export function useAntdHelp() {
 								result.push(JSON.stringify([mg.id, sp.id, sbsp.id]))
 							}
 						} else {
-							result.push(JSON.stringify([mg.id, sp.id]))
+							const ref = refGroups.find(refg => refg.id == mg.id)?.specialties.find(refsp => refsp.id == sp.id)
+							if (ref?.subspecialties.length == 0)
+								result.push(JSON.stringify([mg.id, sp.id]))
 						}
 					}
 				} else {
-					result.push(JSON.stringify([mg.id]))
+					const ref = refGroups.find(refg => refg.id == mg.id)
+					if (ref?.specialties.length == 0)
+						result.push(JSON.stringify([mg.id]))
 				}
 			}
 			return result

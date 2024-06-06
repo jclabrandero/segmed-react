@@ -56,13 +56,13 @@ function ProviderForm({ mode, data, onSubmit, onCancel, onRefetch }: ProviderFor
 			: { ...remaining }
 		onSubmit(payload)
 	}
-	const format = (payload?: Provider) => {
+	const format = (payload?: Provider, refGroups?: Array<MedicalGroup>) => {
 		if (!payload) return undefined
 		const { belonging, medicalGroups, ...remaining } = payload
 		return {
 			...remaining,
 			belongingId: belonging.id,
-			medicalGroups: formatMedicalGroups(medicalGroups)
+			medicalGroups: formatMedicalGroups(medicalGroups, refGroups || [])
 		}
 	}
 
@@ -72,7 +72,7 @@ function ProviderForm({ mode, data, onSubmit, onCancel, onRefetch }: ProviderFor
 		, medicalGroups = data ? encodeMedicalGroups(data.medicalGroups) : []
 
 	return (
-		<Form form={form} layout='vertical' autoComplete='off' onFinish={onFinish} initialValues={format(provider)}>
+		<Form form={form} layout='vertical' autoComplete='off' onFinish={onFinish} initialValues={format(provider, data.medicalGroups)}>
 			<Item
 				name='vendorCode'
 				label='Código vendor'
