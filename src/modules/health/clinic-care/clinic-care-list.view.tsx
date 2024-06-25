@@ -42,8 +42,8 @@ export function ClinicCareList() {
 				loading={loading}
 			>
 				<Column title='Número' dataIndex='id'/>
-				<Column title='Motivo' render={({ primary }) => (
-					<span>{ primary?.reason }</span>
+				<Column title='Diagnóstico' render={({ primary }) => (
+					<span>{ primary?.diagnosis }</span>
 				)}/>
 				<Column title='Cúdigo beneficiario' ellipsis render={({ insured }) => (
 					<span>{ insured.code }</span>

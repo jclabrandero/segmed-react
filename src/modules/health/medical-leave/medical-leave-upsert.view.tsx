@@ -53,9 +53,9 @@ function MedicalLeaveForm({ data: { clinicCareId, disabilityTypes, medicalLeave 
 	return (
 		<Form form={form} layout='vertical' onFinish={onFinish} initialValues={format()}>
 			<Item
-				label='Motivo'
+				label='Diagnóstico'
 				name='reason'
-				rules={[{ required: true, message: 'Escriba el motivo' }]}>
+				rules={[{ required: true, message: 'Escriba el diagnóstico' }]}>
 				<Input.TextArea/>
 			</Item>
 			<Item

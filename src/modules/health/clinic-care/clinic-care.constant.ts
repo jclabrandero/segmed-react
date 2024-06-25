@@ -7,7 +7,7 @@ export const query = {
 		query clinicCares {
 			clinicCares {
 				id startDate endDate
-				primary { reason }
+				primary { reason diagnosis }
 				insured {
 					code iin
 					person { firstName lastName }
