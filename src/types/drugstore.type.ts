@@ -14,11 +14,10 @@ export type Medication = {
 	unit:	DrugUnit
 }
 
-type Inventory = {
-	id:			number
-	lot:		string
-	quantity:	number
-	expireAt:	Date
+export type Inventory = {
+	id:		number
+	stock:	number
+	min:	number
 
 	status:	number
 
@@ -40,4 +39,50 @@ export type MedicationStock = {
 	total:		number
 	pharmacy:	Pharmacy
 	medication:	Medication
+}
+
+export type Batch = {
+	id:			number
+	code:		string
+	expireAt:	Date
+
+	status:	number
+
+	medication:	Medication
+}
+
+export type Arrival = {
+	id:				number
+	remark:			string
+	arrivalDate:	Date
+
+	status:	number
+}
+
+export type ArrivalItem = {
+	id:			number
+	quantity:	number
+	price:		number
+
+	status:	number
+
+	batch:		Batch
+}
+
+export type Departure = {
+	id:				number
+	remark:			string
+	departureDate:	Date
+
+	status:	number
+}
+
+export type DepartureItem = {
+	id:			number
+	quantity:	number
+	price:		number
+
+	status:	number
+
+	batch:		Batch
 }
