@@ -22,7 +22,7 @@ import {
 } from '../modules/catalog'
 import { BelongingList, MedicalOfficeList, ProviderList } from '../modules/reference'
 import { PersonList, ClerkList, InsuredList } from '../modules/folk'
-import { MedicationList, PharmacyList } from '../modules/drugstore'
+import { MedicationList, PharmacyList, InventoryManage } from '../modules/drugstore'
 import { ClinicCareList, ClinicCareManage } from '../modules/health'
 
 
@@ -204,6 +204,7 @@ export function Authorized() {
 						<Route path="almacenes">
 							<Route path="medicamentos" element={<MedicationList/>}/>
 							<Route path="farmacias" element={<PharmacyList/>}/>
+							<Route path="farmacias/inventario/:id" element={<InventoryManage/>}/>
 						</Route>
 						<Route path="configuracion">
 							<Route path="usuarios" element={<UserList/>}/>

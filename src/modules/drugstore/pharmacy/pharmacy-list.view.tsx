@@ -1,6 +1,7 @@
 
 import { useQuery, useSubscription } from '@apollo/client'
-import { Input, Space, Table } from 'antd'
+import { Link } from 'react-router-dom'
+import { Button, Input, Space, Table } from 'antd'
 
 import { ErrorDialog, ToolBar, ToolBarMenu } from '../../../components'
 import { useError, useAntdHelp, useFilter, useAuth } from '../../../hooks'
@@ -9,6 +10,7 @@ import { NotAllowed } from '../../basic'
 
 import { CreatePharmacy, InspectPharmacy, UpdatePharmacy } from './pharmacy-upsert.view'
 import { query, subscription } from './pharmacy.constant'
+import { ProductFilled } from '@ant-design/icons'
 
 
 export function PharmacyList() {
@@ -54,6 +56,9 @@ export function PharmacyList() {
 							</>)
 						}
 						<InspectPharmacy id={id}/>
+						<Link to={`inventario/${id}`}>
+							<Button shape='circle' type='text' size='small' className='table-toolbtn' icon={<ProductFilled/>}/>
+						</Link>
 					</Space>
 				)}/>
 			</Table>
