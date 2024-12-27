@@ -59,7 +59,7 @@ export function PrescriptionManage({ clinicCareId, prescriptions, prescriptionEx
 				<Column title='Farmacia' ellipsis render={({ pharmacy }) => (
 					<span>{ pharmacy ? pharmacy.name : 'Externa' }</span>
 				)}/>
-				<Column title='Codigo' render={({ medication }) => (
+				<Column title='Código' render={({ medication }) => (
 					<span>{ medication.code }</span>
 				)}/>
 				<Column title='Nombre' ellipsis render={({ medication }) => (

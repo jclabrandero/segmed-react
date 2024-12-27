@@ -68,7 +68,7 @@ export function ClinicCareManage() {
 						<div><span>{insured.id}</span></div>
 					</div>
 					<div>
-						<small>Codigo beneficiario</small>
+						<small>Código beneficiario</small>
 						<div><span>{insured.code}</span></div>
 					</div>
 					<div>
