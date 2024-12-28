@@ -1,6 +1,6 @@
 
 
-import { Button, Card, Checkbox, Form, Input, Space } from 'antd'
+import { Button, Card, Checkbox, Form, Input, InputNumber, Space } from 'antd'
 
 import { CreateDialog, DeleteDialog, InspectDialog, UpdateDialog } from '../../../components'
 import { useAntdHelp } from '../../../hooks'
@@ -49,6 +49,16 @@ function InsuredTypeForm({ mode, data, onSubmit, onCancel }: InsuredTypeFormProp
 				name='description'
 				label='Descripción'>
 				<Input placeholder='Descripción'/>
+			</Item>
+			<Item
+				name='codeFormat'
+				label='Formato de código'>
+				<Input/>
+			</Item>
+			<Item
+				name='outletAge'
+				label='Edad de baja'>
+				<InputNumber min='1'/>
 			</Item>
 			<Item name='withDependents' valuePropName='checked'>
 				<Checkbox defaultChecked={false}>Con dependientes</Checkbox>

@@ -5,6 +5,7 @@ import { Input, Space, Table } from 'antd'
 import { ErrorDialog, ToolBar, ToolBarMenu } from '../../../components'
 import { useError, useAntdHelp, useFilter, useAuth } from '../../../hooks'
 import { NotAllowed } from '../../basic'
+import { InsuredType } from '../../../types'
 
 import { CreateInsuredType, DeleteInsuredType, InspectInsuredType, UpdateInsuredType } from './insured-type-upsert.view'
 import { query, subscription } from './insured-type.constant'
@@ -14,7 +15,7 @@ export function InsuredTypeList() {
 	const { addKey, tableStatus } = useAntdHelp()
 		, { has } = useAuth()
 		, [ error, onError ] = useError()
-		, { loading, data, refetch } = useQuery(query.INSURED_TYPES, { onError })
+		, { loading, data, refetch } = useQuery<{ insuredTypes: Array<InsuredType>}>(query.INSURED_TYPES, { onError })
 		, [ insuredTypes, filter ] = useFilter(addKey(data?.insuredTypes), ['name', 'description'])
 		, { Column } = Table
 
@@ -42,9 +43,11 @@ export function InsuredTypeList() {
 				<Column title='Id' dataIndex='id'/>
 				<Column title='Nombre' dataIndex='name' ellipsis/>
 				<Column title='Descripción' dataIndex='description' ellipsis/>
-				<Column title='Con dependientes' render={({ withDependents }) => (
+				<Column title='Con dependientes' render={({ withDependents }: InsuredType) => (
 					<span>{withDependents ? 'Sí' : 'No'}</span>
 				)}/>
+				<Column title='Formato de código' dataIndex='codeFormat' ellipsis/>
+				<Column title='Edad de baja' dataIndex='outletAge' ellipsis/>
 				<Column title='Estado' render={tableStatus}/>
 				<Column title='Acciones' width='6rem' fixed='right' render={({ id }) => (
 					<Space>
