@@ -20,9 +20,8 @@ import { query, mutation } from './insured.constant'
 
 
 interface IInsuredCreateArgs {
-	code:		string
 	iin?:		number
-	inletDate:	Date
+	inletDate?:	Date
 	tradeUnion:	boolean
 	address?:	string
 	phone?:		string
@@ -72,11 +71,12 @@ function InsuredForm<TArgs>({ mode, data, onSubmit, onCancel, onRefetch }: Insur
 	const [ selectedInsuredType, setSelectedInsuredType ] = useState<InsuredType | undefined>(insured ? insured.insuredType : undefined)
 	const onFinish = () => onSubmit(touched(form))
 	const format = (payload?: Insured) => {
-		if (!payload) return undefined
-		const { person, inletDate, insuredType, holderInsured, belonging, ...remaining } = payload
+		if (!payload) return { inletDate: dayjs() }
+		const { person, inletDate, outletDate, insuredType, holderInsured, belonging, ...remaining } = payload
 		return {
 			...remaining,
 			inletDate: dayjs(inletDate),
+			outletDate: outletDate ? dayjs(outletDate) : undefined,
 			personId: person.id,
 			insuredTypeId: insuredType.id,
 			holderInsuredId: holderInsured?.id,
@@ -93,20 +93,33 @@ function InsuredForm<TArgs>({ mode, data, onSubmit, onCancel, onRefetch }: Insur
 		, insuredTypes = data ? data.insuredTypes : []
 		, belongings = data ? data.belongings : []
 
+	console.log(selectedInsuredType)
+
 	return (
 		<Form form={form} layout='vertical' autoComplete='off' onFinish={onFinish} initialValues={format(insured)}>
-			<Item
-				name='code'
-				label='Código de beneficiario'
-				rules={[{ required: true, message: 'Escriba el código de beneficiario' }]}>
-				<Input disabled={mode == 'update'}/>
-			</Item>
+			{
+				mode == 'update' &&
+				<Item
+					name='code'
+					label='Código de beneficiario'
+					rules={[{ required: true, message: 'Escriba el código de beneficiario' }]}>
+					<Input disabled={true}/>
+				</Item>
+			}
 			<Item
 				name='inletDate'
 				label='Fecha de alta'
 				rules={[{ required: true, message: 'Seleccione fecha de alta' }]}>
 				<DatePicker format='DD/MM/YYYY'/>
 			</Item>
+			{
+				mode == 'update' &&
+				<Item
+					name='outletDate'
+					label='Fecha de baja'>
+					<DatePicker format='DD/MM/YYYY' minDate={dayjs()}/>
+				</Item>
+			}
 			<Item name='personId'
 				label='Datos de persona'
 				rules={[{ required: true, message: 'Seleccione datos de persona' }]}>
@@ -150,8 +163,7 @@ function InsuredForm<TArgs>({ mode, data, onSubmit, onCancel, onRefetch }: Insur
 					? (
 						<>
 							<Item name='holderInsuredId'
-								label='Beneficiario titular'
-								rules={[{ required: true, message: 'Seleccione el beneficiario titular' }]}>
+								label='Beneficiario titular'>
 								<Select
 									placeholder='Beneficiario titular'
 									options={holders.map(h => ({ label: `${h.person.firstName} ${h.person.lastName}`, value: h.id }))}/>

@@ -49,7 +49,7 @@ export const query = {
 			insured(id: $id) {
 				id code iin inletDate outletDate tradeUnion address phone status
 				person { id firstName lastName }
-				insuredType { id name }
+				insuredType { id name withDependents }
 				holderInsured { id code }
 				dependents { id code }
 				belonging { id name }
