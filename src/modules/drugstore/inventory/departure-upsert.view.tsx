@@ -95,7 +95,7 @@ type DepartureItemFormProps = {
 
 function MedicationBatch({ pharmacyId, medicationId }: { pharmacyId: number; medicationId: number }) {
 	const { Item } = Form
-		, { map } = useAntdHelp()
+		, { map, selectFilter } = useAntdHelp()
 		, variables = { data: { pharmacyId, medicationId } }
 		, { loading, data } = useQuery(query.BATCHES_STOCK, { variables, fetchPolicy: 'network-only' })
 
@@ -111,6 +111,7 @@ function MedicationBatch({ pharmacyId, medicationId }: { pharmacyId: number; med
 					}
 				})}
 				showSearch={true}
+				filterOption={selectFilter}
 				placeholder='Número de lote'
 			/>
 		</Item>
@@ -121,7 +122,7 @@ function DepartureItemForm({ mode, data, onSubmit, onCancel, onRefetch, pharmacy
 	const { inventories } = data
 		, { Item } = Form
 		, [ form ] = Form.useForm()
-		, { touched, map } = useAntdHelp()
+		, { touched, map, selectFilter } = useAntdHelp()
 		, [ medicationId, setMedicationId ] = useState(0)
 	const onFinish = () => {
 		const payload = touched(form)
@@ -142,6 +143,7 @@ function DepartureItemForm({ mode, data, onSubmit, onCancel, onRefetch, pharmacy
 						}
 					})}
 					showSearch={true}
+					filterOption={selectFilter}
 					placeholder='Medicamento'
 					onChange={value => {
 						form.setFieldValue('batchId', null)

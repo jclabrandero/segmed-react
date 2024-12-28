@@ -85,8 +85,7 @@ function InterclinicalProvider({ form, belongingId, medicalGroupId, onCancel }: 
 	const [ providerId, setProviderId ] = useState(0)
 		, [ error, onError ] = useError()
 		, { loading, data } = useQuery(query.PROVIDERS, { onError, variables: { query: { belongingId, medicalGroupId } }, fetchPolicy: 'network-only' })
-		, { map, toLV } = useAntdHelp()
-	const filter = (inputValue: string, option: { label: string } | undefined) => option?.label.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+		, { map, toLV, selectFilter } = useAntdHelp()
 	const onSetProviderId = (value: number) => {
 		setProviderId(value)
 		form.resetFields(['specialties'])
@@ -101,7 +100,7 @@ function InterclinicalProvider({ form, belongingId, medicalGroupId, onCancel }: 
 		<>
 			<Form.Item name='providerId' label='Proveedor'>
 				<Select options={map(providers, toLV)}
-					filterOption={filter}
+					filterOption={selectFilter}
 					showSearch={true}
 					onSelect={onSetProviderId}
 					autoClearSearchValue={true}

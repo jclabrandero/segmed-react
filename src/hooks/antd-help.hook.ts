@@ -90,6 +90,7 @@ export function useAntdHelp() {
 				}
 			}
 			return result
-		}
+		},
+		selectFilter: (inputValue: string, option: { label: string } | undefined) => option?.label.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
 	}
 }

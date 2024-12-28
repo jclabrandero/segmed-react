@@ -49,7 +49,7 @@ function ClerkForm({ mode, data, onSubmit, onCancel, onRefetch }: ClerkFormProps
 	const { clerk } = data
 		, { Item } = Form
 		, [ form ] = Form.useForm()
-		, { touched } = useAntdHelp()
+		, { touched, selectFilter } = useAntdHelp()
 		, { has } = useAuth()
 	const onFinish = () => onSubmit(touched(form))
 	const format = (payload?: Clerk) => {
@@ -83,6 +83,7 @@ function ClerkForm({ mode, data, onSubmit, onCancel, onRefetch }: ClerkFormProps
 					placeholder='Datos de persona'
 					options={people.map(p => ({ label: `${p.firstName} ${p.lastName}`, value: p.id }))}
 					showSearch={true}
+					filterOption={selectFilter}
 					dropdownRender={menu => (
 						<>
 							{menu}

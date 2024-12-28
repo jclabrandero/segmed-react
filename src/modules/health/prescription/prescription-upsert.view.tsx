@@ -22,7 +22,7 @@ type PrescriptionMedicationFormFieldsProps = {
 function PrescriptionMedicationFormFields({ mode, medications, onCancel }: PrescriptionMedicationFormFieldsProps) {
 	const { Item } = Form
 	const [ selectedMedication, setSelectedMedication ] = useState<TMedicationStock | null>(null)
-	const filter = (inputValue: string, option: { label: string } | undefined) => option?.label.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+		, { selectFilter } = useAntdHelp()
 
 	return (
 		<>
@@ -31,7 +31,7 @@ function PrescriptionMedicationFormFields({ mode, medications, onCancel }: Presc
 					<Item name='medicationId' label='Medicamento' rules={[{ required: true, message: 'Seleccione medicamento' }]}>
 						<Select
 							options={medications}
-							filterOption={filter}
+							filterOption={selectFilter}
 							showSearch={true}
 							onSelect={(_, option) => setSelectedMedication(option)}
 						/>

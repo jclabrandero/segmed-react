@@ -96,7 +96,7 @@ function ArrivalItemForm({ mode, data, onSubmit, onCancel, onRefetch }: ArrivalI
 	const { arrivalId, batches } = data
 		, { Item } = Form
 		, [ form ] = Form.useForm()
-		, { touched, map } = useAntdHelp()
+		, { touched, map, selectFilter } = useAntdHelp()
 		, { has } = useAuth()
 	const onFinish = () => {
 		const payload = touched(form)
@@ -117,6 +117,7 @@ function ArrivalItemForm({ mode, data, onSubmit, onCancel, onRefetch }: ArrivalI
 						}
 					})}
 					showSearch={true}
+					filterOption={selectFilter}
 					placeholder='Número de lote'
 					dropdownRender={menu => (
 						<>

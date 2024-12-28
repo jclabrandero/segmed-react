@@ -66,7 +66,7 @@ function InsuredForm<TArgs>({ mode, data, onSubmit, onCancel, onRefetch }: Insur
 	const { insured } = data
 		, { Item } = Form
 		, [ form ] = Form.useForm()
-		, { touched } = useAntdHelp()
+		, { touched, selectFilter } = useAntdHelp()
 		, { has } = useAuth()
 	const [ selectedInsuredType, setSelectedInsuredType ] = useState<InsuredType | undefined>(insured ? insured.insuredType : undefined)
 	const onFinish = () => onSubmit(touched(form))
@@ -126,6 +126,7 @@ function InsuredForm<TArgs>({ mode, data, onSubmit, onCancel, onRefetch }: Insur
 				<Select
 					options={people.map(p => ({ label: `${p.firstName} ${p.lastName}`, value: p.id }))}
 					showSearch={true}
+					filterOption={selectFilter}
 					placeholder='Datos de persona'
 					dropdownRender={menu => (
 						<>

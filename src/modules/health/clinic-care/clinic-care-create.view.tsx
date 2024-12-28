@@ -42,12 +42,11 @@ interface IClinicCareFormItems {
 function ClinicCareForm({ data, onSubmit, onCancel }: ClinicCareFormProps) {
 	const { Item } = Form
 	const [ form ] = Form.useForm()
-	const { map, toLV } = useAntdHelp()
+	const { map, toLV, selectFilter } = useAntdHelp()
 	const onFinish = (data: IClinicCareFormItems) => {
 			const { startDate, ...remaining } = data
 			onSubmit({ ...remaining, startDate: startDate.$d })
 		}
-		, filter = (inputValue: string, option: { label: string } | undefined) => option?.label.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
 		, medicalOffices = map(data.user?.clerk?.medicalOffices, toLV)
 
 	return (
@@ -65,7 +64,7 @@ function ClinicCareForm({ data, onSubmit, onCancel }: ClinicCareFormProps) {
 					options={map(data.insureds, ({ id, person, iin, holderInsured, insuredType }) =>
 						({ label: `${person.firstName} ${person.lastName} - ${iin || holderInsured?.iin} - ${insuredType.name}`, value: id })
 					)}
-					filterOption={filter}
+					filterOption={selectFilter}
 					showSearch={true}/>
 			</Item>
 			<Item

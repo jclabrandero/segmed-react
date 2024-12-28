@@ -29,7 +29,7 @@ function BatchForm({ data, onSubmit, onCancel }: BatchFormProps) {
 	const { batch, medications } = data
 		, { Item } = Form
 		, [ form ] = Form.useForm()
-		, { touched, map } = useAntdHelp()
+		, { touched, map, selectFilter } = useAntdHelp()
 	const onFinish = () => onSubmit(touched(form))
 	const format = (payload?: Batch) => {
 		if (!payload) return undefined
@@ -58,6 +58,7 @@ function BatchForm({ data, onSubmit, onCancel }: BatchFormProps) {
 						}
 					})}
 					showSearch={true}
+					filterOption={selectFilter}
 				/>
 			</Item>
 			<Item
