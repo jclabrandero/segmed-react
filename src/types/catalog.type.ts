@@ -28,6 +28,8 @@ export type InsuredType = {
 	name:			string
 	description?:	string
 	withDependents:	boolean
+	codeFormat:		string
+	outletAge?:		number
 	
 	status:			number
 }
