@@ -6,14 +6,14 @@ export const query = {
 	INSURED_TYPES: gql`
 		query insuredTypes {
 			insuredTypes {
-				id name description withDependents status
+				id name description withDependents codeFormat outletAge status
 			}
 		}
 	`,
 	INSURED_TYPE: gql`
 		query insuredType($id: Int!) {
 			insuredType(id: $id) {
-				id name description withDependents status
+				id name description withDependents codeFormat outletAge status
 			}
 		}
 	`
