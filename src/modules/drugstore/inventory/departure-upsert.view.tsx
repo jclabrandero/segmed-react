@@ -74,7 +74,6 @@ export function CreateDeparture({ pharmacyId }: { pharmacyId: number }) {
 
 interface IDepartureItemCreateArgs {
 	quantity:		number
-	price:			number
 	batchId:		number
 	departureId:	number
 }
@@ -145,7 +144,7 @@ function DepartureItemForm({ mode, data, onSubmit, onCancel, onRefetch, pharmacy
 					showSearch={true}
 					filterOption={selectFilter}
 					placeholder='Medicamento'
-					onChange={value => {
+					onChange={(value) => {
 						form.setFieldValue('batchId', null)
 						setMedicationId(value)}
 					}
@@ -161,14 +160,14 @@ function DepartureItemForm({ mode, data, onSubmit, onCancel, onRefetch, pharmacy
 				rules={[{ required: true, message: 'Escriba la cantidad' }]}>
 				<InputNumber min='1'/>
 			</Item>
-			<Item
+			{/* <Item
 				name='price'
 				label='Precio'
 				rules={[{ required: true, message: 'Escriba el precio' }]}>
-				<InputNumber
+				<InputNumber readOnly
 					min='0'
 					step='0.01'/>
-			</Item>
+			</Item> */}
 			<div className='modal-dialog-footer'>
 				<Space>
 					<Button type='default' onClick={onCancel}>Cancelar</Button>
