@@ -6,7 +6,7 @@ export const query = {
 	INVENTORIES: gql`
 		query inventories($pharmacyId: Int!) {
 			inventories(pharmacyId: $pharmacyId) {
-				id stock min status
+				id stock price min status
 				medication {
 					id code name concentration
 					unit {

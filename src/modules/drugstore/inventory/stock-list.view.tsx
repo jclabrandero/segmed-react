@@ -46,6 +46,9 @@ export function StockList({ pharmacyId }: { pharmacyId: number }) {
 					<span>{ medication.unit.name }</span>
 				)}/>
 				<Column title='Stock' dataIndex='stock'/>
+				<Column title='Costo' ellipsis render={({ price } : { price: string }) => (
+					<span>{ Number(price).toFixed(6) }</span>
+				)}/>
 				<Column title='Mínimo' dataIndex='min'/>
 			</Table>
 
