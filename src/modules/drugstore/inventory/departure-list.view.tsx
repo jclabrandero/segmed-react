@@ -48,9 +48,7 @@ export function DepartureList({ pharmacyId }: { pharmacyId: number }) {
 		, [ departures, filter ] = useFilter(addKey<Departure>(data?.departures), ['remark'])
 	const { Column } = Table
 
-	useSubscription(subscription.DEPARTURE_UPSERTED, { onData: () => {
-		console.log('DEPARTURE_UPSERTED')
-		refetch() }})
+	useSubscription(subscription.DEPARTURE_UPSERTED, { onData: () => refetch() })
 
 	return (
 		<>

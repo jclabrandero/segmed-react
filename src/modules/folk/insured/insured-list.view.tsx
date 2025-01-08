@@ -44,7 +44,6 @@ export function InsuredList() {
 				loading={loading}
 				expandable={{
 					expandedRowRender: insured => {
-						console.log('osidhfihn')
 						return (<>
 							<h5>Dependientes</h5>
 							{

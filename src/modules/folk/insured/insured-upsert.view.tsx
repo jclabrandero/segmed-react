@@ -93,8 +93,6 @@ function InsuredForm<TArgs>({ mode, data, onSubmit, onCancel, onRefetch }: Insur
 		, insuredTypes = data ? data.insuredTypes : []
 		, belongings = data ? data.belongings : []
 
-	console.log(selectedInsuredType)
-
 	return (
 		<Form form={form} layout='vertical' autoComplete='off' onFinish={onFinish} initialValues={format(insured)}>
 			{
