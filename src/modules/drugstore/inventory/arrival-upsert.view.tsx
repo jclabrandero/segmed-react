@@ -159,7 +159,8 @@ function ArrivalItemForm({ mode, data, onSubmit, onCancel, onRefetch }: ArrivalI
 export function CreateArrivalItem({ arrivalId }: { arrivalId: number }) {
 	return (
 		<CreateDialog<IArrivalItemCreateArgs, IArrivalItemDependencies>
-			title=''
+			title='Agregar nuevo item'
+			buttonSize='small'
 			query={query.CREATE_ARRIVAL_ITEM_DEPENDENCIES}
 			mutation={mutation.CREATE_ARRIVAL_ITEM}
 			render={(submit, close, data, refetch) => <ArrivalItemForm mode='create' data={{ arrivalId, ...data }} onSubmit={submit} onCancel={close} onRefetch={refetch}/>}

@@ -181,7 +181,8 @@ function DepartureItemForm({ mode, data, onSubmit, onCancel, onRefetch, pharmacy
 export function CreateDepartureItem({ departureId, pharmacyId }: { departureId: number, pharmacyId: number }) {
 	return (
 		<CreateDialog<IDepartureItemCreateArgs, IDepartureItemDependencies>
-			title='Crear ítem'
+			title='Agregar nuevo item'
+			buttonSize='small'
 			query={query.INVENTORIES}
 			options={{ variables: { pharmacyId } }}
 			mutation={mutation.CREATE_DEPARTURE_ITEM}

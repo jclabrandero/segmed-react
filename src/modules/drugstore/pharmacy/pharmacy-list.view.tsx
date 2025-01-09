@@ -57,7 +57,7 @@ export function PharmacyList() {
 						}
 						<InspectPharmacy id={id}/>
 						<Link to={`inventario/${id}`}>
-							<Button shape='circle' type='text' size='small' className='table-toolbtn' icon={<ProductFilled/>}/>
+							<Button shape='circle' size='small' className='table-toolbtn' icon={<ProductFilled/>}/>
 						</Link>
 					</Space>
 				)}/>
