@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import { DocumentNode, useLazyQuery, useMutation } from '@apollo/client'
 import { Button,  Modal } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
@@ -13,6 +13,8 @@ import './dialog.css'
 type CreateDialogWithoutDependenciesProps<TCreateArgs> = {
 	title:			string
 	buttonText?:	string
+	buttonSize?:	'small' | 'large'
+	icon?:			ReactNode
 	render:			(submit: (args: TCreateArgs) => void, close: () => void) => React.ReactNode
 	mutation:		DocumentNode
 }
@@ -20,6 +22,8 @@ type CreateDialogWithoutDependenciesProps<TCreateArgs> = {
 type CreateDialogWithDependenciesProps<TCreateArgs, TDependencies> = {
 	title:			string
 	buttonText?:	string
+	buttonSize?:	'small' | 'large'
+	icon?:			ReactNode
 	render:			(submit: (args: TCreateArgs) => void, close: () => void, data: TDependencies, refetch: () => void) => React.ReactNode
 	query:			DocumentNode
 	mutation:		DocumentNode
@@ -27,18 +31,29 @@ type CreateDialogWithDependenciesProps<TCreateArgs, TDependencies> = {
 }
 
 function CreateDialogWithoutDependencies<TCreateArgs>(
-	{ title, buttonText, mutation, render }: CreateDialogWithoutDependenciesProps<TCreateArgs>) {
+	{ title, icon, buttonText, buttonSize, mutation, render }: CreateDialogWithoutDependenciesProps<TCreateArgs>
+) {
 	const [ open, setOpen ] = useState(false)
 		, [ error, onError ] = useError()
 	const close = () => setOpen(false)
 	const [ create, { loading: creating } ] = useMutation(mutation, { onCompleted: close, onError })
 	const submit = (data: TCreateArgs) => create({ variables: { data }})
+	const FinalIcon = icon || <PlusOutlined/>
 
 	return (
 		<>
-			<Button type='primary' shape='round' icon={<PlusOutlined/>} onClick={() => setOpen(true)}>
-				{buttonText || title}
-			</Button>
+			{
+				buttonSize && buttonSize == 'small'
+					? <Button
+						shape='circle'
+						size='small'
+						className='table-toolbtn'
+						icon={FinalIcon}
+						onClick={() => setOpen(true)}/>
+					: <Button type='primary' shape='round' icon={FinalIcon} onClick={() => setOpen(true)}>
+						{buttonText || title}
+					</Button>
+			}
 			<Modal
 				className='modal-dialog'
 				title={title}
@@ -56,21 +71,32 @@ function CreateDialogWithoutDependencies<TCreateArgs>(
 }
 
 function CreateDialogWithDependencies<TCreateArgs, TDependencies = object>(
-	{ title, buttonText, query, mutation, render, options }: CreateDialogWithDependenciesProps<TCreateArgs, TDependencies>) {
+	{ title, icon, buttonText, buttonSize, query, mutation, render, options }: CreateDialogWithDependenciesProps<TCreateArgs, TDependencies>
+) {
 	const [ open, setOpen ] = useState(false)
 		, [ error, onError ] = useError()
 	const close = () => setOpen(false)
 	const [ get, { loading, data, refetch }] = useLazyQuery(query, { onError, fetchPolicy: 'no-cache' })
 	const [ create, { loading: creating } ] = useMutation(mutation, { onCompleted: close, onError })
 	const submit = (data: TCreateArgs) => create({ variables: { data }})
+	const FinalIcon = icon || <PlusOutlined/>
 
 	useEffect(() => data && setOpen(true), [data])
 
 	return (
 		<>
-			<Button type='primary' shape='round' icon={<PlusOutlined/>} onClick={() => get(options)}>
-				{buttonText || title}
-			</Button>
+			{
+				buttonSize && buttonSize == 'small'
+					? <Button
+						shape='circle'
+						size='small'
+						className='table-toolbtn'
+						icon={FinalIcon}
+						onClick={() => get(options)}/>
+					: <Button type='primary' shape='round' icon={FinalIcon} onClick={() => get(options)}>
+						{buttonText || title}
+					</Button>
+			}
 			<Modal
 				className='modal-dialog'
 				title={title}
@@ -91,6 +117,8 @@ function CreateDialogWithDependencies<TCreateArgs, TDependencies = object>(
 type CreateDialogProps<TCreateArgs, TDependencies> = {
 	title:			string
 	buttonText?:	string
+	buttonSize?:	'small' | 'large'
+	icon?:			ReactNode
 	render:			(submit: (args: TCreateArgs) => void, close: () => void, data: TDependencies, refetch: () => void) => React.ReactNode
 	query?:			DocumentNode
 	options?:		object
