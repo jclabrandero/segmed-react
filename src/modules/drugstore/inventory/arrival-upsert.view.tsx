@@ -3,7 +3,7 @@ import { useSubscription } from '@apollo/client'
 import { Button, Form, Input, InputNumber, Space, Select, DatePicker, Divider } from 'antd'
 
 import { CreateDialog } from '../../../components'
-import { Arrival, Batch } from '../../../types'
+import { Arrival, Batch, Provider } from '../../../types'
 import { useAntdHelp, useAuth } from '../../../hooks'
 import { CreateBatch } from '../batch/batch-upsert.view'
 import { subscription as batchSubscription } from '../batch/batch.constant'
@@ -13,10 +13,16 @@ import { mutation, query } from './inventory.constant'
 interface IArrivalCreateArgs {
 	remark:			string
 	arrivalDate:	Date
+	invoiceNumber:				number
+	invoiceAuthorizationCode?:	string
+	invoiceControlCode?:		string
+
 	pharmacyId:		boolean
+	providerId?:	number
 }
 
 interface IArrivalDependencies {
+	providers:		Array<Provider>
 	pharmacyId?:	number
 	arrival?:		Arrival
 }
@@ -29,10 +35,10 @@ type ArrivalFormProps = {
 }
 
 function ArrivalForm({ mode, data, onSubmit, onCancel }: ArrivalFormProps) {
-	const { arrival, pharmacyId } = data
+	const { providers, arrival, pharmacyId } = data
 		, { Item } = Form
 		, [ form ] = Form.useForm()
-		, { touched } = useAntdHelp()
+		, { touched, selectFilter, map } = useAntdHelp()
 	const onFinish = () => {
 		const payload = touched(form)
 		if (mode == 'create') onSubmit({ pharmacyId, ...payload })
@@ -42,8 +48,37 @@ function ArrivalForm({ mode, data, onSubmit, onCancel }: ArrivalFormProps) {
 		<Form form={form} layout='vertical' autoComplete='off' onFinish={onFinish} initialValues={arrival}>
 			<Item
 				name='remark'
-				label='Observación'
-				rules={[{ required: true, message: 'Escriba la observación' }]}>
+				label='Descripción'
+				rules={[{ required: true, message: 'Escriba la descripción' }]}>
+				<Input/>
+			</Item>
+			<Item name='providerId' label='Proveedor' rules={[{ required: true, message: 'Seleccione el proveedor' }]}>
+				<Select
+					options={map(providers, (provider) => {
+						return {
+							label: `${provider.businessName} ${provider.nit ? `- NIT: ${provider.nit}` : ''}`,
+							value: provider.id
+						}
+					})}
+					showSearch={true}
+					filterOption={selectFilter}
+					placeholder='Proveedor'
+				/>
+			</Item>
+			<Item
+				name='invoiceNumber'
+				label='Número de factura'
+				rules={[{ required: true, message: 'Escriba el número de factura' }]}>
+				<InputNumber/>
+			</Item>
+			<Item
+				name='invoiceAuthorizationCode'
+				label='Código de autorización de la factura'>
+				<Input/>
+			</Item>
+			<Item
+				name='invoiceControlCode'
+				label='Código de control de la factura'>
 				<Input/>
 			</Item>
 			<Item
@@ -66,8 +101,10 @@ export function CreateArrival({ pharmacyId }: { pharmacyId: number }) {
 	return (
 		<CreateDialog<IArrivalCreateArgs, IArrivalDependencies>
 			title='Nuevo ingreso'
+			query={query.CREATE_ARRIVAL_DEPENDENCIES}
+			options={{ variables: { query: {} } }}
 			mutation={mutation.CREATE_ARRIVAL}
-			render={(submit, close) => <ArrivalForm mode='create' data={{ pharmacyId }} onSubmit={submit} onCancel={close}/>}
+			render={(submit, close, data) => <ArrivalForm mode='create' data={{ pharmacyId, ...data }} onSubmit={submit} onCancel={close}/>}
 		/>
 	)
 }

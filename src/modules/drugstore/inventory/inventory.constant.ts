@@ -21,7 +21,8 @@ export const query = {
 	ARRIVALS: gql`
 		query arrivals($pharmacyId: Int!) {
 			arrivals(pharmacyId: $pharmacyId) {
-				id remark arrivalDate status
+				id remark arrivalDate invoiceNumber invoiceAuthorizationCode invoiceControlCode status
+				provider { businessName nit }
 			}
 		}
 	`,
@@ -41,6 +42,13 @@ export const query = {
 					}
 					__typename @skip(if: true)
 				}
+			}
+		}
+	`,
+	CREATE_ARRIVAL_DEPENDENCIES: gql`
+		query providers($query: IProviderFilterArgs!) {
+			providers: activeProviders(query: $query) {
+				id businessName nit
 			}
 		}
 	`,

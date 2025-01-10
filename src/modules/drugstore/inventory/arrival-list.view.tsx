@@ -79,6 +79,15 @@ export function ArrivalList({ pharmacyId }: { pharmacyId: number }) {
 			>
 				<Column title='Id' dataIndex='id'/>
 				<Column title='Observación' dataIndex='remark' ellipsis/>
+				<Column title='Proveedor' ellipsis render={({ provider }) => (
+					<span>{ provider && provider.businessName }</span>
+				)}/>
+				<Column title='NIT proveedor' ellipsis render={({ provider }) => (
+					<span>{ provider && provider.nit }</span>
+				)}/>
+				<Column title='Número de factura' dataIndex='invoiceNumber' ellipsis/>
+				<Column title='Código autorización' dataIndex='invoiceAuthorizationCode' ellipsis/>
+				<Column title='Código control' dataIndex='invoiceControlCode' ellipsis/>
 				<Column title='Fecha de ingreso' ellipsis render={({ arrivalDate }) => (
 					<span>{format(arrivalDate, 'dd/MM/yyyy')}</span>
 				)}/>
