@@ -132,6 +132,14 @@ export const mutation = {
 			}
 		}
 	`,
+	PRINT_REPORT: gql`
+		mutation print($data: IInventoryPrintReportArgs!) {
+			file: printReport(data: $data) {
+				data
+				info { type }
+			}
+		}
+	`
 }
 
 export const subscription = {

@@ -12,6 +12,7 @@ import { query } from '../pharmacy/pharmacy.constant'
 import { StockList } from './stock-list.view'
 import { ArrivalList } from './arrival-list.view'
 import { DepartureList } from './departure-list.view'
+import { ReportList } from './report-list.view'
 
 export function InventoryManage() {
 	const id = Number(useParams().id)
@@ -45,6 +46,11 @@ export function InventoryManage() {
 						key: 'a126',
 						label: 'Lotes',
 						children: <BatchList/>
+					},
+					{
+						key: 'a127',
+						label: 'Reportes',
+						children: <ReportList pharmacyId={id}/>
 					},
 				]}/>
 			</Card>
