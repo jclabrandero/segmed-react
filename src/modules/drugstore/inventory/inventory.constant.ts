@@ -21,7 +21,8 @@ export const query = {
 	ARRIVALS: gql`
 		query arrivals($pharmacyId: Int!) {
 			arrivals(pharmacyId: $pharmacyId) {
-				id remark arrivalDate invoiceNumber invoiceAuthorizationCode invoiceControlCode status
+				id remark arrivalDate invoiceNumber invoiceAuthorizationCode invoiceControlCode invoiceTotalRefPrice
+				total status
 				provider { businessName nit }
 			}
 		}
@@ -29,7 +30,7 @@ export const query = {
 	ARRIVAL_ITEMS: gql`
 		query arrivalItems($arrivalId: Int!) {
 			arrivalItems(arrivalId: $arrivalId) {
-				id quantity price
+				id quantity price total
 				batch {
 					id code expireAt
 					medication {

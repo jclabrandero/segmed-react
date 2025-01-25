@@ -87,6 +87,12 @@ function ArrivalForm({ mode, data, onSubmit, onCancel }: ArrivalFormProps) {
 				rules={[{ required: true, message: 'Seleccione fecha de ingreso' }]}>
 				<DatePicker format='DD/MM/YYYY'/>
 			</Item>
+			<Item
+				name='invoiceTotalRefPrice'
+				label='Total factura'
+				rules={[{ required: true, message: 'Escriba el total de la factura' }]}>
+				<InputNumber/>
+			</Item>
 			<div className='modal-dialog-footer'>
 				<Space>
 					<Button type='default' onClick={onCancel}>Cancelar</Button>

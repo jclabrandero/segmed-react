@@ -32,7 +32,7 @@ function ArrivalItemList({ arrivalId }: { arrivalId: number }) {
 				<Column title='Fecha de expiración' ellipsis render={({ batch }) => format(batch.expireAt, 'dd/MM/yyyy')}/>
 				<Column title='Cantidad' ellipsis dataIndex='quantity'/>
 				<Column title='Precio' ellipsis dataIndex='price'/>
-				
+				<Column title='Total' ellipsis dataIndex='total'/>
 			</Table>
 			<ErrorDialog error={error}/>
 		</>
@@ -91,6 +91,8 @@ export function ArrivalList({ pharmacyId }: { pharmacyId: number }) {
 				<Column title='Fecha de ingreso' ellipsis render={({ arrivalDate }) => (
 					<span>{format(arrivalDate, 'dd/MM/yyyy')}</span>
 				)}/>
+				<Column title='Total factura' dataIndex='invoiceTotalRefPrice' ellipsis/>
+				<Column title='Total' dataIndex='total' ellipsis/>
 				<Column title='Acciones' width='6rem' fixed='right' render={({ id }) => (
 					<Space>
 						<CreateArrivalItem arrivalId={id}/>
