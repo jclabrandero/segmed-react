@@ -1,9 +1,10 @@
 
 import { useSubscription } from '@apollo/client'
 import { Button, Form, Input, InputNumber, Space, Select, DatePicker, Divider } from 'antd'
+import { CheckOutlined, IssuesCloseOutlined } from '@ant-design/icons'
 
-import { CreateDialog } from '../../../components'
-import { Arrival, Batch, Provider } from '../../../types'
+import { CreateDialog, UpdateDialog } from '../../../components'
+import { Arrival, Batch, Provider, UpdateProps } from '../../../types'
 import { useAntdHelp, useAuth } from '../../../hooks'
 import { CreateBatch } from '../batch/batch-upsert.view'
 import { subscription as batchSubscription } from '../batch/batch.constant'
@@ -207,6 +208,52 @@ export function CreateArrivalItem({ arrivalId }: { arrivalId: number }) {
 			query={query.CREATE_ARRIVAL_ITEM_DEPENDENCIES}
 			mutation={mutation.CREATE_ARRIVAL_ITEM}
 			render={(submit, close, data, refetch) => <ArrivalItemForm mode='create' data={{ arrivalId, ...data }} onSubmit={submit} onCancel={close} onRefetch={refetch}/>}
+		/>
+	)
+}
+
+export function ConfirmApproveArrival({ id }: UpdateProps) {
+	return (
+		<UpdateDialog<{ id: number }, { arrival: Arrival }>
+			id={id}
+			title='Confirmar aprobación'
+			query={query.ARRIVAL}
+			mutation={mutation.APPROVE_ARRIVAL}
+			icon={<CheckOutlined/>}
+			render={(submit, close, data) => (
+				<Form layout='vertical' onFinish={() => submit({ id })}>
+					<p>Está seguro de aprobar la recepción de medicamentos "{ data.arrival.remark }"?</p>
+					<div className='modal-dialog-footer'>
+						<Space>
+							<Button type='default' onClick={close}>Cancelar</Button>
+							<Button type='primary' htmlType='submit'>Aceptar</Button>
+						</Space>
+					</div>
+				</Form>
+			)}
+		/>
+	)
+}
+
+export function ConfirmCloseArrival({ id }: UpdateProps) {
+	return (
+		<UpdateDialog<{ id: number }, { arrival: Arrival }>
+			id={id}
+			title='Confirmar cerrar recepción'
+			query={query.ARRIVAL}
+			mutation={mutation.CLOSE_ARRIVAL}
+			icon={<IssuesCloseOutlined/>}
+			render={(submit, close, data) => (
+				<Form layout='vertical' onFinish={() => submit({ id })}>
+					<p>Está seguro de cerrar la recepción de medicamentos "{ data.arrival.remark }"?</p>
+					<div className='modal-dialog-footer'>
+						<Space>
+							<Button type='default' onClick={close}>Cancelar</Button>
+							<Button type='primary' htmlType='submit'>Aceptar</Button>
+						</Space>
+					</div>
+				</Form>
+			)}
 		/>
 	)
 }

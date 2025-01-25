@@ -22,7 +22,16 @@ export const query = {
 		query arrivals($pharmacyId: Int!) {
 			arrivals(pharmacyId: $pharmacyId) {
 				id remark arrivalDate invoiceNumber invoiceAuthorizationCode invoiceControlCode invoiceTotalRefPrice
-				total status
+				total approvalState closed status
+				provider { businessName nit }
+			}
+		}
+	`,
+	ARRIVAL: gql`
+		query arrival($id: Int!) {
+			arrival(id: $id) {
+				id remark arrivalDate invoiceNumber invoiceAuthorizationCode invoiceControlCode invoiceTotalRefPrice
+				total approvalState status
 				provider { businessName nit }
 			}
 		}
@@ -108,6 +117,20 @@ export const mutation = {
 	CREATE_ARRIVAL: gql`
 		mutation create($data: IArrivalCreateArgs!) {
 			createArrival(data: $data) {
+				id
+			}
+		}
+	`,
+	APPROVE_ARRIVAL: gql`
+		mutation approveArrival($id: Int!) {
+			approveArrival(id: $id) {
+				id
+			}
+		}
+	`,
+	CLOSE_ARRIVAL: gql`
+		mutation closeArrival($id: Int!) {
+			closeArrival(id: $id) {
 				id
 			}
 		}

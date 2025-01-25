@@ -1,13 +1,13 @@
 
 import { useQuery, useSubscription } from '@apollo/client'
-import { Table, Input, Space } from 'antd'
+import { Table, Input, Space, Tag } from 'antd'
 
 import { ErrorDialog, ToolBar, ToolBarMenu } from '../../../components'
 import { useError, useFilter, useAntdHelp, useAuth, useDate } from '../../../hooks'
 import { Arrival, ArrivalItem } from '../../../types'
 
 import { query, subscription } from './inventory.constant'
-import { CreateArrival, CreateArrivalItem } from './arrival-upsert.view'
+import { ConfirmApproveArrival, ConfirmCloseArrival, CreateArrival, CreateArrivalItem } from './arrival-upsert.view'
 
 function ArrivalItemList({ arrivalId }: { arrivalId: number }) {
 	const { addKey } = useAntdHelp()
@@ -37,6 +37,15 @@ function ArrivalItemList({ arrivalId }: { arrivalId: number }) {
 			<ErrorDialog error={error}/>
 		</>
 	)
+}
+
+function arrivalApprovalState(val: number, closed: boolean = false) {
+	if (closed) return { label: 'Finalizado', color: 'blue' }
+	switch(val) {
+		case 0: return { label: 'Parcial', color: 'orange' }
+		case 1: return { label: 'Aprobado', color: 'green' }
+		default: return { label: 'Desconocido', color: 'gray' }
+	}
 }
 
 export function ArrivalList({ pharmacyId }: { pharmacyId: number }) {
@@ -93,9 +102,15 @@ export function ArrivalList({ pharmacyId }: { pharmacyId: number }) {
 				)}/>
 				<Column title='Total factura' dataIndex='invoiceTotalRefPrice' ellipsis/>
 				<Column title='Total' dataIndex='total' ellipsis/>
-				<Column title='Acciones' width='6rem' fixed='right' render={({ id }) => (
+				<Column title='Estado' render={(record) => {
+					const e = arrivalApprovalState(record.approvalState, record.closed)
+					return (<Tag color={ e.color }>{ e.label }</Tag>)
+				}}/>
+				<Column title='Acciones' width='6rem' fixed='right' render={({ id, approvalState, closed }) => (
 					<Space>
-						<CreateArrivalItem arrivalId={id}/>
+						{ !closed && <CreateArrivalItem arrivalId={id}/> }
+						{ has('ApproveArrival', approvalState == 0 && <ConfirmApproveArrival id={id}/>) }
+						{ has('WriteInventory', approvalState == 1 && !closed && <ConfirmCloseArrival id={id}/>) }
 					</Space>
 				)}/>
 			</Table>
