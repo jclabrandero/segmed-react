@@ -16,9 +16,10 @@ type UpdateDialogProps<TUpdateArgs, TDependencies> = {
 	mutation:	DocumentNode
 	size?:		'small' | 'large'
 	icon?:		ReactNode
+	options?:	object
 }
 
-export function UpdateDialog<TUpdateArgs, TDependencies>({ id, title, query, mutation, render, size, icon }: UpdateDialogProps<TUpdateArgs, TDependencies>) {
+export function UpdateDialog<TUpdateArgs, TDependencies>({ id, title, query, mutation, render, size, icon, options }: UpdateDialogProps<TUpdateArgs, TDependencies>) {
 	const [ open, setOpen ] = useState(false)
 		, [ error, onError ] = useError()
 	const close = () => setOpen(false)
@@ -33,7 +34,7 @@ export function UpdateDialog<TUpdateArgs, TDependencies>({ id, title, query, mut
 		<>
 			{
 				size && size == 'large'
-					? <Button type='primary' shape='round' icon={FinalIcon} onClick={() => get({ variables: { id } })}>
+					? <Button type='primary' shape='round' icon={FinalIcon} onClick={() => get({ variables: { id, ...options } })}>
 						{title}
 					</Button>
 					: <Button
@@ -42,7 +43,7 @@ export function UpdateDialog<TUpdateArgs, TDependencies>({ id, title, query, mut
 						size='small'
 						className='table-toolbtn'
 						icon={FinalIcon}
-						onClick={() => get({ variables: { id } })}/>
+						onClick={() => get({ variables: { id, ...options } })}/>
 			}
 			<Modal
 				className='modal-dialog'
