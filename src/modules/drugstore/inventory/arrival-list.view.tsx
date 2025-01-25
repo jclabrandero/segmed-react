@@ -7,7 +7,7 @@ import { useError, useFilter, useAntdHelp, useAuth, useDate } from '../../../hoo
 import { Arrival, ArrivalItem } from '../../../types'
 
 import { query, subscription } from './inventory.constant'
-import { ConfirmApproveArrival, ConfirmCloseArrival, CreateArrival, CreateArrivalItem } from './arrival-upsert.view'
+import { ConfirmApproveArrival, ConfirmCloseArrival, CreateArrival, CreateArrivalItem, UpdateArrival } from './arrival-upsert.view'
 
 function ArrivalItemList({ arrivalId }: { arrivalId: number }) {
 	const { addKey } = useAntdHelp()
@@ -109,6 +109,7 @@ export function ArrivalList({ pharmacyId }: { pharmacyId: number }) {
 				<Column title='Acciones' width='6rem' fixed='right' render={({ id, approvalState, closed }) => (
 					<Space>
 						{ !closed && <CreateArrivalItem arrivalId={id}/> }
+						{ !closed && <UpdateArrival id={id}/> }
 						{ has('ApproveArrival', approvalState == 0 && <ConfirmApproveArrival id={id}/>) }
 						{ has('WriteInventory', approvalState == 1 && !closed && <ConfirmCloseArrival id={id}/>) }
 					</Space>

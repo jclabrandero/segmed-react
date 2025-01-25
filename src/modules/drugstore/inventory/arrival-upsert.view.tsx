@@ -2,6 +2,7 @@
 import { useSubscription } from '@apollo/client'
 import { Button, Form, Input, InputNumber, Space, Select, DatePicker, Divider } from 'antd'
 import { CheckOutlined, IssuesCloseOutlined } from '@ant-design/icons'
+import dayjs from 'dayjs'
 
 import { CreateDialog, UpdateDialog } from '../../../components'
 import { Arrival, Batch, Provider, UpdateProps } from '../../../types'
@@ -43,10 +44,20 @@ function ArrivalForm({ mode, data, onSubmit, onCancel }: ArrivalFormProps) {
 	const onFinish = () => {
 		const payload = touched(form)
 		if (mode == 'create') onSubmit({ pharmacyId, ...payload })
+		if (mode == 'update') onSubmit(payload)
+	}
+	const formatInitialValues = (arrival?: Arrival) => {
+		if (!arrival) return undefined
+		const { provider, arrivalDate, ...rest } = arrival
+		return {
+			...rest,
+			providerId: provider ? provider.id : undefined,
+			arrivalDate: arrivalDate ? dayjs(arrivalDate) : undefined,
+		}
 	}
 
 	return (
-		<Form form={form} layout='vertical' autoComplete='off' onFinish={onFinish} initialValues={arrival}>
+		<Form form={form} layout='vertical' autoComplete='off' onFinish={onFinish} initialValues={formatInitialValues(arrival)}>
 			<Item
 				name='remark'
 				label='Descripción'
@@ -254,6 +265,19 @@ export function ConfirmCloseArrival({ id }: UpdateProps) {
 					</div>
 				</Form>
 			)}
+		/>
+	)
+}
+
+export function UpdateArrival({ id }: UpdateProps) {
+	return (
+		<UpdateDialog<IArrivalCreateArgs, IArrivalDependencies>
+			id={id}
+			title='Editar proveedor'
+			query={query.UPDATE_ARRIVAL_DEPENDENCIES}
+			options={{ query: {} }}
+			mutation={mutation.UPDATE_ARRIVAL}
+			render={(submit, close, data) => <ArrivalForm mode='update' data={data} onSubmit={submit} onCancel={close}/>}
 		/>
 	)
 }

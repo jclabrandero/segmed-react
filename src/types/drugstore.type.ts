@@ -1,5 +1,5 @@
 
-import { DrugClass, DrugUnit, Belonging } from '.'
+import { DrugClass, DrugUnit, Belonging, Provider } from '.'
 
 export type Medication = {
 	id:				number
@@ -57,6 +57,8 @@ export type Arrival = {
 	arrivalDate:	Date
 
 	status:	number
+
+	provider:	Provider
 }
 
 export type ArrivalItem = {

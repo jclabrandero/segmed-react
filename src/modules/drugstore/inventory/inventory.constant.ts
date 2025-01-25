@@ -62,6 +62,17 @@ export const query = {
 			}
 		}
 	`,
+	UPDATE_ARRIVAL_DEPENDENCIES: gql`
+		query dependencies($id: Int!, $query: IProviderFilterArgs!) {
+			providers: activeProviders(query: $query) {
+				id businessName nit
+			}
+			arrival(id: $id) {
+				id remark arrivalDate invoiceNumber invoiceAuthorizationCode invoiceControlCode invoiceTotalRefPrice
+				provider { id }
+			}
+		}
+	`,
 	CREATE_ARRIVAL_ITEM_DEPENDENCIES: gql`
 		query dependencies {
 			batches {
@@ -131,6 +142,13 @@ export const mutation = {
 	CLOSE_ARRIVAL: gql`
 		mutation closeArrival($id: Int!) {
 			closeArrival(id: $id) {
+				id
+			}
+		}
+	`,
+	UPDATE_ARRIVAL: gql`
+		mutation update($id: Int!, $data: IArrivalUpdateArgs!) {
+			updateArrival(id: $id, data: $data) {
 				id
 			}
 		}
