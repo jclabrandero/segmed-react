@@ -55,6 +55,25 @@ export const query = {
 			}
 		}
 	`,
+	ARRIVAL_ITEM: gql`
+		query arrivalItem($id: Int!) {
+			arrivalItem(id: $id) {
+				id quantity price
+				batch {
+					id code expireAt
+					medication {
+						id code name concentration
+						unit {
+							id name
+							__typename @skip(if: true)
+						}
+						__typename @skip(if: true)
+					}
+					__typename @skip(if: true)
+				}
+			}
+		}
+	`,
 	CREATE_ARRIVAL_DEPENDENCIES: gql`
 		query providers($query: IProviderFilterArgs!) {
 			providers: activeProviders(query: $query) {
@@ -183,6 +202,13 @@ export const mutation = {
 			}
 		}
 	`,
+	DELETE_ARRIVAL: gql`
+		mutation delete($id: Int!) {
+			deleteArrival(id: $id) {
+				id
+			}
+		}
+	`,
 	CREATE_ARRIVAL_ITEM: gql`
 		mutation create($data: IArrivalItemCreateArgs!) {
 			createArrivalItem(data: $data) {
@@ -193,6 +219,13 @@ export const mutation = {
 	UPDATE_ARRIVAL_ITEM: gql`
 		mutation update($id: Int!, $data: IArrivalItemUpdateArgs!) {
 			updateArrivalItem(id: $id, data: $data) {
+				id
+			}
+		}
+	`,
+	DELETE_ARRIVAL_ITEM: gql`
+		mutation delete($id: Int!) {
+			deleteArrivalItem(id: $id) {
 				id
 			}
 		}

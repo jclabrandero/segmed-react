@@ -4,7 +4,7 @@ import { Button, Form, Input, InputNumber, Space, Select, DatePicker, Divider } 
 import { CheckOutlined, IssuesCloseOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 
-import { CreateDialog, UpdateDialog } from '../../../components'
+import { CreateDialog, DeleteDialog, UpdateDialog } from '../../../components'
 import { Arrival, ArrivalItem, Batch, Provider, UpdateProps } from '../../../types'
 import { useAntdHelp, useAuth } from '../../../hooks'
 import { CreateBatch } from '../batch/batch-upsert.view'
@@ -186,6 +186,19 @@ export function UpdateArrival({ id }: UpdateProps) {
 	)
 }
 
+export function DeleteArrival({ id }: UpdateProps) {
+	return (
+		<DeleteDialog<{ arrival: Arrival }>
+			id={id}
+			title='Eliminar ingreso'
+			render={({ arrival }) => `item: ${arrival.remark}`}
+			query={query.ARRIVAL}
+			mutation={mutation.DELETE_ARRIVAL}
+		/>
+	)
+}
+
+
 interface IArrivalItemCreateArgs {
 	quantity:	number
 	price:		number
@@ -231,37 +244,31 @@ function ArrivalItemForm({ mode, data, onSubmit, onCancel, onRefetch }: ArrivalI
 
 	return (
 		<Form form={form} layout='vertical' autoComplete='off' onFinish={onFinish} initialValues={format(arrivalItem)}>
-			{
-				mode == 'create'
-					? <Item name='batchId' label='Lote' rules={[{ required: true, message: 'Seleccione el lote' }]}>
-						<Select
-							options={map(batches, (batch: Batch) => {
-								const { code, name, concentration, unit} = batch.medication
-								return {
-									label: `${batch.code} - ${code} - ${name} - ${concentration} - ${unit.name}`,
-									value: batch.id
-								}
-							})}
-							showSearch={true}
-							filterOption={selectFilter}
-							placeholder='Número de lote'
-							dropdownRender={menu => (
-								<>
-									{menu}
-									{
-										has('WriteBatch', <>
-											<Divider style={{ margin: '8px 0' }}/>
-											<CreateBatch/>
-										</>)
-									}
-								</>
-							)}
-						/>
-					</Item>
-					: <Item label='Lote'>
-						<Input readOnly value={`${arrivalItem?.batch.code} - ${arrivalItem?.batch.medication.code} - ${arrivalItem?.batch.medication.name} - ${arrivalItem?.batch.medication.concentration} - ${arrivalItem?.batch.medication.unit.name}`}></Input>
-					</Item>
-			}
+			<Item name='batchId' label='Lote' rules={[{ required: true, message: 'Seleccione el lote' }]}>
+				<Select
+					options={map(batches, (batch: Batch) => {
+						const { code, name, concentration, unit} = batch.medication
+						return {
+							label: `${batch.code} - ${code} - ${name} - ${concentration} - ${unit.name}`,
+							value: batch.id
+						}
+					})}
+					showSearch={true}
+					filterOption={selectFilter}
+					placeholder='Número de lote'
+					dropdownRender={menu => (
+						<>
+							{menu}
+							{
+								has('WriteBatch', <>
+									<Divider style={{ margin: '8px 0' }}/>
+									<CreateBatch/>
+								</>)
+							}
+						</>
+					)}
+				/>
+			</Item>
 			
 			<Item
 				name='quantity'
@@ -307,6 +314,18 @@ export function UpdateArrivalItem({ id }: UpdateProps) {
 			query={query.UPDATE_ARRIVAL_ITEM_DEPENDENCIES}
 			mutation={mutation.UPDATE_ARRIVAL_ITEM}
 			render={(submit, close, data, refetch) => <ArrivalItemForm mode='update' data={data} onSubmit={submit} onCancel={close} onRefetch={refetch}/>}
+		/>
+	)
+}
+
+export function DeleteArrivalItem({ id }: UpdateProps) {
+	return (
+		<DeleteDialog<{ arrivalItem: ArrivalItem }>
+			id={id}
+			title='Eliminar item de ingreso'
+			render={({ arrivalItem }) => `item: ${arrivalItem.batch.code} - ${arrivalItem.batch.medication.code} - ${arrivalItem.batch.medication.name} - ${arrivalItem.batch.medication.concentration} - ${arrivalItem.batch.medication.unit.name}`}
+			query={query.ARRIVAL_ITEM}
+			mutation={mutation.DELETE_ARRIVAL_ITEM}
 		/>
 	)
 }

@@ -7,7 +7,7 @@ import { useError, useFilter, useAntdHelp, useAuth, useDate } from '../../../hoo
 import { Arrival, ArrivalItem } from '../../../types'
 
 import { query, subscription } from './inventory.constant'
-import { ConfirmApproveArrival, ConfirmCloseArrival, CreateArrival, CreateArrivalItem, UpdateArrival, UpdateArrivalItem } from './arrival-upsert.view'
+import { ConfirmApproveArrival, ConfirmCloseArrival, CreateArrival, CreateArrivalItem, DeleteArrival, DeleteArrivalItem, UpdateArrival, UpdateArrivalItem } from './arrival-upsert.view'
 
 function ArrivalItemList({ arrival }: { arrival: Arrival }) {
 	const { addKey } = useAntdHelp()
@@ -34,8 +34,10 @@ function ArrivalItemList({ arrival }: { arrival: Arrival }) {
 				<Column title='Precio' ellipsis dataIndex='price'/>
 				<Column title='Total' ellipsis dataIndex='total'/>
 				<Column title='Acciones' width='6rem' fixed='right' render={({ id }) => (
+					!arrival.closed &&
 					<Space>
-						{ !arrival.closed && <UpdateArrivalItem id={id}/> }
+						<UpdateArrivalItem id={id}/>
+						<DeleteArrivalItem id={id}/>
 					</Space>
 				)}/>
 			</Table>
@@ -113,8 +115,11 @@ export function ArrivalList({ pharmacyId }: { pharmacyId: number }) {
 				}}/>
 				<Column title='Acciones' width='6rem' fixed='right' render={({ id, approvalState, closed }) => (
 					<Space>
-						{ !closed && <CreateArrivalItem arrivalId={id}/> }
-						{ !closed && <UpdateArrival id={id}/> }
+						{ !closed && <>
+							<CreateArrivalItem arrivalId={id}/>
+							<UpdateArrival id={id}/>
+							<DeleteArrival id={id}/> 
+						</>}
 						{ has('ApproveArrival', approvalState == 0 && <ConfirmApproveArrival id={id}/>) }
 						{ has('WriteInventory', approvalState == 1 && !closed && <ConfirmCloseArrival id={id}/>) }
 					</Space>
