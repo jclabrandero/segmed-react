@@ -12,6 +12,7 @@ import { ConfirmApproveArrival, ConfirmCloseArrival, CreateArrival, CreateArriva
 function ArrivalItemList({ arrival }: { arrival: Arrival }) {
 	const { addKey } = useAntdHelp()
 		, { format } = useDate()
+		, { has } = useAuth()
 	const [ error, onError ] = useError()
 		, { loading, data } = useQuery(query.ARRIVAL_ITEMS, { onError, variables: { arrivalId: arrival.id } })
 	const { Column } = Table
@@ -36,8 +37,12 @@ function ArrivalItemList({ arrival }: { arrival: Arrival }) {
 				<Column title='Acciones' width='6rem' fixed='right' render={({ id }) => (
 					!arrival.closed &&
 					<Space>
-						<UpdateArrivalItem id={id}/>
-						<DeleteArrivalItem id={id}/>
+						{
+							has('WriteInventory', <>
+								<UpdateArrivalItem id={id}/>
+								<DeleteArrivalItem id={id}/>
+							</>)
+						}
 					</Space>
 				)}/>
 			</Table>
@@ -115,11 +120,11 @@ export function ArrivalList({ pharmacyId }: { pharmacyId: number }) {
 				}}/>
 				<Column title='Acciones' width='6rem' fixed='right' render={({ id, approvalState, closed }) => (
 					<Space>
-						{ !closed && <>
+						{ has('WriteInventory', !closed && <>
 							<CreateArrivalItem arrivalId={id}/>
 							<UpdateArrival id={id}/>
 							<DeleteArrival id={id}/> 
-						</>}
+						</>) }
 						{ has('ApproveArrival', approvalState == 0 && <ConfirmApproveArrival id={id}/>) }
 						{ has('WriteInventory', approvalState == 1 && !closed && <ConfirmCloseArrival id={id}/>) }
 					</Space>
