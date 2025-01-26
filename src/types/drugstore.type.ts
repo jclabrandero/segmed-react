@@ -57,6 +57,7 @@ export type Arrival = {
 	arrivalDate:	Date
 
 	status:	number
+	closed: boolean
 
 	provider:	Provider
 }

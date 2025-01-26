@@ -88,6 +88,36 @@ export const query = {
 			}
 		}
 	`,
+	UPDATE_ARRIVAL_ITEM_DEPENDENCIES: gql`
+		query dependencies($id: Int!) {
+			batches {
+				id code expireAt status
+				medication {
+					id code name concentration
+					unit {
+						id name
+						__typename @skip(if: true)
+					}
+					__typename @skip(if: true)
+				}
+			}
+			arrivalItem(id: $id) {
+				id quantity price
+				batch {
+					id code
+					medication {
+						id code name concentration
+						unit {
+							id name
+							__typename @skip(if: true)
+						}
+						__typename @skip(if: true)
+					}
+					__typename @skip(if: true)
+				}
+			}
+		}
+	`,
 	BATCHES_STOCK: gql`
 		query batchesStocks($data: IBatchStockArgs!) {
 			batchesStocks(data: $data) {
@@ -156,6 +186,13 @@ export const mutation = {
 	CREATE_ARRIVAL_ITEM: gql`
 		mutation create($data: IArrivalItemCreateArgs!) {
 			createArrivalItem(data: $data) {
+				id
+			}
+		}
+	`,
+	UPDATE_ARRIVAL_ITEM: gql`
+		mutation update($id: Int!, $data: IArrivalItemUpdateArgs!) {
+			updateArrivalItem(id: $id, data: $data) {
 				id
 			}
 		}

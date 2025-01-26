@@ -5,7 +5,7 @@ import { CheckOutlined, IssuesCloseOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 
 import { CreateDialog, UpdateDialog } from '../../../components'
-import { Arrival, Batch, Provider, UpdateProps } from '../../../types'
+import { Arrival, ArrivalItem, Batch, Provider, UpdateProps } from '../../../types'
 import { useAntdHelp, useAuth } from '../../../hooks'
 import { CreateBatch } from '../batch/batch-upsert.view'
 import { subscription as batchSubscription } from '../batch/batch.constant'
@@ -127,102 +127,6 @@ export function CreateArrival({ pharmacyId }: { pharmacyId: number }) {
 	)
 }
 
-interface IArrivalItemCreateArgs {
-	quantity:	number
-	price:		number
-	batchId:	number
-	arrivalId:	number
-}
-
-interface IArrivalItemDependencies {
-	batches: Array<Batch>
-	arrivalId?:	number
-}
-
-type ArrivalItemFormProps = {
-	mode: 'create' | 'update'
-	data: IArrivalItemDependencies
-	onSubmit: (data: IArrivalItemCreateArgs) => void
-	onCancel: () => void
-	onRefetch: () => void
-}
-
-function ArrivalItemForm({ mode, data, onSubmit, onCancel, onRefetch }: ArrivalItemFormProps) {
-	const { arrivalId, batches } = data
-		, { Item } = Form
-		, [ form ] = Form.useForm()
-		, { touched, map, selectFilter } = useAntdHelp()
-		, { has } = useAuth()
-	const onFinish = () => {
-		const payload = touched(form)
-		if (mode == 'create') onSubmit({ arrivalId, ...payload })
-	}
-
-	useSubscription(batchSubscription.BATCH_UPSERTED, { onData: onRefetch })
-
-	return (
-		<Form form={form} layout='vertical' autoComplete='off' onFinish={onFinish}>
-			<Item name='batchId' label='Lote' rules={[{ required: true, message: 'Seleccione el lote' }]}>
-				<Select
-					options={map(batches, (batch: Batch) => {
-						const { code, name, concentration, unit} = batch.medication
-						return {
-							label: `${batch.code} - ${code} - ${name} - ${concentration} - ${unit.name}`,
-							value: batch.id
-						}
-					})}
-					showSearch={true}
-					filterOption={selectFilter}
-					placeholder='Número de lote'
-					dropdownRender={menu => (
-						<>
-							{menu}
-							{
-								has('WriteBatch', <>
-									<Divider style={{ margin: '8px 0' }}/>
-									<CreateBatch/>
-								</>)
-							}
-						</>
-					)}
-				/>
-			</Item>
-			<Item
-				name='quantity'
-				label='Cantidad'
-				rules={[{ required: true, message: 'Escriba la cantidad' }]}>
-				<InputNumber min='1'/>
-			</Item>
-			<Item
-				name='price'
-				label='Precio'
-				rules={[{ required: true, message: 'Escriba el precio' }]}>
-				<InputNumber
-					min='0'
-					step='0.01'/>
-			</Item>
-			<div className='modal-dialog-footer'>
-				<Space>
-					<Button type='default' onClick={onCancel}>Cancelar</Button>
-					<Button type='primary' htmlType='submit'>Aceptar</Button>
-				</Space>
-			</div>
-		</Form>
-	)
-}
-
-export function CreateArrivalItem({ arrivalId }: { arrivalId: number }) {
-	return (
-		<CreateDialog<IArrivalItemCreateArgs, IArrivalItemDependencies>
-			title='Agregar nuevo item'
-			buttonSize='small'
-			query={query.CREATE_ARRIVAL_ITEM_DEPENDENCIES}
-			mutation={mutation.CREATE_ARRIVAL_ITEM}
-			render={(submit, close, data, refetch) => <ArrivalItemForm mode='create' data={{ arrivalId, ...data }} onSubmit={submit} onCancel={close} onRefetch={refetch}/>}
-		/>
-	)
-}
-
 export function ConfirmApproveArrival({ id }: UpdateProps) {
 	return (
 		<UpdateDialog<{ id: number }, { arrival: Arrival }>
@@ -273,11 +177,136 @@ export function UpdateArrival({ id }: UpdateProps) {
 	return (
 		<UpdateDialog<IArrivalCreateArgs, IArrivalDependencies>
 			id={id}
-			title='Editar proveedor'
+			title='Editar ingreso'
 			query={query.UPDATE_ARRIVAL_DEPENDENCIES}
 			options={{ query: {} }}
 			mutation={mutation.UPDATE_ARRIVAL}
 			render={(submit, close, data) => <ArrivalForm mode='update' data={data} onSubmit={submit} onCancel={close}/>}
+		/>
+	)
+}
+
+interface IArrivalItemCreateArgs {
+	quantity:	number
+	price:		number
+	batchId:	number
+	arrivalId:	number
+}
+
+interface IArrivalItemDependencies {
+	batches:		Array<Batch>
+	arrivalId?:		number
+	arrivalItem?:	ArrivalItem
+}
+
+type ArrivalItemFormProps = {
+	mode: 'create' | 'update'
+	data: IArrivalItemDependencies
+	onSubmit: (data: IArrivalItemCreateArgs) => void
+	onCancel: () => void
+	onRefetch: () => void
+}
+
+function ArrivalItemForm({ mode, data, onSubmit, onCancel, onRefetch }: ArrivalItemFormProps) {
+	const { arrivalId, batches, arrivalItem } = data
+		, { Item } = Form
+		, [ form ] = Form.useForm()
+		, { touched, map, selectFilter } = useAntdHelp()
+		, { has } = useAuth()
+	const onFinish = () => {
+		const payload = touched(form)
+		if (mode == 'create') onSubmit({ arrivalId, ...payload })
+		if (mode == 'update') onSubmit(payload)
+	}
+	const format = (arrivalItem?: ArrivalItem) => {
+		if (!arrivalItem) return undefined
+		const { batch, ...rest } = arrivalItem
+		return {
+			...rest,
+			batchId: batch.id,
+		}
+	}
+
+	useSubscription(batchSubscription.BATCH_UPSERTED, { onData: onRefetch })
+
+	return (
+		<Form form={form} layout='vertical' autoComplete='off' onFinish={onFinish} initialValues={format(arrivalItem)}>
+			{
+				mode == 'create'
+					? <Item name='batchId' label='Lote' rules={[{ required: true, message: 'Seleccione el lote' }]}>
+						<Select
+							options={map(batches, (batch: Batch) => {
+								const { code, name, concentration, unit} = batch.medication
+								return {
+									label: `${batch.code} - ${code} - ${name} - ${concentration} - ${unit.name}`,
+									value: batch.id
+								}
+							})}
+							showSearch={true}
+							filterOption={selectFilter}
+							placeholder='Número de lote'
+							dropdownRender={menu => (
+								<>
+									{menu}
+									{
+										has('WriteBatch', <>
+											<Divider style={{ margin: '8px 0' }}/>
+											<CreateBatch/>
+										</>)
+									}
+								</>
+							)}
+						/>
+					</Item>
+					: <Item label='Lote'>
+						<Input readOnly value={`${arrivalItem?.batch.code} - ${arrivalItem?.batch.medication.code} - ${arrivalItem?.batch.medication.name} - ${arrivalItem?.batch.medication.concentration} - ${arrivalItem?.batch.medication.unit.name}`}></Input>
+					</Item>
+			}
+			
+			<Item
+				name='quantity'
+				label='Cantidad'
+				rules={[{ required: true, message: 'Escriba la cantidad' }]}>
+				<InputNumber min='1'/>
+			</Item>
+			<Item
+				name='price'
+				label='Precio'
+				rules={[{ required: true, message: 'Escriba el precio' }]}>
+				<InputNumber
+					min='0'
+					step='0.01'/>
+			</Item>
+			<div className='modal-dialog-footer'>
+				<Space>
+					<Button type='default' onClick={onCancel}>Cancelar</Button>
+					<Button type='primary' htmlType='submit'>Aceptar</Button>
+				</Space>
+			</div>
+		</Form>
+	)
+}
+
+export function CreateArrivalItem({ arrivalId }: { arrivalId: number }) {
+	return (
+		<CreateDialog<IArrivalItemCreateArgs, IArrivalItemDependencies>
+			title='Agregar nuevo item'
+			buttonSize='small'
+			query={query.CREATE_ARRIVAL_ITEM_DEPENDENCIES}
+			mutation={mutation.CREATE_ARRIVAL_ITEM}
+			render={(submit, close, data, refetch) => <ArrivalItemForm mode='create' data={{ arrivalId, ...data }} onSubmit={submit} onCancel={close} onRefetch={refetch}/>}
+		/>
+	)
+}
+
+export function UpdateArrivalItem({ id }: UpdateProps) {
+	return (
+		<UpdateDialog<IArrivalItemCreateArgs, IArrivalItemDependencies>
+			id={id}
+			title='Editar item de ingreso'
+			query={query.UPDATE_ARRIVAL_ITEM_DEPENDENCIES}
+			mutation={mutation.UPDATE_ARRIVAL_ITEM}
+			render={(submit, close, data, refetch) => <ArrivalItemForm mode='update' data={data} onSubmit={submit} onCancel={close} onRefetch={refetch}/>}
 		/>
 	)
 }

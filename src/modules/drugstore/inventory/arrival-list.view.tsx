@@ -7,13 +7,13 @@ import { useError, useFilter, useAntdHelp, useAuth, useDate } from '../../../hoo
 import { Arrival, ArrivalItem } from '../../../types'
 
 import { query, subscription } from './inventory.constant'
-import { ConfirmApproveArrival, ConfirmCloseArrival, CreateArrival, CreateArrivalItem, UpdateArrival } from './arrival-upsert.view'
+import { ConfirmApproveArrival, ConfirmCloseArrival, CreateArrival, CreateArrivalItem, UpdateArrival, UpdateArrivalItem } from './arrival-upsert.view'
 
-function ArrivalItemList({ arrivalId }: { arrivalId: number }) {
+function ArrivalItemList({ arrival }: { arrival: Arrival }) {
 	const { addKey } = useAntdHelp()
 		, { format } = useDate()
 	const [ error, onError ] = useError()
-		, { loading, data } = useQuery(query.ARRIVAL_ITEMS, { onError, variables: { arrivalId } })
+		, { loading, data } = useQuery(query.ARRIVAL_ITEMS, { onError, variables: { arrivalId: arrival.id } })
 	const { Column } = Table
 
 	return (
@@ -33,6 +33,11 @@ function ArrivalItemList({ arrivalId }: { arrivalId: number }) {
 				<Column title='Cantidad' ellipsis dataIndex='quantity'/>
 				<Column title='Precio' ellipsis dataIndex='price'/>
 				<Column title='Total' ellipsis dataIndex='total'/>
+				<Column title='Acciones' width='6rem' fixed='right' render={({ id }) => (
+					<Space>
+						{ !arrival.closed && <UpdateArrivalItem id={id}/> }
+					</Space>
+				)}/>
 			</Table>
 			<ErrorDialog error={error}/>
 		</>
@@ -80,7 +85,7 @@ export function ArrivalList({ pharmacyId }: { pharmacyId: number }) {
 					expandedRowRender: (arrival) => {
 						return (<>
 							<div></div>
-							<ArrivalItemList arrivalId={arrival.id}/>
+							<ArrivalItemList arrival={arrival}/>
 						</>)
 					},
 					rowExpandable: () => true
