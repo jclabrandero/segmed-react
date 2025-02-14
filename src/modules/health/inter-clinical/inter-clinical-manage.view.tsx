@@ -79,6 +79,7 @@ export function InterclinicalManage({ clinicCareId, interclinicals, edit }: Inte
 						</Space>),
 						has('WriteClinicCare', <Space>
 							<UploadFileInterclinical id={id} clinicCareId={clinicCareId} disabled={!edit}/>
+							<DeleteInterclinical id={id} clinicCareId={clinicCareId}/>
 							<PrintInterclinical id={id}/>
 							{ (files.length > 0) && edit && <ConfirmInterclinical id={id} clinicCareId={clinicCareId} approvedState={2}/> }
 						</Space>, <Space>
