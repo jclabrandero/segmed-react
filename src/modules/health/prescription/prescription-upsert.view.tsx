@@ -74,7 +74,7 @@ function PrescriptionPharmacyMedication({ mode, pharmacyId, onCancel }: { mode: 
 						const { id, code, name, concentration, unit} = stock.medication
 						return {
 							...stock,
-							label: `${code} - ${name} - ${concentration} - ${unit.name}`,
+							label: `${code} - ${name} - ${concentration} - ${unit.name} > stock: ${stock.total}u`,
 							value: id
 						}
 					}

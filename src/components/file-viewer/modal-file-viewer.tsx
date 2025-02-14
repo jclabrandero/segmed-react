@@ -21,14 +21,15 @@ export function ModalFileViewer({ open, file, onCancel }: ModalFileViewerProps) 
 	return open ? (
 		<div className="modal-file-viewer">
 			<div className="tools">
-				<button className="btn" type="button" onClick={ onCancel }>
+				<button className="btn" type="button" onClick={ onCancel } style={{ position: 'absolute', top: '50px', right: '200px', zIndex: 1 }}>
 					<CloseOutlined/>
 				</button>
 			</div>
 			<div className="wrapper">
 				{
 					file && file.info.type == 'application/pdf' &&
-					<PdfViewer base64={ file.data }/>
+					<embed src={`data:application/pdf;base64,${file.data}`} type="application/pdf" width="100%" height="600px" />
+					//<PdfViewer base64={ file.data }/>
 				}
 			</div>
 		</div>
