@@ -56,7 +56,14 @@ function InterclinicalSpecialties({ providerId, medicalGroupId, onCancel }: Inte
 			<Form.Item name='specialties'
 				label='Detalle de especialidades y sub-especialidades'
 				rules={[{ required: true, message: 'Seleccione especialidades o sub-especialidades' }]}>
-				<TreeSelect treeCheckable={true} treeData={tree}/>
+				<TreeSelect
+					treeCheckable={true}
+					treeData={tree}
+					treeDefaultExpandAll={true}
+					//filterTreeNode={true} // Filtra los nodos del árbol
+					showSearch={false} // Permite la búsqueda
+					//onSearch={handleSearch} // Maneja el evento de búsqueda
+				/>
 			</Form.Item>
 			<Form.Item name='remark'
 				label='Observaciones'
