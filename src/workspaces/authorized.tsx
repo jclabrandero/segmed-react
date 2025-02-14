@@ -24,7 +24,7 @@ import { BelongingList, MedicalOfficeList, ProviderList } from '../modules/refer
 import { PersonList, ClerkList, InsuredList } from '../modules/folk'
 import { MedicationList, PharmacyList, InventoryManage } from '../modules/drugstore'
 import { ClinicCareList, ClinicCareManage } from '../modules/health'
-
+import { UserEdit } from '../modules/authorization/user/user-edit.view'
 
 function useAuthorized() {
 	const [ error, onError ] = useError()
@@ -119,7 +119,7 @@ export function Authorized() {
 									</>,
 									key: '0'
 								},
-								{ label: 'Configurar cuenta', key: '1' },
+								{ label: 'Configurar cuenta', key: '1', onClick: () => navigate('/cuenta') },
 								{ label: 'Cerrar sesión', key: '2', onClick: () => signOut() }
 							]
 						}} trigger={['click']}>
@@ -215,7 +215,9 @@ export function Authorized() {
 							<Route path='' element={<ClinicCareList/>}/>
 							<Route path='atencion/:id' element={<ClinicCareManage/>}/>
 						</Route>
-
+						<Route path='cuenta'>
+							<Route path='' element={<UserEdit/>}/>
+						</Route>
 						<Route path="*" element={<NotFound/>}/>
 					</Routes>
 				</main>
