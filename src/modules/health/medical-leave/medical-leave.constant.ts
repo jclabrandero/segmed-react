@@ -65,5 +65,13 @@ export const mutation = {
 				id
 			}
 		}
+	`,
+	PRINT_MEDICAL_LEAVE: gql`
+	mutation print($id: Int!) {
+			file: printMedicalLeave(id: $id) {
+				data
+				info { type }
+			}
+		}
 	`
 }

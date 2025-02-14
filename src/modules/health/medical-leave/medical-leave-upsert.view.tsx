@@ -1,14 +1,15 @@
 
+import { useState } from 'react'
+import { useMutation } from '@apollo/client'
 import { Button, DatePicker, Form, Input, Select, Space } from 'antd'
 import { CheckOutlined, PrinterFilled } from '@ant-design/icons'
 import dayjs from 'dayjs'
 
-import { CreateDialog, DeleteDialog, UpdateDialog } from '../../../components'
+import { CreateDialog, DeleteDialog, UpdateDialog, Loader, ModalFileViewer } from '../../../components'
 import { useAntdHelp } from '../../../hooks'
-import { ClinicCareId, DisabilityType, MedicalLeave, UpdateProps } from '../../../types'
+import { ClinicCareId, DisabilityType, MedicalLeave, UpdateProps, FileBase64 } from '../../../types'
 
 import { mutation, query } from './medical-leave.constant'
-
 
 interface IMedicalLeaveCreateArgs {
 	clinicCareId:	number
@@ -145,8 +146,10 @@ export function ApproveMedicalLeave({ id, clinicCareId }: UpdateProps & ClinicCa
 	)
 }
 
-export function PrintMedicalLeave() {
-
+export function PrintMedicalLeave({ id }: { id: number }) {
+	const [ previewFile, setPreviewFile ] = useState<FileBase64 | null>(null)
+	const onLoadFile = ({ file }: { file: FileBase64 }) => setPreviewFile(file)
+		, [ print, { loading } ] = useMutation(mutation.PRINT_MEDICAL_LEAVE, { onCompleted: onLoadFile })
 	return (
 		<>
 			<Button
@@ -155,8 +158,10 @@ export function PrintMedicalLeave() {
 				size='small'
 				className='table-toolbtn'
 				icon={<PrinterFilled/>}
-				onClick={() => {}}/>
-
+				onClick={() => print({ variables: { id } })}
+			/>
+			<ModalFileViewer open={previewFile != null} file={previewFile} onCancel={() => setPreviewFile(null)} />
+			<Loader show={loading} />
 		</>
 	)
 }

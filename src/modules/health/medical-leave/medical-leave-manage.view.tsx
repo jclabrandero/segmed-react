@@ -73,7 +73,7 @@ export function MedicalLeaveManage({ clinicCareId, medicalLeaves, edit }: Medica
 							}
 						</Space>,
 						(<Space>
-							<PrintMedicalLeave/>
+							<PrintMedicalLeave id={id}/>
 						</Space>)
 					]
 					return stateOptions[approvalState]
