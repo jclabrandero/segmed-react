@@ -7,7 +7,7 @@ import { useError, useAntdHelp, useFilter, useAuth } from '../../../hooks'
 import { NotAllowed } from '../../basic'
 import { Provider } from '../../../types'
 
-import { CreateProvider, InspectProvider, UpdateProvider } from './provider-upsert.view'
+import { CreateProvider, InspectProvider, UpdateProvider, DeleteProvider } from './provider-upsert.view'
 import { query, subscription } from './provider.constant'
 
 
@@ -55,6 +55,7 @@ export function ProviderList() {
 						{
 							has('WriteProvider', <>
 								<UpdateProvider id={id}/>
+								<DeleteProvider id={id}/>
 							</>)
 						}
 						<InspectProvider id={id}/>

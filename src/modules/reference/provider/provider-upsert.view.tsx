@@ -2,14 +2,13 @@
 import { useSubscription } from '@apollo/client'
 import { Button, Card, Divider, Form, Input, Select, Space, Tree, TreeSelect } from 'antd'
 
-import { CreateDialog, InspectDialog, UpdateDialog } from '../../../components'
+import { CreateDialog, DeleteDialog, InspectDialog, UpdateDialog } from '../../../components'
 import { Provider, Belonging, MedicalGroup, UpdateProps } from '../../../types'
 import { useAntdHelp, useAuth } from '../../../hooks'
 
 import { CreateBelonging } from '../belonging/belonging-upsert.view'
 import { subscription as belongingSubscription } from '../belonging/belonging.constant'
 import { mutation, query } from './provider.constant'
-
 
 interface IProviderCreateArgs {
 	vendorCode:	string
@@ -152,6 +151,23 @@ export function UpdateProvider({ id }: UpdateProps) {
 			query={query.UPDATE_DEPENDENCIES}
 			mutation={mutation.UPDATE_PROVIDER}
 			render={(submit, close, data, refetch) => <ProviderForm mode='update' data={data} onSubmit={submit} onCancel={close} onRefetch={refetch}/>}
+		/>
+	)
+}
+
+export function DeleteProvider({ id }: UpdateProps) {
+	return (
+		<DeleteDialog<{ provider: Provider }>
+			id={id}
+			title='Eliminar proveedor'
+			render={({ provider }) => (
+				<div>
+					<p>Vendor: {provider.vendorCode} - ID:{provider.id}</p>
+					<p>Razon Social: {provider.businessName}</p>
+				</div>
+			)}
+			query={query.PROVIDER}
+			mutation={mutation.DELETE_PROVIDER}
 		/>
 	)
 }
