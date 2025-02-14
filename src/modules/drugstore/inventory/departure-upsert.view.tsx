@@ -5,7 +5,7 @@ import { Button, Form, Input, InputNumber, Space, Select, DatePicker, Spin } fro
 
 import { CreateDialog } from '../../../components'
 import { Departure, Inventory, Batch } from '../../../types'
-import { useAntdHelp } from '../../../hooks'
+import { useAntdHelp, useDate } from '../../../hooks'
 import { subscription as batchSubscription } from '../batch/batch.constant'
 
 import { mutation, query } from './inventory.constant'
@@ -95,6 +95,7 @@ type DepartureItemFormProps = {
 function MedicationBatch({ pharmacyId, medicationId }: { pharmacyId: number; medicationId: number }) {
 	const { Item } = Form
 		, { map, selectFilter } = useAntdHelp()
+		, { format } = useDate()
 		, variables = { data: { pharmacyId, medicationId } }
 		, { loading, data } = useQuery(query.BATCHES_STOCK, { variables, fetchPolicy: 'network-only' })
 
@@ -103,9 +104,10 @@ function MedicationBatch({ pharmacyId, medicationId }: { pharmacyId: number; med
 	return (
 		<Item name='batchId' label='Lote' rules={[{ required: true, message: 'Seleccione el lote' }]}>
 			<Select
-				options={map(data?.batchesStocks, ({ batch, stock }: { batch: Batch, stock: number }) => {
+				options={map(data?.batchesStocks.filter(({ stock }: { stock: number }) => stock !== 0), ({ batch, stock }: { batch: Batch, stock: number }) => {
+					const formattedDate = format(new Date(batch.expireAt).getTime(), 'dd/MM/yyyy')
 					return {
-						label: `${batch.code} - (stock: ${stock})`,
+						label: `${batch.code} - (stock: ${stock}) - (expira: ${formattedDate})`,
 						value: batch.id
 					}
 				})}
