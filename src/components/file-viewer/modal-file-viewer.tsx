@@ -1,7 +1,6 @@
 
 import { CloseOutlined } from '@ant-design/icons'
 
-import { PdfViewer } from '..'
 import { FileBase64 } from '../../types'
 
 import './modal-file-viewer.css'
