@@ -14,8 +14,10 @@ function ArrivalItemList({ arrival }: { arrival: Arrival }) {
 		, { format } = useDate()
 		, { has } = useAuth()
 	const [ error, onError ] = useError()
-		, { loading, data } = useQuery(query.ARRIVAL_ITEMS, { onError, variables: { arrivalId: arrival.id } })
+		, { loading, data, refetch } = useQuery(query.ARRIVAL_ITEMS, { onError, variables: { arrivalId: arrival.id } })
 	const { Column } = Table
+
+	useSubscription(subscription.ARRIIVAL_ITEM_UPSERTED, { onData: () => refetch() })
 
 	return (
 		<>

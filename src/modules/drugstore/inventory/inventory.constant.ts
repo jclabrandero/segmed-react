@@ -262,6 +262,13 @@ export const subscription = {
 			}
 		}
 	`,
+	ARRIIVAL_ITEM_UPSERTED: gql`
+		subscription upserted {
+			arrivalItemUpserted {
+				id
+			}
+		}
+	`,
 	DEPARTURE_UPSERTED: gql`
 		subscription upserted {
 			departureUpserted {
