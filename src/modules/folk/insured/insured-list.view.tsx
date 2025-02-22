@@ -1,7 +1,7 @@
 
 import { useQuery, useSubscription } from '@apollo/client'
 import { Button, Input, Space, Table, Tag, Tooltip } from 'antd'
-import { MedicineBoxFilled } from '@ant-design/icons'
+import { MedicineBoxFilled, FileDoneOutlined } from '@ant-design/icons'
 
 import { ErrorDialog, ToolBar, ToolBarMenu } from '../../../components'
 import { useDate, useError, useAntdHelp, useFilter, useAuth } from '../../../hooks'
@@ -10,6 +10,7 @@ import { NotAllowed } from '../../basic'
 
 import { query, subscription } from './insured.constant'
 import { CreateInsured, DeleteInsured, InspectInsured, UpdateInsured } from './insured-upsert.view'
+import { Link } from 'react-router-dom'
 
 
 export function InsuredList() {
@@ -95,6 +96,15 @@ export function InsuredList() {
 							has('WriteClinicCare',
 								<Tooltip title='Generar consulta médica'>
 									<Button shape='circle' type='text' size='small' icon={ <MedicineBoxFilled style={{ color: '#2F8923' }}/> }/>
+								</Tooltip>
+							)
+						}
+						{
+							has('ReadClinicCare',
+								<Tooltip title='Ver consultas médicas'>
+									<Link to={`/consulta/historial/${id}`}>
+										<Button shape='circle' type='text' size='small' icon={ <FileDoneOutlined/> }/>
+									</Link>
 								</Tooltip>
 							)
 						}

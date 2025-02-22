@@ -25,6 +25,7 @@ import { PersonList, ClerkList, InsuredList } from '../modules/folk'
 import { MedicationList, PharmacyList, InventoryManage } from '../modules/drugstore'
 import { ClinicCareList, ClinicCareManage } from '../modules/health'
 import { UserEdit } from '../modules/authorization/user/user-edit.view'
+import { ClinicCareInsuredHistoryList } from '../modules/health/clinic-care-insured-history/clinic-care-insured-history.list'
 
 function useAuthorized() {
 	const [ error, onError ] = useError()
@@ -214,6 +215,7 @@ export function Authorized() {
 						<Route path='consulta'>
 							<Route path='' element={<ClinicCareList/>}/>
 							<Route path='atencion/:id' element={<ClinicCareManage/>}/>
+							<Route path='historial/:id' element={<ClinicCareInsuredHistoryList/>}/>
 						</Route>
 						<Route path='cuenta'>
 							<Route path='' element={<UserEdit/>}/>
