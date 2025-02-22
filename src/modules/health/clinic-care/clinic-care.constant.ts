@@ -19,6 +19,22 @@ export const query = {
 			}
 		}
 	`,
+	FILTER_CLINIC_CARES: gql`
+		query clinicCares($filter: IFilterClinicCare!) {
+			clinicCares: filterClinicCares(filter: $filter) {
+				id startDate endDate
+				primary { reason diagnosis }
+				insured {
+					code iin
+					person { firstName lastName }
+					insuredType { name }
+				}
+				state { name color }
+				medicalOffice { name }
+				creatorUser { userName displayName }
+			}
+		}
+	`,
 	CLINIC_CARE: gql`
 		query clinicCare($id: Int!) {
 			clinicCare(id: $id) {

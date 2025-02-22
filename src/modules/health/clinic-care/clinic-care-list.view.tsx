@@ -1,7 +1,7 @@
 
 import { useQuery, useSubscription } from '@apollo/client'
 import { Link } from 'react-router-dom'
-import { Button, Input, Table, Tag } from 'antd'
+import { Button, Input, Select, Table, Tag } from 'antd'
 import { MedicineBoxFilled } from '@ant-design/icons'
 
 import { ErrorDialog, ToolBar, ToolBarMenu } from '../../../components'
@@ -10,16 +10,24 @@ import { NotAllowed } from '../../basic'
 
 import { CreateClinicCare } from './clinic-care-create.view'
 import { query, subscription } from './clinic-care.constant'
+import { useState } from 'react'
 
 
 export function ClinicCareList() {
 	const [ error, onError ] = useError()
 		, { has } = useAuth()
-		, { loading, data, refetch } = useQuery(query.CLINIC_CARES, { onError })
+	const [ filter, setFilter ] = useState({})
+		, { loading, data, refetch } = useQuery(query.FILTER_CLINIC_CARES, { variables: { filter }, onError })
 		, { addKey } = useAntdHelp()
 		, { format } = useDate()
 	const { Search } = Input
 	const { Column } = Table
+	const onSetInsuredFilter = (value: number) => {
+		setFilter({ ...filter, insuredId: value == 0 ? undefined : value })
+	}
+	const onSetCreatorFilter = (value: number) => {
+		setFilter({ ...filter, creatorUserName: value })
+	}
 
 	useSubscription(subscription.CLINIC_CARE_UPSERTED, { onData: () => refetch() })
 
@@ -28,6 +36,22 @@ export function ClinicCareList() {
 			<ToolBar>
 				<ToolBarMenu>
 					<Search enterButton/>
+					<Select
+						placeholder='Beneficiario'
+						options={[
+							{ value: 0, label: 'TODOS' },
+							{ value: 1, label: 'Francisco Huarachi Mamani' }
+						]}
+						onSelect={onSetInsuredFilter}
+					/>
+					<Select
+						placeholder='Médico'
+						options={[
+							{ value: '', label: 'TODOS' },
+							{ value: 'mmedina', label: 'Medina' }
+						]}
+						onSelect={onSetCreatorFilter}
+					/>
 				</ToolBarMenu>
 				<ToolBarMenu>
 					{ has('WriteClinicCare', <CreateClinicCare/>) }
