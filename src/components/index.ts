@@ -11,10 +11,10 @@ import { NavBrand } from './navbar/nav-brand'
 import { NavLink } from './navbar/nav-link'
 import { NavMenu } from './navbar/nav-menu'
 import { PdfViewer } from './file-viewer/pdf-viewer'
+import { Separator } from './separator/separator'
 import { ToolBar } from './toolbar/toolbar'
 import { ToolBarMenu } from './toolbar/toolbar-menu'
 import { UpdateDialog } from './dialog/update-dialog'
-
 
 export {
 	CreateDialog,
@@ -29,6 +29,7 @@ export {
 	NavLink,
 	NavMenu,
 	PdfViewer,
+	Separator,
 	ToolBar,
 	ToolBarMenu,
 	UpdateDialog
