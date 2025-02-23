@@ -94,7 +94,7 @@ function CreateDialogWithDependencies<TCreateArgs, TDependencies = object>(
 						icon={FinalIcon}
 						onClick={() => get(options)}/>
 					: <Button type='primary' shape='round' icon={FinalIcon} onClick={() => get(options)}>
-						{buttonText || title}
+						{buttonText}
 					</Button>
 			}
 			<Modal
