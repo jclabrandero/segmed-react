@@ -17,11 +17,12 @@ export function ClinicCarePrimaryManage({ clinicCareId, primary, edit }: ClinicC
 
 	return (
 		<>
-			{
-				edit && has('WriteClinicCare', <ToolBar><ToolBarMenu>
-					<UpsertClinicCarePrimary id={primary?.id || 0} clinicCareId={clinicCareId}/>
-				</ToolBarMenu></ToolBar>)
-			}
+			<ToolBar>
+				<ToolBarMenu><></></ToolBarMenu>
+				<ToolBarMenu>
+					{ edit && has('WriteClinicCare', <UpsertClinicCarePrimary id={primary?.id || 0} clinicCareId={clinicCareId}/>)}
+				</ToolBarMenu>
+			</ToolBar>
 			<p><strong>Motivo, descripción de la sintomatología</strong></p>
 			<pre>{ primary?.reason || '(Sin información)'}</pre>
 			<p><strong>Examen físico</strong></p>

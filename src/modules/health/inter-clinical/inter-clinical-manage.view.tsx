@@ -1,5 +1,5 @@
 
-import { Space, Table, Tree } from 'antd'
+import { Input, Space, Table, Tree } from 'antd'
 import { CheckCircleFilled, InfoCircleFilled, WarningFilled } from '@ant-design/icons'
 
 import { ToolBar, ToolBarMenu } from '../../../components'
@@ -25,11 +25,14 @@ export function InterclinicalManage({ clinicCareId, interclinicals, edit }: Inte
 
 	return (
 		<>
-			{
-				edit && has('WriteClinicCare', <ToolBar><ToolBarMenu>
-					<CreateInterclinical clinicCareId={clinicCareId}/>
-				</ToolBarMenu></ToolBar>)
-			}
+			<ToolBar>
+				<ToolBarMenu>
+					<Input.Search enterButton allowClear />
+				</ToolBarMenu>
+				<ToolBarMenu>
+					{ edit && has('WriteClinicCare', <CreateInterclinical clinicCareId={clinicCareId}/>)}
+				</ToolBarMenu>
+			</ToolBar>
 			<Table
 				size='middle'
 				pagination={false}

@@ -1,5 +1,5 @@
 
-import { Space, Table } from 'antd'
+import { Input, Space, Table } from 'antd'
 import { CheckCircleFilled, InfoCircleFilled } from '@ant-design/icons'
 
 import { ClinicCareId, MedicalLeave} from '../../../types'
@@ -22,11 +22,14 @@ export function MedicalLeaveManage({ clinicCareId, medicalLeaves, edit }: Medica
 
 	return (
 		<>
-			{
-				edit && has('WriteClinicCare', <ToolBar><ToolBarMenu>
-					<CreateMedicalLeave clinicCareId={clinicCareId}/>
-				</ToolBarMenu></ToolBar>)
-			}
+			<ToolBar>
+				<ToolBarMenu>
+					<Input.Search enterButton allowClear />
+				</ToolBarMenu>
+				<ToolBarMenu>
+					{ edit && has('WriteClinicCare', <CreateMedicalLeave clinicCareId={clinicCareId}/>)}
+				</ToolBarMenu>
+			</ToolBar>
 			<Table
 				size='middle'
 				pagination={false}
