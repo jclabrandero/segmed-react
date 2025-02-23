@@ -12,6 +12,7 @@ import { Belonging, MedicalOffice, Provider } from './reference.type'
 import { Person, Clerk, Insured } from './folk.type'
 import { Medication, MedicationStock, Pharmacy, Batch, Inventory, Arrival, ArrivalItem, Departure, DepartureItem } from './drugstore.type'
 import {
+	ClinicCare,
 	ClinicCarePrimary,
 	Interclinical,
 	Prescription,
@@ -43,6 +44,7 @@ export type {
 
 	Medication, MedicationStock, Pharmacy, Batch, Inventory, Arrival, ArrivalItem, Departure, DepartureItem,
 
+	ClinicCare,
 	ClinicCarePrimary,
 	Interclinical,
 	Prescription,

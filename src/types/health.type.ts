@@ -1,7 +1,13 @@
 
-import { DisabilityType, FileInfo, Medication, Pharmacy } from '.'
+import { DisabilityType, FileInfo, Insured, Medication, Pharmacy } from '.'
 
+export type ClinicCare = {
+	id:			number
+	startDate:	Date
+	endDate:	Date
 
+	insured:	Insured
+}
 
 export type ClinicCarePrimary = {
 	id:				number
