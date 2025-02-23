@@ -7,14 +7,16 @@ import { useError, useFilter, useAntdHelp, useAuth, useDate } from '../../../hoo
 import { Departure, DepartureItem } from '../../../types'
 
 import { query, subscription } from './inventory.constant'
-import { CreateDeparture, CreateDepartureItem } from './departure-upsert.view'
+import { CreateDeparture, CreateDepartureItem, CreateDepartureItemPrescription } from './departure-upsert.view'
 
 function DepartureItemList({ departureId }: { departureId: number }) {
 	const { addKey } = useAntdHelp()
 		, { format } = useDate()
 	const [ error, onError ] = useError()
-		, { loading, data } = useQuery(query.DEPARTURE_ITEMS, { onError, variables: { departureId } })
+		, { loading, data, refetch } = useQuery(query.DEPARTURE_ITEMS, { onError, variables: { departureId } })
 	const { Column } = Table
+
+	useSubscription(subscription.DEPARTURE_ITEM_UPSERTED, { onData: () => refetch() })
 
 	return (
 		<>
@@ -82,9 +84,16 @@ export function DepartureList({ pharmacyId }: { pharmacyId: number }) {
 				<Column title='Fecha de salida' ellipsis render={({ departureDate }) => (
 					<span>{format(departureDate, 'dd/MM/yyyy')}</span>
 				)}/>
-				<Column title='Acciones' width='6rem' fixed='right' render={({ id }) => (
+				<Column title='Consulta' ellipsis render={({ clinicCare }) => clinicCare ? (
+					<span>Consulta N° { clinicCare.id } - {clinicCare.insured.person.firstName} {clinicCare.insured.person.lastName}</span>
+				) : null }/>
+				<Column title='Acciones' width='6rem' fixed='right' render={({ id, clinicCare }) => (
 					<Space>
-						<CreateDepartureItem departureId={id} pharmacyId={pharmacyId}/>
+						{
+							clinicCare
+								? <CreateDepartureItemPrescription clinicCareId={clinicCare.id} departureId={id} pharmacyId={pharmacyId}/>
+								: <CreateDepartureItem departureId={id} pharmacyId={pharmacyId}/>
+						}
 					</Space>
 				)}/>
 			</Table>

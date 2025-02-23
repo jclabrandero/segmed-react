@@ -149,6 +149,13 @@ export const query = {
 		query departures($pharmacyId: Int!) {
 			departures(pharmacyId: $pharmacyId) {
 				id remark departureDate status
+				clinicCare {
+					id startDate endDate
+					insured {
+						id code iin
+						person { firstName lastName }
+					}
+				}
 			}
 		}
 	`,
@@ -171,6 +178,32 @@ export const query = {
 			}
 		}
 	`,
+	CREATE_DEPARTURE_DEPENDENCIES: gql`
+		query dependencies($pharmacyId: Int!) {
+			clinicCares: clinicCaresWithoutDeparturePrescriptions(pharmacyId: $pharmacyId) {
+				id startDate endDate
+				insured {
+					id code iin
+					person { firstName lastName }
+				}
+			}
+		}
+	`,
+	CREATE_DEPARTURE_ITEM_DEPENDENCIES: gql`
+		query dependencies($clinicCareId: Int!, $pharmacyId: Int!) {
+			prescriptions: prescriptionsFromPharmacyWithoutDeparture(clinicCareId: $clinicCareId, pharmacyId: $pharmacyId) {
+				id quantity indications
+				medication {
+					id code name concentration
+					unit {
+						id name
+						__typename @skip(if: true)
+					}
+					__typename @skip(if: true)
+				}
+			}
+		}
+	`
 }
 
 export const mutation = {
@@ -276,4 +309,11 @@ export const subscription = {
 			}
 		}
 	`,
+	DEPARTURE_ITEM_UPSERTED: gql`
+		subscription upserted {
+			departureItemUpserted {
+				id
+			}
+		}
+	`
 }
