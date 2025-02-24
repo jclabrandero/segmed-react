@@ -7,7 +7,7 @@ type LoaderProps = {
 	show: boolean
 }
 
-export function Loader(props: LoaderProps) {
+export function Loader(props: LoaderProps = { show: true }) {
 	const [ dialogRef ] = useDialog(props.show)
 
 	return (
@@ -15,8 +15,4 @@ export function Loader(props: LoaderProps) {
 			<div className='loader'><div></div><div></div><div></div></div>
 		</dialog>
 	)
-}
-
-Loader.defaultProps = {
-	show: true
 }
