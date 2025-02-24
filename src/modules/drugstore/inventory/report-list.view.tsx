@@ -13,8 +13,6 @@ export function PrintReport1({ reportId, pharmacyId }: { reportId: number, pharm
 	const onLoadFile = ({ file }: { file: FileBase64 }) => setPreviewFile(file)
 		, [ print, { loading } ] = useMutation(mutation.PRINT_REPORT, { onCompleted: onLoadFile })
 
-	console.log(reportId)
-
 	return (
 		<>
 			<Button
