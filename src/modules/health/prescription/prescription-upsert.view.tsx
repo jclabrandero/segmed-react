@@ -1,6 +1,6 @@
 
 import { useState } from 'react'
-import { useMutation, useQuery } from '@apollo/client'
+import { DocumentNode, useMutation, useQuery } from '@apollo/client'
 import { Button, Form, Input, InputNumber, Select, Space, Spin } from 'antd'
 import { PrinterFilled } from '@ant-design/icons'
 
@@ -156,7 +156,6 @@ export function CreatePrescription({ clinicCareId }: ClinicCareId) {
 	return (
 		<CreateDialog<IPrescriptionCreateArgs, IPrescriptionDependencies>
 			title='Agregar receta médica'
-			buttonText='Farmacias propias'
 			query={query.CREATE_DEPENDENCIES}
 			mutation={mutation.CREATE_PRESCRIPTION}
 			render={(submit, close, data) => <PrescriptionPharmacyForm mode='create' data={{clinicCareId, ...data}} onSubmit={submit} onCancel={close}/>}
@@ -235,7 +234,6 @@ export function CreatePrescriptionExtern({ clinicCareId }: ClinicCareId) {
 	return (
 		<CreateDialog<IPrescriptionExternCreateArgs, IPrescriptionExternDependencies>
 			title='Agregar receta médica'
-			buttonText='Farmacias externas'
 			query={query.CREATE_EXTERN_DEPENDENCIES}
 			mutation={mutation.CREATE_PRESCRIPTION_EXTERN}
 			render={(submit, close, data) => <PrescriptionExternForm mode='create' data={{clinicCareId, ...data}} onSubmit={submit} onCancel={close}/>}
@@ -268,10 +266,10 @@ export function DeletePrescriptionExtern({ id, clinicCareId }: UpdateProps & Cli
 	)
 }
 
-export function PrintPrescription({ clinicCareId }: ClinicCareId) {
+export function PrintPrescription({ clinicCareId, gqlMutation }: ClinicCareId & { gqlMutation: DocumentNode }) {
 	const [ previewFile, setPreviewFile ] = useState<FileBase64 | null>(null)
 	const onLoadFile = ({ file }: { file: FileBase64 }) => setPreviewFile(file)
-		, [ print, { loading } ] = useMutation(mutation.PRINT_PRESCRIPTION, { onCompleted: onLoadFile })
+		, [ print, { loading } ] = useMutation(gqlMutation, { onCompleted: onLoadFile })
 
 	return (
 		<>

@@ -160,5 +160,13 @@ export const mutation = {
 				info { type }
 			}
 		}
+	`,
+	PRINT_PRESCRIPTION_EXTERN: gql`
+		mutation print($data: IPrescriptionPrintArgs!) {
+			file: printPrescriptionExtern(data: $data) {
+				data
+				info { type }
+			}
+		}
 	`
 }
