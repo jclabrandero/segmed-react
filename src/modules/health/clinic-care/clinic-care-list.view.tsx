@@ -1,24 +1,24 @@
 
+import { useState } from 'react'
 import { useQuery, useSubscription } from '@apollo/client'
 import { Link } from 'react-router-dom'
 import { Button, Input, Select, Table, Tag } from 'antd'
 import { MedicineBoxFilled } from '@ant-design/icons'
 
-import { ErrorDialog, ToolBar, ToolBarMenu } from '../../../components'
+import { ErrorDialog, Separator, ToolBar, ToolBarMenu } from '../../../components'
 import { useError, useDate, useAntdHelp, useAuth } from '../../../hooks'
+import { Insured, User } from '../../../types'
 import { NotAllowed } from '../../basic'
 
 import { CreateClinicCare } from './clinic-care-create.view'
 import { query, subscription } from './clinic-care.constant'
-import { useState } from 'react'
-
 
 export function ClinicCareList() {
 	const [ error, onError ] = useError()
 		, { has } = useAuth()
 	const [ filter, setFilter ] = useState({})
 		, { loading, data, refetch } = useQuery(query.FILTER_CLINIC_CARES, { variables: { filter }, onError })
-		, { addKey } = useAntdHelp()
+		, { addKey, map } = useAntdHelp()
 		, { format } = useDate()
 	const { Search } = Input
 	const { Column } = Table
@@ -35,22 +35,37 @@ export function ClinicCareList() {
 		<>
 			<ToolBar>
 				<ToolBarMenu>
-					<Search enterButton/>
+					<Search enterButton style={{ width: '15rem' }}/>
+					<Separator/>
 					<Select
 						placeholder='Beneficiario'
 						options={[
-							{ value: 0, label: 'TODOS' },
-							{ value: 1, label: 'Francisco Huarachi Mamani' }
+							{ label: 'TODOS', value: 0 },
+							...map(data?.insureds, (insured: Insured) => {
+								const { firstName, lastName } = insured.person
+								return {
+									label: `${firstName} - ${lastName}`,
+									value: insured.id
+								}
+							})
 						]}
 						onSelect={onSetInsuredFilter}
+						style={{ width: '10rem' }}
 					/>
+					<Separator/>
 					<Select
 						placeholder='Médico'
 						options={[
 							{ value: '', label: 'TODOS' },
-							{ value: 'mmedina', label: 'Medina' }
+							...map(data?.users, (user: User) => {
+								return {
+									label: `${user.displayName}`,
+									value: user.userName
+								}
+							})
 						]}
 						onSelect={onSetCreatorFilter}
+						style={{ width: '10rem' }}
 					/>
 				</ToolBarMenu>
 				<ToolBarMenu>

@@ -33,6 +33,13 @@ export const query = {
 				medicalOffice { name }
 				creatorUser { userName displayName }
 			}
+			insureds: insuredsWithClinicCares {
+				id code iin
+				person { firstName lastName }
+			},
+			users: usersWithClinicCares {
+				userName displayName
+			}
 		}
 	`,
 	CLINIC_CARE: gql`
@@ -65,7 +72,7 @@ export const query = {
 					files { md5 }
 				}
 				prescriptions {
-					id quantity indications
+					id quantity indications departured
 					medication {
 						id code name concentration
 						unit {
