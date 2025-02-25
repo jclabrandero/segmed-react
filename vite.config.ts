@@ -11,5 +11,9 @@ export default defineConfig({
 	},
 	build: {
 		target: 'esnext'
+	},
+	server: {
+		host: true,
+		allowedHosts: ['pbtes06.pasbol.com.bo:5173']
 	}
 })
