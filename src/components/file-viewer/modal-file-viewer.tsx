@@ -27,7 +27,7 @@ export function ModalFileViewer({ open, file, onCancel }: ModalFileViewerProps) 
 			<div className="wrapper">
 				{
 					file && file.info.type == 'application/pdf' &&
-					<embed src={`data:application/pdf;base64,${file.data}`} type="application/pdf" width="100%" height="600px" />
+					<embed src={`data:application/pdf;base64,${file.data}`} type="application/pdf" width="100%" height="100%" />
 					//<PdfViewer base64={ file.data }/>
 				}
 			</div>
