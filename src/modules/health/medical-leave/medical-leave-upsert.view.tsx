@@ -45,12 +45,24 @@ function MedicalLeaveForm({ data: { clinicCareId, disabilityTypes, medicalLeave 
 		, [ form ] = Form.useForm()
 		, { map, toLV, touched } = useAntdHelp()
 		, disabilityTypeRef = medicalLeave ? disabilityTypes.find(({ name }) => name == medicalLeave.disabilityType.name) : null
+	const [totalDays, setTotalDays] = useState(0)
 	const onFinish = () => onSubmit({ ...touched(form), clinicCareId })
 		, format = () => {
 			if (!medicalLeave) return undefined
 			const { disabilityType, startDate, endDate, ...remaining } = medicalLeave
 			return { disabilityTypeId: disabilityTypeRef ? disabilityType.id : disabilityType.id * (-1), startDate: dayjs(startDate), endDate: dayjs(endDate), ...remaining }
 		}
+	const handleDateChange = () => {
+		const startDate = form.getFieldValue('startDate')
+		const endDate = form.getFieldValue('endDate')
+		if (startDate && endDate) {
+			const diff = endDate.diff(startDate, 'days') + 1 // +1 to include both start and end date
+			setTotalDays(diff)
+		} else {
+			setTotalDays(0)
+		}
+	}
+	
 	return (
 		<Form form={form} layout='vertical' onFinish={onFinish} initialValues={format()}>
 			<Item
@@ -63,13 +75,16 @@ function MedicalLeaveForm({ data: { clinicCareId, disabilityTypes, medicalLeave 
 				name='startDate'
 				label='Fecha de inicio'
 				rules={[{ required: true, message: 'Seleccione fecha de inicio' }]}>
-				<DatePicker format='DD/MM/YYYY'/>
+				<DatePicker format='DD/MM/YYYY' onChange={handleDateChange}/>
 			</Item>
 			<Item
 				name='endDate'
 				label='Fecha fin'
 				rules={[{ required: true, message: 'Seleccione fecha fin' }]}>
-				<DatePicker format='DD/MM/YYYY'/>
+				<DatePicker format='DD/MM/YYYY' onChange={handleDateChange}/>
+			</Item>
+			<Item label='Total de días de baja'>
+				<Input value={totalDays} readOnly/>
 			</Item>
 			<Item
 				name='disabilityTypeId'

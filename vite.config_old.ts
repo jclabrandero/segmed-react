@@ -11,9 +11,9 @@ export default defineConfig({
 	},
 	build: {
 		target: 'esnext'
+	},
+	server: {
+		host: true,
+		allowedHosts: ['pbtes06.pasbol.com.bo:5173']
 	}
-	//server: {
-	//	host: '0.0.0.0', // Escuchar en todas las direcciones
-	//	allowedHosts: ['pbterts02.pasbol.com.bo'], // Permitir el nombre del servidor
-	//}
 })
