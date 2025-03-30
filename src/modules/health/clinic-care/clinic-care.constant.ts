@@ -72,7 +72,7 @@ export const query = {
 					files { md5 }
 				}
 				prescriptions {
-					id quantity indications departured
+					id quantity indications departuredQuantity
 					medication {
 						id code name concentration
 						unit {

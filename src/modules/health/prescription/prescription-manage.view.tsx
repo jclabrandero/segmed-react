@@ -90,9 +90,13 @@ export function PrescriptionManage({ clinicCareId, prescriptions, prescriptionEx
 					)}/>
 					<Column title='Cantidad' dataIndex='quantity'/>
 					<Column title='Indicaciones' dataIndex='indications'/>
-					<Column title='Con salida' ellipsis render={({ departured }) => (
-						departured ? <Tag color='green'>Sí</Tag> : <Tag color='red'>No</Tag>
-					)}/>
+					<Column title='Cantidad despachada' ellipsis render={({ departuredQuantity, quantity }) => 
+						departuredQuantity == 0
+							? (<Tag color='red'>{ departuredQuantity }</Tag>)
+							: (departuredQuantity == quantity)
+								? (<Tag color='green'>{ departuredQuantity }</Tag>)
+								: (<Tag color='orange'>{ departuredQuantity }</Tag>)
+					}/>
 					{
 						edit ? has('WriteClinicCare', <Column title='Acciones' width='6rem' fixed='right' render={({ id, pharmacy }: Prescription) =>
 							pharmacy
