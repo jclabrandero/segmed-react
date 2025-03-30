@@ -192,7 +192,7 @@ export const query = {
 	CREATE_DEPARTURE_ITEM_DEPENDENCIES: gql`
 		query dependencies($clinicCareId: Int!, $pharmacyId: Int!) {
 			prescriptions: prescriptionsFromPharmacyWithoutDeparture(clinicCareId: $clinicCareId, pharmacyId: $pharmacyId) {
-				id quantity indications
+				id quantity indications departuredQuantity
 				medication {
 					id code name concentration
 					unit {

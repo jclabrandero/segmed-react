@@ -271,30 +271,38 @@ function DepartureItemPrescriptionForm({ mode, data, onSubmit, onCancel, onRefet
 						form.setFieldValue('batchId', null)
 						if (found) {
 							form.setFieldValue('requieredQuantity', found.quantity)
-							form.setFieldValue('quantity', found.quantity)
+							form.setFieldValue('currentDeparturedQuantity', found.departuredQuantity)
+							form.setFieldValue('quantity', found.quantity - found.departuredQuantity)
 							setPrescription(found)
 						} else {
 							form.setFieldValue('requieredQuantity', null)
+							form.setFieldValue('currentDeparturedQuantity', null)
 							form.setFieldValue('quantity', null)
 						}
 					}}/>
 			</Item>
 			{
 				prescription &&
-				<MedicationBatch pharmacyId={pharmacyId} medicationId={prescription.medication.id}/>
+				<>
+					<MedicationBatch pharmacyId={pharmacyId} medicationId={prescription.medication.id}/>
+					<Item
+						name='requieredQuantity'
+						label='Cantidad solicitada en receta'>
+						<InputNumber min='1' disabled/>
+					</Item>
+					<Item
+						name='currentDeparturedQuantity'
+						label='Cantidad despachada'>
+						<InputNumber min='0' disabled/>
+					</Item>
+					<Item
+						name='quantity'
+						label='Cantidad a entregar'
+						rules={[{ required: true, message: 'Escriba la cantidad' }]}>
+						<InputNumber min='1' max={String(prescription.quantity - prescription.departuredQuantity)}/>
+					</Item>
+				</>
 			}
-			<Item
-				name='requieredQuantity'
-				label='Cantidad solicitada en receta'>
-				<InputNumber min='1' disabled value={form.getFieldValue('quantity')}/>
-			</Item>
-			<Item
-				name='quantity'
-				label='Cantidad a entregar'
-				rules={[{ required: true, message: 'Escriba la cantidad' }]}>
-				<InputNumber min='1'/>
-			</Item>
-
 			<div className='modal-dialog-footer'>
 				<Space>
 					<Button type='default' onClick={onCancel}>Cancelar</Button>
