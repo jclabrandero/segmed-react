@@ -30,6 +30,8 @@ export type Prescription = {
 	quantity:		number
 	indications:	string
 
+	departuredQuantity: number
+
 	medication:		Medication
 	pharmacy:		Pharmacy
 }
