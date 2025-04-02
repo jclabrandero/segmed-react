@@ -12,14 +12,14 @@ export function StockList({ pharmacyId }: { pharmacyId: number }) {
 	const { addKey } = useAntdHelp()
 	const [ error, onError ] = useError()
 		, { loading, data } = useQuery(query.INVENTORIES, { onError, variables: { pharmacyId } })
-		, [ inventories, filter ] = useFilter(addKey<Pharmacy>(data?.inventories), ['stock'])
+		, [ inventories, filter ] = useFilter(addKey<Pharmacy>(data?.inventories), ['stock', 'medication.code', 'medication.name'])
 	const { Column } = Table
 
 	return (
 		<>
 			<ToolBar>
 				<ToolBarMenu>
-					<Input.Search enterButton allowClear onSearch={filter}/>
+					<Input.Search enterButton allowClear onSearch={filter} onChange={(e) => filter(e.target.value)}/>
 				</ToolBarMenu>
 				<ToolBarMenu>
 					<></>

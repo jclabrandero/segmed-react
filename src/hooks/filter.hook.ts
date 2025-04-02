@@ -11,19 +11,23 @@ export function useFilter<TData extends object>(
 	const [ filterText, setFilterText ] = useState('')
 	const filter = (query: string) => setFilterText(query.toLowerCase())
 
-	if (dataset.length === 0) return [ dataset, filter ]
-
-	type TDataKey = keyof TData
-	const keys: Array<TDataKey> = <Array<TDataKey>>Object.keys(dataset[0]).filter(key => fields.some(field => field === key))
+	if (dataset.length === 0) return [dataset, filter]
 
 	const newDataset: TData[] = dataset.filter((record: TData) => {
-		const evaluator = (value: TData[keyof TData] | string | number) => {
+		const evaluator = (value: TData[keyof TData] | string | number | undefined) => {
 			if (typeof value === 'string') return value.toLowerCase().includes(filterText)
 			if (typeof value === 'number') return value.toString().includes(filterText)
 			return false
 		}
-		return keys.some(key => evaluator(record[key])) || resolvers.some(func => evaluator(func(record)))
+		const getValue = <T>(key: string, obj: T): string | number | undefined => {
+			return key.split('.').reduce<string | number | undefined>((acc, part) => {
+				if (acc && typeof acc === 'object' && part in acc) {
+					return (acc as Record<string, unknown>)[part] as string | number | undefined
+				}
+				return undefined
+			}, obj as unknown as string | number | undefined)
+		}
+		return fields.some(field => evaluator(getValue(field, record))) || resolvers.some(func => evaluator(func(record)))
 	})
-
-	return [ newDataset, filter ]
+	return [newDataset, filter]
 }

@@ -25,7 +25,7 @@ export function MedicationList() {
 		<>
 			<ToolBar>
 				<ToolBarMenu>
-					<Input.Search enterButton allowClear onSearch={filter}/>
+					<Input.Search enterButton allowClear onSearch={filter} onChange={(e) => filter(e.target.value)}/>
 				</ToolBarMenu>
 				<ToolBarMenu>
 					{ has('WriteMedication', <CreateMedication/>) }
