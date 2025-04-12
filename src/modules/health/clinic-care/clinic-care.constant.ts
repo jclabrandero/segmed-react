@@ -29,7 +29,7 @@ export const query = {
 					person { firstName lastName }
 					insuredType { name }
 				}
-				state { name color }
+				state { id, name color }
 				medicalOffice { name }
 				creatorUser { userName displayName }
 			}
@@ -39,6 +39,9 @@ export const query = {
 			},
 			users: usersWithClinicCares {
 				userName displayName
+			}
+			states: clinicalCareStateWithClinicCares {
+				id name
 			}
 		}
 	`,

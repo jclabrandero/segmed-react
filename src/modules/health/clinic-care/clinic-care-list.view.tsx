@@ -6,8 +6,8 @@ import { Button, Input, Select, Table, Tag } from 'antd'
 import { MedicineBoxFilled } from '@ant-design/icons'
 
 import { ErrorDialog, Separator, ToolBar, ToolBarMenu } from '../../../components'
-import { useError, useDate, useAntdHelp, useAuth } from '../../../hooks'
-import { Insured, User } from '../../../types'
+import { useError, useDate, useAntdHelp, useAuth, useFilter } from '../../../hooks'
+import { ClinicalCareState, ClinicCare, Insured, User } from '../../../types'
 import { NotAllowed } from '../../basic'
 
 import { CreateClinicCare } from './clinic-care-create.view'
@@ -19,6 +19,15 @@ export function ClinicCareList() {
 	const [ filter, setFilter ] = useState({})
 		, { loading, data, refetch } = useQuery(query.FILTER_CLINIC_CARES, { variables: { filter }, onError })
 		, { addKey, map } = useAntdHelp()
+		, [ clinicCares, filterLocally ] = useFilter(
+			addKey<ClinicCare>(data?.clinicCares),
+			['id'],
+			[
+				({ insured }) => `${insured.code}`,
+				({ insured }) => `${insured.person.firstName} ${insured.person.lastName}`,
+				({ primary }) => `${primary?.diagnosis}`
+			]
+		)
 		, { format } = useDate()
 	const { Search } = Input
 	const { Column } = Table
@@ -35,7 +44,11 @@ export function ClinicCareList() {
 		<>
 			<ToolBar>
 				<ToolBarMenu>
-					<Search enterButton style={{ width: '15rem' }}/>
+					<Search
+						enterButton allowClear onSearch={ filterLocally }
+						style={{ width: '15rem' }}
+						placeholder="Buscar..."
+					/>
 					<Separator/>
 					<Select
 						placeholder='Beneficiario'
@@ -67,6 +80,21 @@ export function ClinicCareList() {
 						onSelect={onSetCreatorFilter}
 						style={{ width: '10rem' }}
 					/>
+					<Separator/>
+					<Select
+						placeholder='Estado'
+						options={[
+							{ value: 0, label: 'TODOS' },
+							...map(data?.states, (state: ClinicalCareState) => {
+								return {
+									label: `${state.name}`,
+									value: state.id
+								}
+							})
+						]}
+						onSelect={(value: number) => setFilter({ ...filter, stateId: value == 0 ? undefined : value })}
+						style={{ width: '10rem' }}
+					/>
 				</ToolBarMenu>
 				<ToolBarMenu>
 					{ has('WriteClinicCare', <CreateClinicCare/>) }
@@ -75,7 +103,7 @@ export function ClinicCareList() {
 
 			<Table
 				size='middle'
-				dataSource={addKey(data?.clinicCares)}
+				dataSource={clinicCares}
 				bordered={true}
 				scroll={{ x: true }}
 				loading={loading}
@@ -84,7 +112,7 @@ export function ClinicCareList() {
 				<Column title='Diagnóstico' render={({ primary }) => (
 					<span>{ primary?.diagnosis }</span>
 				)}/>
-				<Column title='Cúdigo beneficiario' ellipsis render={({ insured }) => (
+				<Column title='Código beneficiario' ellipsis render={({ insured }) => (
 					<span>{ insured.code }</span>
 				)}/>
 				<Column title='Nombre beneficiario' ellipsis render={({ insured }) => (
