@@ -129,3 +129,7 @@ p {
 	margin: 8px 0 6px 0;
 	width: 100%;
 }
+
+.red-table-row {
+	background-color: #fbe6e4 !important; /* Rojo claro */
+}
