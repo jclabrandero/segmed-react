@@ -46,7 +46,7 @@ function useApp() {
 export function App() {
 	const { theme, user, loading } = useApp()
 
-	if (loading) return (<Loader/>)
+	if (loading) return (<Loader show={true}/>)
 
 	if (user.isAuthorized) return (
 		<ConfigProvider theme={theme} locale={locale}>
