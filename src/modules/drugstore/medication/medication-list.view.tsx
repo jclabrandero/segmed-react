@@ -7,7 +7,7 @@ import { useError, useAntdHelp, useFilter, useAuth } from '../../../hooks'
 import { Medication } from '../../../types'
 import { NotAllowed } from '../../basic'
 
-import { CreateMedication, InspectMedication, UpdateMedication } from './medication-upsert.view'
+import { CreateMedication, DowngradeMedication, InspectMedication, UpdateMedication, UpgradeMedication } from './medication-upsert.view'
 import { query, subscription } from './medication.constant'
 
 
@@ -39,6 +39,7 @@ export function MedicationList() {
 				pagination={{ pageSize: 15 }}
 				scroll={{ x: true }}
 				loading={loading}
+				rowClassName={({ status }) => status == 0 ? 'red-table-row' : ''}
 			>
 				<Column title='Id' dataIndex='id'/>
 				<Column title='Código' dataIndex='code' ellipsis/>
@@ -54,10 +55,12 @@ export function MedicationList() {
 					<span>{ cls.name }</span>
 				)}/>
 				<Column title='Estado' render={tableStatus}/>
-				<Column title='Acciones' width='6rem' fixed='right' render={({ id }) => (
+				<Column title='Acciones' width='6rem' fixed='right' render={({ id, status, withStock }) => (
 					<Space>
 						{
 							has('WriteMedication', <>
+								{ !withStock && (status == 1) && <DowngradeMedication id={id}/> }
+								{ (status == 0) && <UpgradeMedication id={id}/> }
 								<UpdateMedication id={id}/>
 							</>)
 						}

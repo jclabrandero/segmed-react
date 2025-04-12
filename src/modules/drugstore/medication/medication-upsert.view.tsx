@@ -1,7 +1,8 @@
 
 import { Button, Card, Checkbox, Divider, Form, Input, Select, Space } from 'antd'
+import { UpCircleOutlined, DownCircleOutlined } from '@ant-design/icons'
 
-import { CreateDialog, InspectDialog, UpdateDialog } from '../../../components'
+import { CreateDialog, DeleteDialog, InspectDialog, UpdateDialog } from '../../../components'
 import { Medication, DrugClass, DrugUnit, UpdateProps } from '../../../types'
 import { useAntdHelp, useAuth } from '../../../hooks'
 
@@ -158,6 +159,34 @@ export function InspectMedication({ id }: UpdateProps) {
 				</Card>
 			</>}
 			query={query.MEDICATION}
+		/>
+	)
+}
+
+export function UpgradeMedication({ id }: UpdateProps) {
+	return (
+		<DeleteDialog<{ medication: Medication }>
+			id={id}
+			title='Habilitar medicamento'
+			icon={<UpCircleOutlined style={{ color: 'green' }}/>}
+			renderExt={({ medication }) => `Habilitar el medicamento: ${medication.name}`}
+			confirmButtonText={'Habilitar'}
+			query={query.MEDICATION}
+			mutation={mutation.UPGRADE_MEDICATION}
+		/>
+	)
+}
+
+export function DowngradeMedication({ id }: UpdateProps) {
+	return (
+		<DeleteDialog<{ medication: Medication }>
+			id={id}
+			title='Dar de baja medicamento'
+			icon={<DownCircleOutlined style={{ color: 'red' }}/>}
+			renderExt={({ medication }) => `Dar de baja el medicamento: ${medication.name}`}
+			confirmButtonText={'Dar de baja'}
+			query={query.MEDICATION}
+			mutation={mutation.DOWNGRADE_MEDICATION}
 		/>
 	)
 }

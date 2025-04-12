@@ -6,7 +6,7 @@ export const query = {
 	MEDICATIONS: gql`
 		query medications {
 			medications {
-				id code name concentration liname status
+				id code name concentration liname status withStock
 				class { id name }
 				unit { id name }
 			}
@@ -66,6 +66,20 @@ export const mutation = {
 	DELETE_MEDICATION: gql`
 		mutation delete($id: Int!) {
 			medication: deleteMedication(id: $id) {
+				id
+			}
+		}
+	`,
+	UPGRADE_MEDICATION: gql`
+		mutation upgrade($id: Int!) {
+			medication: upgradeMedication(id: $id) {
+				id
+			}
+		}
+	`,
+	DOWNGRADE_MEDICATION: gql`
+		mutation downgrade($id: Int!) {
+			medication: downgradeMedication(id: $id) {
 				id
 			}
 		}
