@@ -1,8 +1,8 @@
 
-import { useState } from 'react'
+import { useState} from 'react'
 import { useMutation } from '@apollo/client'
 import { Button, DatePicker, Form, Input, Select, Space } from 'antd'
-import { CheckOutlined, PrinterFilled } from '@ant-design/icons'
+import { CheckOutlined, PrinterFilled, CloseOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 
 import { CreateDialog, DeleteDialog, UpdateDialog, Loader, ModalFileViewer } from '../../../components'
@@ -40,30 +40,44 @@ type MedicalLeaveFormProps = {
 	onCancel:	() => void
 }
 
+
 function MedicalLeaveForm({ data: { clinicCareId, disabilityTypes, medicalLeave }, onSubmit, onCancel } : MedicalLeaveFormProps) {
 	const { Item } = Form
 		, [ form ] = Form.useForm()
 		, { map, toLV, touched } = useAntdHelp()
 		, disabilityTypeRef = medicalLeave ? disabilityTypes.find(({ name }) => name == medicalLeave.disabilityType.name) : null
-	const [totalDays, setTotalDays] = useState(0)
-	const onFinish = () => onSubmit({ ...touched(form), clinicCareId })
+	
+	const onFinish = () => {
+			const values = touched(form)
+			if (!values.startDate) {
+				values.startDate = dayjs() // Establecer la fecha actual si no está presente
+			}
+			onSubmit({ ...values, clinicCareId })
+		}
+	
 		, format = () => {
-			if (!medicalLeave) return undefined
+			if (!medicalLeave) {
+			// Cambio realizado aquí para establecer la fecha actual en nuevas bajas
+				return { startDate: dayjs()}
+			}
 			const { disabilityType, startDate, endDate, ...remaining } = medicalLeave
 			return { disabilityTypeId: disabilityTypeRef ? disabilityType.id : disabilityType.id * (-1), startDate: dayjs(startDate), endDate: dayjs(endDate), ...remaining }
 		}
-	const handleDateChange = () => {
+	const disabledDate = (current: dayjs.Dayjs) => {
+		const today = dayjs()
+		return current && (current > today || current < today.subtract(10, 'days'))
+	}
+		
+	const validateEndDate = (_: unknown, value: dayjs.Dayjs) => {
 		const startDate = form.getFieldValue('startDate')
-		const endDate = form.getFieldValue('endDate')
-		if (startDate && endDate) {
-			const diff = endDate.diff(startDate, 'days') + 1 // +1 to include both start and end date
-			setTotalDays(diff)
-		} else {
-			setTotalDays(0)
+		if (startDate && value && value.isBefore(startDate, 'day')) {
+			return Promise.reject(new Error('La fecha fin no puede ser menor que la fecha de inicio'))
 		}
+		return Promise.resolve()
 	}
 	
 	return (
+		
 		<Form form={form} layout='vertical' onFinish={onFinish} initialValues={format()}>
 			<Item
 				label='Diagnóstico'
@@ -75,16 +89,24 @@ function MedicalLeaveForm({ data: { clinicCareId, disabilityTypes, medicalLeave 
 				name='startDate'
 				label='Fecha de inicio'
 				rules={[{ required: true, message: 'Seleccione fecha de inicio' }]}>
-				<DatePicker format='DD/MM/YYYY' onChange={handleDateChange}/>
+				<DatePicker format='DD/MM/YYYY' disabledDate={disabledDate}/>
 			</Item>
 			<Item
 				name='endDate'
 				label='Fecha fin'
-				rules={[{ required: true, message: 'Seleccione fecha fin' }]}>
-				<DatePicker format='DD/MM/YYYY' onChange={handleDateChange}/>
+				rules={[
+					{ required: true, message: 'Seleccione fecha fin' },
+					{ validator: validateEndDate }
+				]}>
+				<DatePicker format='DD/MM/YYYY' />
 			</Item>
-			<Item label='Total de días de baja'>
-				<Input value={totalDays} readOnly/>
+			<Item label='Total de días de baja' dependencies={['startDate', 'endDate']}>
+				{({ getFieldValue }) => {
+					const startDate = getFieldValue('startDate')
+					const endDate = getFieldValue('endDate')
+					const totalDays = startDate && endDate ? endDate.diff(startDate, 'days') + 1 : 0
+					return <Input value={totalDays} readOnly />
+				}}
 			</Item>
 			<Item
 				name='disabilityTypeId'
@@ -153,6 +175,29 @@ export function ApproveMedicalLeave({ id, clinicCareId }: UpdateProps & ClinicCa
 						<Space>
 							<Button type='default' onClick={close}>Cancelar</Button>
 							<Button type='primary' htmlType='submit'>Aprobar</Button>
+						</Space>
+					</div>
+				</Form>
+			)}
+		/>
+	)
+}
+
+export function DisapproveMedicalLeave({ id, clinicCareId }: UpdateProps & ClinicCareId) {
+	return (
+		<UpdateDialog<IMedicalLeaveUpdateArgs, { medicalLeave: MedicalLeave }>
+			id={id}
+			title='Desaprobar baja médica'
+			query={query.MEDICAL_LEAVE}
+			mutation={mutation.DISAPPROVE_MEDICAL_LEAVE} // Cambiar a la mutación de desaprobación
+			icon={<CloseOutlined/>} // Cambiar el icono a uno de desaprobación
+			render={(submit, close) => (
+				<Form layout='vertical' onFinish={() => submit({ clinicCareId })}>
+					<p>Está seguro de desaprobar la baja médica "{ id }"?</p>
+					<div className='modal-dialog-footer'>
+						<Space>
+							<Button type='default' onClick={close}>Cancelar</Button>
+							<Button type='primary' htmlType='submit'>Desaprobar</Button>
 						</Space>
 					</div>
 				</Form>

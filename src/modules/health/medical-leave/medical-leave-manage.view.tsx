@@ -6,7 +6,7 @@ import { ClinicCareId, MedicalLeave} from '../../../types'
 import { useAntdHelp, useAuth, useDate } from '../../../hooks'
 import { ToolBar, ToolBarMenu } from '../../../components'
 
-import { ApproveMedicalLeave, CreateMedicalLeave, DeleteMedicalLeave, PrintMedicalLeave, UpdateMedicalLeave } from './medical-leave-upsert.view'
+import { ApproveMedicalLeave, CreateMedicalLeave, DeleteMedicalLeave, PrintMedicalLeave, UpdateMedicalLeave, DisapproveMedicalLeave } from './medical-leave-upsert.view'
 
 
 type MedicalLeaveProps = {
@@ -77,6 +77,9 @@ export function MedicalLeaveManage({ clinicCareId, medicalLeaves, edit }: Medica
 						</Space>,
 						(<Space>
 							<PrintMedicalLeave id={id}/>
+							{
+								has('ApprovalMedicalLeave', <DisapproveMedicalLeave id={id} clinicCareId={clinicCareId}/>)
+							}
 						</Space>)
 					]
 					return stateOptions[approvalState]

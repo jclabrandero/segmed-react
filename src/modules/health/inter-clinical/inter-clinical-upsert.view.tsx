@@ -11,15 +11,21 @@ import { getAuth } from '../../../utils'
 
 import { query, mutation } from './inter-clinical.constant'
 
-
 const encodeTree = (medicalGroup: MedicalGroup | undefined) => {
-	return medicalGroup ? medicalGroup.specialties.map(em => ({
-		title: em.name, value: JSON.stringify([em.id]),
-		children: em.subspecialties.map(sm => ({
-			title: sm.name, value: JSON.stringify([em.id, sm.id])
-		}))
-	})) : []
+	return medicalGroup ? medicalGroup.specialties
+		.slice() // Crear una copia del array de especialidades
+		.sort((a, b) => a.name.localeCompare(b.name)) // Ordenar especialidades alfabéticamente
+		.map(em => ({
+			title: em.name, value: JSON.stringify([em.id]),
+			children: em.subspecialties
+				.slice() // Crear una copia del array de sub-especialidades
+				.sort((a, b) => a.name.localeCompare(b.name)) // Ordenar sub-especialidades alfabéticamente
+				.map(sm => ({
+					title: sm.name, value: JSON.stringify([em.id, sm.id])
+				}))
+		})) : []
 }
+	
 const decodeTree = (dataset: Array<string>) => {
 	let specialties: Array<{
 		medicalSpecialtyId: number

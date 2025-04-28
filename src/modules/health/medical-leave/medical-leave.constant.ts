@@ -46,7 +46,7 @@ export const mutation = {
 		}
 	`,
 	UPDATE_MEDICAL_LEAVE: gql`
-		mutation create($id: Int!, $data: IMedicalLeaveUpdateArgs!) {
+		mutation update($id: Int!, $data: IMedicalLeaveUpdateArgs!) {
 			updateMedicalLeave(id: $id, data: $data) {
 				id
 			}
@@ -60,8 +60,15 @@ export const mutation = {
 		}
 	`,
 	APPROVE_MEDICAL_LEAVE: gql`
-		mutation delete($id: Int!, $data: IMedicalLeaveUpdateArgs!) {
+		mutation approve($id: Int!, $data: IMedicalLeaveUpdateArgs!) {
 			approveMedicalLeave(id: $id, data: $data) {
+				id
+			}
+		}
+	`,
+	DISAPPROVE_MEDICAL_LEAVE: gql`
+		mutation disapprove($id: Int!, $data: IMedicalLeaveUpdateArgs!) {
+			disapproveMedicalLeave(id: $id, data: $data) {
 				id
 			}
 		}
