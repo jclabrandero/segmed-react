@@ -3,7 +3,7 @@ import { useRef } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import { useMutation } from '@apollo/client'
 import { Avatar, Dropdown, Menu } from 'antd'
-import { ApartmentOutlined, CarryOutOutlined, DatabaseOutlined, MedicineBoxOutlined, MenuOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
+import { ApartmentOutlined, AuditOutlined, CarryOutOutlined, DatabaseOutlined, MedicineBoxOutlined, MenuOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
 
 import { ErrorDialog, Loader, NavAction, NavBar, NavBrand, NavMenu } from '../components'
 import { useAuth, useError } from '../hooks'
@@ -26,6 +26,8 @@ import { MedicationList, PharmacyList, InventoryManage } from '../modules/drugst
 import { ClinicCareList, ClinicCareManage } from '../modules/health'
 import { UserEdit } from '../modules/authorization/user/user-edit.view'
 import { ClinicCareInsuredHistoryList } from '../modules/health/clinic-care-insured-history/clinic-care-insured-history.list'
+import AgreementsList from '../modules/costcontrol/agreements/agreements-list.view'
+
 
 function useAuthorized() {
 	const [ error, onError ] = useError()
@@ -80,6 +82,12 @@ function useAuthorized() {
 		].filter(e => e != null),
 		health: [
 			has('ReadClinicCare', { label: 'Consulta médica', key: '/consulta' })
+		].filter(e => e != null),
+		//Aca se debe revizar has las autorizaciones de control de costos
+		//por ahora se deja sin autorización
+		costcontrol: [
+			{ label: 'Convenios', key: 'controlcostos/convenios' },
+			{ label: 'Costo Servicios Medicos', key: 'controlcostos/costointerclinical' }
 		].filter(e => e != null)
 	}
 
@@ -166,6 +174,12 @@ export function Authorized() {
 								icon: <CarryOutOutlined/>,
 								children: menu.catalog
 							} : null,
+							menu.costcontrol.length ? {
+								label: 'Control de Costos',
+								key: 'controlcostos',
+								icon: <AuditOutlined/>, // icono de auditoría
+								children: menu.costcontrol
+							} : null,
 							menu.configuration.length ? {
 								label: 'Configuración',
 								key: 'configuracion',
@@ -207,6 +221,7 @@ export function Authorized() {
 							<Route path="farmacias" element={<PharmacyList/>}/>
 							<Route path="farmacias/inventario/:id" element={<InventoryManage/>}/>
 						</Route>
+
 						<Route path="configuracion">
 							<Route path="usuarios" element={<UserList/>}/>
 							<Route path="grupos" element={<GroupList/>}/>
@@ -216,6 +231,9 @@ export function Authorized() {
 							<Route path='' element={<ClinicCareList/>}/>
 							<Route path='atencion/:id' element={<ClinicCareManage/>}/>
 							<Route path='historial/:id' element={<ClinicCareInsuredHistoryList/>}/>
+						</Route>
+						<Route path="controlcostos">
+							<Route path="convenios" element={<AgreementsList />} />
 						</Route>
 						<Route path='cuenta'>
 							<Route path='' element={<UserEdit/>}/>
