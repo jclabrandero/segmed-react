@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useSubscription } from '@apollo/client'
 import { Button, Card, Checkbox, DatePicker, Divider, Form, Input, InputNumber, Select, Space } from 'antd'
 import dayjs from 'dayjs'
-
+import { UndoOutlined , StopOutlined } from '@ant-design/icons'
 import { CreateDialog, DeleteDialog, InspectDialog, UpdateDialog } from '../../../components'
 import { Person, Insured, Belonging, InsuredType, UpdateProps } from '../../../types'
 import { useAntdHelp, useAuth } from '../../../hooks'
@@ -165,7 +165,10 @@ function InsuredForm<TArgs>({ mode, data, onSubmit, onCancel, onRefetch }: Insur
 								label='Beneficiario titular'>
 								<Select
 									placeholder='Beneficiario titular'
-									options={holders.map(h => ({ label: `${h.person.firstName} ${h.person.lastName}`, value: h.id }))}/>
+									options={holders.map(h => ({ label: `${h.person.firstName} ${h.person.lastName}`, value: h.id }))}
+									showSearch={true}
+									filterOption={selectFilter}
+								/>
 							</Item>
 						</>
 					)
@@ -268,6 +271,34 @@ export function InspectInsured({ id }: UpdateProps) {
 				</Card>
 			</>}
 			query={query.INSURED}
+		/>
+	)
+}
+
+export function UpgradeInsured({ id }: UpdateProps) {
+	return (
+		<DeleteDialog<{ insured: Insured }>
+			id={id}
+			title='Activar beneficiario'
+			icon={<UndoOutlined style={{ color: 'blue' }}/>}
+			renderExt={({ insured }) => `Rehabilitar a: ${insured.person.firstName} ${insured.person.lastName}`}
+			confirmButtonText={'Activar'}
+			query={query.INSURED}
+			mutation={mutation.UPGRADE_INSURED}
+		/>
+	)
+}
+
+export function DowngradeInsured({ id }: UpdateProps) {
+	return (
+		<DeleteDialog<{ insured: Insured }>
+			id={id}
+			title='Inactivar beneficiario'
+			icon={<StopOutlined style={{ color: 'orange' }}/>}
+			renderExt={({ insured }) => `Deshabilitar a: ${insured.person.firstName} ${insured.person.lastName}`}
+			confirmButtonText={'Inactivar'}
+			query={query.INSURED}
+			mutation={mutation.DOWNGRADE_INSURED}
 		/>
 	)
 }

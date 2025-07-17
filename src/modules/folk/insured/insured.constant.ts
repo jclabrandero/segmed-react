@@ -93,6 +93,20 @@ export const mutation = {
 			}
 		}
 	`,
+	UPGRADE_INSURED: gql`
+		mutation upgrade($id: Int!) {
+			insured: upgradeInsured(id: $id) {
+				id
+			}
+		}
+	`,
+	DOWNGRADE_INSURED: gql`
+		mutation downgrade($id: Int!) {
+			insured: downgradeInsured(id: $id) {
+				id
+			}
+		}
+	`
 }
 
 export const subscription = {
