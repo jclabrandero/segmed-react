@@ -1,88 +1,94 @@
+import { Table, Input, Space } from 'antd'
+import { ToolBar, ToolBarMenu } from '../../../components'
 import { useQuery } from '@apollo/client'
-import { Table, Tag, Input} from 'antd'
-import { ErrorDialog, ToolBar, ToolBarMenu } from '../../../components'
-import { useError, useAntdHelp, useDate, useFilter } from '../../../hooks'
-import { ProviderAgreement, ProviderTariff } from '../../../types/costcontrol.types'
 import { query } from './agreements.constant'
+import { ProviderAgreement, ProviderTariff } from './costcontrol.types'
+import {
+	CreateAgreement,
+	UpdateAgreement,
+	DeleteAgreement,
+	CreateAgreementRate,
+	UpdateAgreementRate
+} from './agreements-upsert.view'
+import { useAntdHelp, useFilter } from '../../../hooks'
 
 const { Column } = Table
 
-function AgreementTariffList({ agreement }: { agreement: ProviderAgreement }) {
-	const { addKey } = useAntdHelp()
-	const tariffs = addKey<ProviderTariff>(agreement.rates)
-
-	return (
-		<Table
-			size='small'
-			dataSource={tariffs}
-			bordered
-			pagination={{ hideOnSinglePage: true }}
-		>
-			<Column title='ID' dataIndex='id' />
-			<Column title='Especialidad Médica' ellipsis render={({ medicalSpecialty }) => medicalSpecialty?.name} />
-			<Column title='Subespecialidad Médica' ellipsis render={({ medicalSubspecialty }) => medicalSubspecialty?.name} />
-			<Column title='UMA' dataIndex='currencyUMA' />
-			<Column title='TC' dataIndex='exchangerate' />
-			<Column title='Costo Bs' dataIndex='cost' />
-			<Column title='Estado' render={({ status }) => {
-				const e = agreementStatusLabel(status)
-				return <Tag color={e.color}>{e.label}</Tag>
-			}} />
-		</Table>
+export default function AgreementList() {
+	const { data, loading, refetch } = useQuery<{ providerAgreements: ProviderAgreement[] }>(
+		query.PROVIDER_AGREEMENTS
 	)
-}
-
-function agreementStatusLabel(status: number) {
-	switch (status) {
-		case 1: return { label: 'Activo', color: 'green' }
-		case 0: return { label: 'Inactivo', color: 'red' }
-		default: return { label: 'Desconocido', color: 'gray' }
-	}
-}
-
-export default function AgreementsList() {
 	const { addKey } = useAntdHelp()
-	const { format } = useDate()
-	const [error, onError] = useError()
-	const { loading, data } = useQuery(query.PROVIDER_AGREEMENTS, { onError })
 	const [agreements, filter] = useFilter(addKey<ProviderAgreement>(data?.providerAgreements), ['name'])
 
 	return (
 		<>
 			<ToolBar>
 				<ToolBarMenu>
-					<h4>Lista de Convenios y tarifas</h4>
-				</ToolBarMenu>
-			</ToolBar>
-			<ToolBar>
-				<ToolBarMenu>
 					<Input.Search enterButton allowClear onSearch={filter} />
 				</ToolBarMenu>
+				<ToolBarMenu>
+					<CreateAgreement />
+				</ToolBarMenu>
 			</ToolBar>
+
 			<Table
-				size='middle'
+				rowKey="id"
 				dataSource={agreements}
-				bordered
-				pagination={{ pageSize: 15 }}
-				scroll={{ x: true }}
 				loading={loading}
+				pagination={false}
 				expandable={{
-					expandedRowRender: (agreement) => <AgreementTariffList agreement={agreement} />,
-					rowExpandable: () => true
+					expandedRowRender: (agreement: ProviderAgreement) => (
+						<>
+							<AgreementTariffList agreement={agreement} onRefetch={refetch} />
+							<CreateAgreementRate agreementId={agreement.id} onRefetch={refetch} />
+						</>
+					),
 				}}
 			>
-				<Column title='ID' dataIndex='id' />
-				<Column title='Convenio' dataIndex='name' ellipsis />
-				<Column title='Proveedor' ellipsis render={({ provider }) => provider?.name} />
-				<Column title='Fecha Inicio' ellipsis render={({ validFrom }) => format(validFrom, 'dd/MM/yyyy')} />
-				<Column title='Fecha Conclusión' ellipsis render={({ validTo }) => validTo ? format(validTo, 'dd/MM/yyyy') : ''} />
-				<Column title='Estado' render={({ status }) => {
-					const e = agreementStatusLabel(status)
-					return <Tag color={e.color}>{e.label}</Tag>
-				}} />
-				<Column title='Acciones' width='6rem' fixed='right'/>
+				<Column title="Nombre" dataIndex="name" />
+				<Column title="Proveedor" dataIndex={['provider', 'name']} />
+				<Column title="Estado" dataIndex="status" />
+				<Column
+					title="Acciones"
+					render={({ id }: { id: number }) => (
+						<Space>
+							<UpdateAgreement id={id} />
+							<DeleteAgreement id={id} />
+						</Space>
+					)}
+				/>
 			</Table>
-			<ErrorDialog error={error} />
 		</>
+	)
+}
+
+function AgreementTariffList({
+	agreement,
+	onRefetch,
+}: {
+	agreement: ProviderAgreement
+	onRefetch: () => void
+}) {
+	const rates: ProviderTariff[] = agreement.rates ?? []
+
+	return (
+		<Table rowKey="id" dataSource={rates} pagination={false} size="small">
+			<Column title="Especialidad" dataIndex={['medicalSpecialty', 'name']} />
+			<Column title="Subespecialidad" dataIndex={['medicalSubspecialty', 'name']} />
+			<Column title="Costo" dataIndex="cost" />
+			<Column title="Moneda" dataIndex="currencyUMA" />
+			<Column title="Tasa de cambio" dataIndex="exchangerate" />
+			<Column title="Estado" dataIndex="status" />
+			<Column
+				title="Acciones"
+				render={({ id }: { id: number }) => (
+					<Space>
+						<UpdateAgreementRate id={id} onRefetch={onRefetch} />
+						
+					</Space>
+				)}
+			/>
+		</Table>
 	)
 }
