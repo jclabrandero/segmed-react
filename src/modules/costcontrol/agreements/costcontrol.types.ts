@@ -7,7 +7,7 @@ export type ProviderAgreement = {
 	status:		number
 	provider: {
 		id:		number
-		name:	string
+		businessName:	string
 	}
 	rates: ProviderTariff[]
 }
