@@ -8,16 +8,16 @@ export function CreateAgreement() {
 	return (
 		<CreateDialog<
 		Partial<ProviderAgreement>,
-		{ agreementDependencies: { providers: { id: number; name: string }[] } }
+		{ providers: { id: number; businessName: string }[] }
 		>
 			title="Nuevo convenio"
-			// query={query.CREATE_AGREEMENT_DEPENDENCIES}
+			query={query.CREATE_AGREEMENT_DEPENDENCIES}
 			mutation={mutation.CREATE_AGREEMENT}
-			render={(submit, close) => (
+			render={(submit, close, data) => (
 				<AgreementForm
 					mode="create"
-					// dependencies={dependencies.agreementDependencies}
-					dependencies={{ providers: [{ id: 1, name: 'Proveedor Prueba' }] }}
+					dependencies={data}
+					//dependencies={{ providers: [{ id: 1, name: 'Proveedor Prueba' }] }}
 					onSubmit={submit}
 					onCancel={close}
 				/>
@@ -30,7 +30,7 @@ export function UpdateAgreement({ id }: { id: number }) {
 	return (
 		<UpdateDialog<
 		Partial<ProviderAgreement>,
-		{ agreement: ProviderAgreement; agreementDependencies: { providers: { id: number; name: string }[] } }
+		{ agreement: ProviderAgreement; agreementDependencies: { providers: { id: number; businessName: string }[] } }
 		>
 			id={id}
 			title="Editar convenio"

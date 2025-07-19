@@ -4,14 +4,14 @@ import { gql } from '@apollo/client'
 export const query = {
 	PROVIDER_AGREEMENTS: gql`
 		query providerAgreements {
-			providerAgreements {
+			agreements {
 				id name validFrom validTo status
-				provider { id name }
-				rates {
-					id medicalSpecialtyId medicalSubspecialtyId currencyUMA exchangerate cost status
-					medicalSpecialty { id name }
-					medicalSubspecialty { id name }
-				}
+				provider { id businessName }
+				# rates {
+				# 	id medicalSpecialtyId medicalSubspecialtyId currencyUMA exchangerate cost status
+				# 	medicalSpecialty { id name }
+				# 	medicalSubspecialty { id name }
+				# }
 			}
 		}
 	`,
@@ -29,11 +29,9 @@ export const query = {
 		}
 	`,
 	CREATE_AGREEMENT_DEPENDENCIES: gql`
-	query {
-	agreementDependencies {
-	providers { id name }
-	}
-	}
+		query {
+			providers { id businessName }
+		}
 	`,
 	UPDATE_AGREEMENT_DEPENDENCIES: gql`
 	query updateAgreementDependencies($id: Int!) {
@@ -68,11 +66,11 @@ export const query = {
 
 export const mutation = {
 	CREATE_AGREEMENT: gql`
-	mutation createAgreement($input: AgreementInput!) {
-	  createAgreement(input: $input) {
-		id
-	  }
-	}
+		mutation createAgreement($data: IAgreementCreateArgs!) {
+			createAgreement(data: $data) {
+				id
+			}
+		}
   `,
 	UPDATE_AGREEMENT: gql`
 	mutation updateAgreement($id: Int!, $input: AgreementInput!) {

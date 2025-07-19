@@ -4,7 +4,7 @@ export type AgreementFormProps = {
 	mode: 'create' | 'update'
 	data?: Partial<ProviderAgreement>
 	dependencies: {
-		providers: { id: number; name: string }[]
+		providers: { id: number; businessName: string }[]
 	}
 	onSubmit: (data: Partial<ProviderAgreement>) => void
 	onCancel: () => void
