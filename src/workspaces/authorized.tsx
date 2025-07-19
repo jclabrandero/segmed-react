@@ -233,7 +233,7 @@ export function Authorized() {
 							<Route path='historial/:id' element={<ClinicCareInsuredHistoryList/>}/>
 						</Route>
 						<Route path="controlcostos">
-							<Route path="convenios prueba" element={<AgreementsList />} />
+							<Route path="convenios" element={<AgreementsList />} />
 						</Route>
 						<Route path='cuenta'>
 							<Route path='' element={<UserEdit/>}/>
