@@ -9,7 +9,7 @@ import { Insured } from '../../../types'
 import { NotAllowed } from '../../basic'
 
 import { query, subscription } from './insured.constant'
-import { CreateInsured, DeleteInsured, InspectInsured, UpdateInsured } from './insured-upsert.view'
+import { CreateInsured, DeleteInsured, DowngradeInsured, InspectInsured, UpdateInsured, UpgradeInsured } from './insured-upsert.view'
 import { Link } from 'react-router-dom'
 
 
@@ -90,7 +90,7 @@ export function InsuredList() {
 				<Column title='Dirección' ellipsis dataIndex='address'/>
 				<Column title='Teléfono' ellipsis dataIndex='phone'/>
 				<Column title='Estado' render={tableStatus}/>
-				<Column title='Acciones' width='6rem' fixed='right' render={({ id }) => (
+				<Column title='Acciones' width='6rem' fixed='right' render={({ id, status, withStock }) => (
 					<Space>
 						{
 							has('WriteClinicCare',
@@ -110,6 +110,8 @@ export function InsuredList() {
 						}
 						{
 							has('WriteInsured', <>
+								{ !withStock && (status === 1) && <DowngradeInsured id={id}/> }
+								{ (status === 0) && <UpgradeInsured id={id}/> }
 								<UpdateInsured id={id}/>
 								<DeleteInsured id={id}/>
 							</>)
