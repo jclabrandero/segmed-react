@@ -2,7 +2,8 @@ import { DeleteDialog, UpdateDialog, CreateDialog } from '../../../components'
 import { mutation, query } from './agreements.constant'
 import { AgreementForm, AgreementRateForm } from './agreements.forms'
 import type { ProviderAgreement, ProviderTariff } from './costcontrol.types'
-//import type { AgreementFormProps, AgreementRateFormProps } from './agreements.types'
+import { UndoOutlined , StopOutlined } from '@ant-design/icons'
+import { UpdateProps } from '../../../types'
 
 export function CreateAgreement() {
 	return (
@@ -60,25 +61,50 @@ export function DeleteAgreement({ id }: { id: number }) {
 	)
 }
 
-export function CreateAgreementRate({ agreementId, onRefetch }: { agreementId: number; onRefetch: () => void }) {
+export function UpgradeAgreement({ id }: UpdateProps) {
 	return (
-		<CreateDialog<
-		Partial<ProviderTariff>,
-		{
-			agreementRateDependencies: {
-				medicalSpecialties: { id: number; name: string }[]
-				medicalSubspecialties: { id: number; name: string }[]
-			}
-		}
-		>
+		<DeleteDialog<{ agreement: ProviderAgreement }>
+			id={id}
+			title='Activar Convenio'
+			icon={<UndoOutlined style={{ color: 'blue' }}/>}
+			//renderExt={({ agreement }) => `Rehabilitar a: ${agreement.name}`}
+			confirmButtonText={'Activar'}
+			query={query.PROVIDER_AGREEMENTS}
+			mutation={mutation.UPGRADE_AGREEMENT}
+		/>
+	)
+}
+
+export function DowngradeAgreement({ id }: UpdateProps) {
+	return (
+		<DeleteDialog<{ agreement: ProviderAgreement }>
+			id={id}
+			title='Inactivar Convenio'
+			icon={<StopOutlined style={{ color: 'orange' }}/>}
+			//renderExt={({ agreement }) => `Deshabilitar a: ${agreement.name}`}
+			confirmButtonText={'Inactivar'}
+			query={query.PROVIDER_AGREEMENTS}
+			mutation={mutation.DOWNGRADE_AGREEMENT}
+		/>
+	)
+}
+
+interface CreateAgreementRateProps {
+	agreementId: number
+	providerId: number
+	onRefetch?: () => void
+}
+
+export function CreateAgreementRate({ agreementId, providerId, onRefetch }: CreateAgreementRateProps) {
+	return (
+		<CreateDialog<Partial<ProviderTariff>>
 			title="Nueva tarifa"
-			query={query.CREATE_AGREEMENT_RATE_DEPENDENCIES}
 			mutation={mutation.CREATE_AGREEMENT_RATE}
-			options={{ variables: { agreementId } }}
-			render={(submit, close, dependencies) => (
+			render={(submit, close) => (
 				<AgreementRateForm
 					mode="create"
-					dependencies={dependencies.agreementRateDependencies}
+					agreementId={agreementId}
+					providerId={providerId}
 					onSubmit={submit}
 					onCancel={close}
 					onRefetch={onRefetch}
@@ -87,6 +113,7 @@ export function CreateAgreementRate({ agreementId, onRefetch }: { agreementId: n
 		/>
 	)
 }
+
 
 export function UpdateAgreementRate({ id, onRefetch }: { id: number; onRefetch: () => void }) {
 	return (
@@ -104,16 +131,27 @@ export function UpdateAgreementRate({ id, onRefetch }: { id: number; onRefetch: 
 			title="Editar tarifa"
 			query={query.UPDATE_AGREEMENT_RATE_DEPENDENCIES}
 			mutation={mutation.UPDATE_AGREEMENT_RATE}
-			render={(submit, close, data) => (
-				<AgreementRateForm
-					mode="update"
-					data={data.agreementRate}
-					dependencies={data.agreementRateDependencies}
-					onSubmit={submit}
-					onCancel={close}
-					onRefetch={onRefetch}
-				/>
-			)}
+			render={(submit, close, data) => {
+				const specialties = data.agreementRateDependencies.medicalSpecialties.map(s => ({
+					id: s.id,
+					medicalSpecialty: { id: s.id, name: s.name },
+					subspecialties: data.agreementRateDependencies.medicalSubspecialties.map(sub => ({
+						id: sub.id,
+						medicalSubspecialty: { id: sub.id, name: sub.name }
+					})),
+				}))
+
+				return (
+					<AgreementRateForm
+						mode="update"
+						data={data.agreementRate}
+						dependencies={{ specialties }}
+						onSubmit={submit}
+						onCancel={close}
+						onRefetch={onRefetch}
+					/>
+				)
+			}}
 		/>
 	)
 }

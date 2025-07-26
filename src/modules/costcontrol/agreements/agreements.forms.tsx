@@ -1,9 +1,12 @@
-import { Button, Form, Input, InputNumber, Select, Switch, Upload } from 'antd'
+import { Button, Form, Input, InputNumber, Select, Upload } from 'antd'
 import { useEffect, useState } from 'react'
 import { AgreementFormProps, AgreementRateFormProps } from './agreements.types'
 import { ProviderAgreement, ProviderTariff } from './costcontrol.types'
 import { getAuth } from '../../../utils'
 import { UploadOutlined } from '@ant-design/icons'
+import { useAntdHelp } from '../../../hooks'
+import { useQuery } from '@apollo/client'
+import { query } from './agreements.constant'
 
 export function AgreementForm({
 	mode,
@@ -14,7 +17,7 @@ export function AgreementForm({
 }: AgreementFormProps) {
 	const [form] = Form.useForm<ProviderAgreement>()
 		, { sessionId, token } = getAuth()
-
+		, { selectFilter } = useAntdHelp()
 	const [ fileMd5, setFileMd5 ] = useState<string>()
 
 	useEffect(() => {
@@ -41,7 +44,9 @@ export function AgreementForm({
 					<Input />
 				</Form.Item>
 				<Form.Item name={['provider', 'id']} label="Proveedor" rules={[{ required: true }]}>
-					<Select options={dependencies?.providers.map(p => ({ label: p.businessName, value: p.id }))} />
+					<Select options={dependencies?.providers.map(p => ({ label: p.businessName, value: p.id }))}
+						showSearch={true}
+						filterOption={selectFilter}/>
 				</Form.Item>
 				<Form.Item name="validFrom" label="Válido desde" rules={[{ required: true }]}>
 					<Input type="date" />
@@ -93,20 +98,44 @@ export function AgreementForm({
 
 export function AgreementRateForm({
 	mode,
-	data,
-	dependencies,
+	agreementId,
+	providerId,
 	onSubmit,
 	onCancel,
-	onRefetch,
+	onRefetch
 }: AgreementRateFormProps) {
 	const [form] = Form.useForm<ProviderTariff>()
+	const [specialties, setSpecialties] = useState<
+	{ id: number; name: string; subspecialties: { id: number; name: string }[] }[]
+	>([])
+	const [subspecialties, setSubspecialties] = useState<{ id: number; name: string }[]>([])
+	const { data } = useQuery(query.AGREEMENT_PROVIDER_SPECIALTIES, {
+		skip: !providerId,
+		variables: { id: Number(providerId) },
+		fetchPolicy: 'network-only'
+	})
 
 	useEffect(() => {
-		if (data) form.setFieldsValue(data)
-	}, [data, form])
+		if (data?.provider?.medicalGroups) {
+			const allSpecialties = data.provider.medicalGroups.flatMap(
+				(group: { specialties: { id: number; name: string; subspecialties: { id: number; name: string }[] }[] }) =>
+					group.specialties
+			)
+			setSpecialties(allSpecialties)
+		}
+	}, [data])
 
-	const handleFinish = (values: Partial<ProviderTariff>) => {
-		onSubmit(values)
+	const handleSpecialtyChange = (specialtyId: number) => {
+		const specialty = specialties.find(s => s.id === specialtyId)
+		setSubspecialties(specialty?.subspecialties || [])
+		form.setFieldsValue({ providerMedicalSubspecialtyId: undefined })
+	}
+
+	const handleFinish = (values: ProviderTariff) => {
+		onSubmit({
+			...values,
+			agreementId, // <-- Agregar agreementId
+		})
 		if (onRefetch) onRefetch()
 	}
 
@@ -114,29 +143,135 @@ export function AgreementRateForm({
 		<>
 			<h3>{mode === 'create' ? 'Crear tarifa' : 'Editar tarifa'}</h3>
 			<Form form={form} layout="vertical" onFinish={handleFinish}>
-				<Form.Item name="medicalSpecialtyId" label="Especialidad" rules={[{ required: true }]}>
-					<Select options={dependencies.medicalSpecialties.map(s => ({ label: s.name, value: s.id }))} />
+				<Form.Item
+					name="providerMedicalSpecialtyId"
+					label="Especialidad"
+					rules={[{ required: true, message: 'Seleccione una especialidad' }]}
+				>
+					<Select
+						options={specialties.map(s => ({ label: s.name, value: s.id }))}
+						onChange={handleSpecialtyChange}
+					/>
 				</Form.Item>
-				<Form.Item name="medicalSubspecialtyId" label="Subespecialidad">
-					<Select options={dependencies.medicalSubspecialties.map(s => ({ label: s.name, value: s.id }))} />
+				{subspecialties.length > 0 && (
+					<Form.Item
+						name="providerMedicalSubspecialtyId"
+						label="Subespecialidad"
+						rules={[{ required: false }]}
+					>
+						<Select
+							options={subspecialties.map(s => ({ label: s.name, value: s.id }))}
+						/>
+					</Form.Item>
+				)}
+				<Form.Item name="currencyUMA" label="UMA">
+					<InputNumber min={1} />
 				</Form.Item>
-				<Form.Item name="currencyUMA" label="UMA" valuePropName="checked">
-					<Switch />
+				<Form.Item name="exchangeRate" label="Tipo de cambio">
+					<InputNumber min={1} />
 				</Form.Item>
-				<Form.Item name="exchangerate" label="Tipo de cambio">
+				<Form.Item name="priceBs" label="Costo" rules={[{ required: true }]}>
 					<InputNumber min={0} />
-				</Form.Item>
-				<Form.Item name="cost" label="Costo" rules={[{ required: true }]}>
-					<InputNumber min={0} />
-				</Form.Item>
-				<Form.Item name="status" label="Activo" valuePropName="checked">
-					<Switch />
 				</Form.Item>
 				<Form.Item>
-					<Button htmlType="submit" type="primary">Guardar</Button>
-					<Button onClick={onCancel} style={{ marginLeft: 8 }}>Cancelar</Button>
+					<Button htmlType="submit" type="primary">
+                        Guardar
+					</Button>
+					<Button onClick={onCancel} style={{ marginLeft: 8 }}>
+                        Cancelar
+					</Button>
 				</Form.Item>
 			</Form>
 		</>
 	)
 }
+
+// export function AgreementRateForm({
+// 	mode,
+// 	providerId,
+// 	onSubmit,
+// 	onCancel,
+// 	onRefetch
+// }: AgreementRateFormProps) {
+// 	const [form] = Form.useForm<ProviderTariff>()
+// 	const [specialties, setSpecialties] = useState<
+// 	{ id: number; name: string; subspecialties: { id: number; name: string }[] }[]
+// 	>([])
+// 	const [subspecialties, setSubspecialties] = useState<{ id: number; name: string }[]>([])
+
+// 	const { data } = useQuery(query.AGREEMENT_PROVIDER_SPECIALTIES, {
+// 		skip: !providerId,
+// 		variables: { id: Number(providerId) },
+// 		fetchPolicy: 'network-only'
+// 	})
+
+// 	useEffect(() => {
+// 		console.log('providerId:', providerId)
+// 	}, [providerId])
+
+
+// 	useEffect(() => {
+		
+// 		if (data?.provider?.medicalGroups) {
+// 			const allSpecialties = data.provider.medicalGroups.flatMap((group: { specialties: { id: number; name: string; subspecialties: { id: number; name: string }[] }[] }) => group.specialties)
+// 			setSpecialties(allSpecialties)
+// 		}
+// 	}, [data])
+
+// 	const handleSpecialtyChange = (specialtyId: number) => {
+// 		const specialty = specialties.find(s => s.id === specialtyId)
+// 		setSubspecialties(specialty?.subspecialties || [])
+// 		form.setFieldsValue({ providerMedicalSubspecialtyId: undefined })
+// 	}
+
+// 	const handleFinish = (values: ProviderTariff) => {
+// 		onSubmit(values)
+// 		if (onRefetch) onRefetch()
+// 	}
+
+// 	return (
+// 		<>
+// 			<h3>{mode === 'create' ? 'Crear tarifa' : 'Editar tarifa'}</h3>
+// 			<Form form={form} layout="vertical" onFinish={handleFinish}>
+// 				<Form.Item
+// 					name="providerMedicalSpecialtyId"
+// 					label="Especialidad"
+// 					rules={[{ required: true, message: 'Seleccione una especialidad' }]}
+// 				>
+// 					<Select
+// 						options={specialties.map(s => ({ label: s.name, value: s.id }))}
+// 						onChange={handleSpecialtyChange}
+// 					/>
+// 				</Form.Item>
+// 				{subspecialties.length > 0 && (
+// 					<Form.Item
+// 						name="providerMedicalSubspecialtyId"
+// 						label="Subespecialidad"
+// 						rules={[{ required: false }]}
+// 					>
+// 						<Select
+// 							options={subspecialties.map(s => ({ label: s.name, value: s.id }))}
+// 						/>
+// 					</Form.Item>
+// 				)}
+// 				<Form.Item name="currencyUMA" label="UMA">
+// 					<InputNumber min={1} />
+// 				</Form.Item>
+// 				<Form.Item name="exchangeRate" label="Tipo de cambio">
+// 					<InputNumber min={1} />
+// 				</Form.Item>
+// 				<Form.Item name="priceBs" label="Costo" rules={[{ required: true }]}>
+// 					<InputNumber min={0} />
+// 				</Form.Item>
+// 				<Form.Item>
+// 					<Button htmlType="submit" type="primary">
+//             Guardar
+// 					</Button>
+// 					<Button onClick={onCancel} style={{ marginLeft: 8 }}>
+//             Cancelar
+// 					</Button>
+// 				</Form.Item>
+// 			</Form>
+// 		</>
+// 	)
+// }

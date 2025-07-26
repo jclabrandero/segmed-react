@@ -1,16 +1,18 @@
 import { Table, Input, Space } from 'antd'
 import { ToolBar, ToolBarMenu } from '../../../components'
-import { useQuery } from '@apollo/client'
-import { query } from './agreements.constant'
+import { useQuery, useSubscription } from '@apollo/client'
+import { query, subscription } from './agreements.constant'
 import { ProviderAgreement, ProviderTariff } from './costcontrol.types'
 import {
 	CreateAgreement,
 	UpdateAgreement,
 	DeleteAgreement,
 	CreateAgreementRate,
-	UpdateAgreementRate
+	UpdateAgreementRate,
+	DowngradeAgreement,
+	UpgradeAgreement
 } from './agreements-upsert.view'
-import { useAntdHelp, useFilter } from '../../../hooks'
+import { useAntdHelp, useFilter, useAuth} from '../../../hooks'
 import { tableStatus } from '../../../hooks/table-fields'
 
 const { Column } = Table
@@ -20,7 +22,14 @@ export default function AgreementList() {
 		query.PROVIDER_AGREEMENTS
 	)
 	const { addKey } = useAntdHelp()
+	const { has } = useAuth()
 	const [agreements, filter] = useFilter(addKey<ProviderAgreement>(data?.agreements), ['name'])
+
+	function refetchTariffs(): void {
+		throw new Error('Function not implemented.')
+	}
+
+	useSubscription(subscription.AGREEMENT_UPSERTED, { onData: () => refetch() })
 
 	return (
 		<>
@@ -38,27 +47,30 @@ export default function AgreementList() {
 				dataSource={agreements}
 				loading={loading}
 				pagination={false}
-				// expandable={{
-				// 	expandedRowRender: (agreement: ProviderAgreement) => (
-				// 		<>
-				// 			<AgreementTariffList agreement={agreement} onRefetch={refetch} />
-				// 			<CreateAgreementRate agreementId={agreement.id} onRefetch={refetch} />
-				// 		</>
-				// 	),
-				// }}
+				expandable={{
+					expandedRowRender: (agreement: ProviderAgreement) => (
+						<>
+							<AgreementTariffList agreement={agreement} onRefetch={refetch} />
+							<CreateAgreementRate agreementId={agreement.id} providerId={agreement.provider.id} onRefetch={refetchTariffs}/>
+						</>
+					),
+				}}
 			>
 				<Column title="Nombre" dataIndex="name" />
 				<Column title="Proveedor" dataIndex={['provider', 'businessName']} />
 				<Column title="Estado" render={tableStatus}/>
-				<Column
-					title="Acciones"
-					render={({ id }: { id: number }) => (
-						<Space>
-							<UpdateAgreement id={id} />
-							<DeleteAgreement id={id} />
-						</Space>
-					)}
-				/>
+				<Column title='Acciones' width='6rem' fixed='right' render={({ id, status, withStock }) => (
+					<Space>
+						{
+							has('WriteAgreement', <>
+								{ !withStock && (status === 1) && <DowngradeAgreement id={id}/> }
+								{ (status === 0) && <UpgradeAgreement id={id}/> }
+								<UpdateAgreement id={id}/>
+								<DeleteAgreement id={id}/>
+							</>)
+						}
+					</Space>
+				)}/>
 			</Table>
 		</>
 	)
@@ -71,15 +83,21 @@ function AgreementTariffList({
 	agreement: ProviderAgreement
 	onRefetch: () => void
 }) {
-	const rates: ProviderTariff[] = agreement.rates ?? []
+	
+	const { data} = useQuery<{ tariffItems: ProviderTariff[] }>(
+		query.TARIFF_ITEMS,
+		{ variables: { agreementId: agreement.id } }
+	)
+
+	const rates = data?.tariffItems ?? []
 
 	return (
 		<Table rowKey="id" dataSource={rates} pagination={false} size="small">
-			<Column title="Especialidad" dataIndex={['medicalSpecialty', 'name']} />
-			<Column title="Subespecialidad" dataIndex={['medicalSubspecialty', 'name']} />
-			<Column title="Costo" dataIndex="cost" />
-			<Column title="Moneda" dataIndex="currencyUMA" />
-			<Column title="Tasa de cambio" dataIndex="exchangerate" />
+			<Column title="Especialidad" dataIndex={['providerMedicalSpecialty', 'medicalSpecialty', 'name']} />
+			<Column title="Subespecialidad" render={(_, record: ProviderTariff) => record.providerMedicalSubspecialty?.medicalSubspecialty?.name ?? '-'}/>
+			<Column title="UMA" dataIndex="currencyUMA" />
+			<Column title="Tipo de cambio" dataIndex="exchangeRate" />
+			<Column title="Costo Bs" dataIndex="priceBs" />
 			<Column title="Estado" dataIndex="status" />
 			<Column
 				title="Acciones"

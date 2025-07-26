@@ -17,17 +17,54 @@ export const query = {
 	`,
 	PROVIDER_AGREEMENT: gql`
 		query providerAgreement($id: Int!) {
-			providerAgreement(id: $id) {
+			agreement(id: $id) {
 				id name validFrom validTo status
-				provider { id name }
-				rates {
-					id medicalSpecialtyId medicalSubspecialtyId currencyUMA exchangerate cost status
-					medicalSpecialty { id name }
-					medicalSubspecialty { id name }
+				provider { id businessName }
 				}
-			}
 		}
 	`,
+	TARIFF_ITEMS: gql`
+    query tariffItems($agreementId: Int!) {
+        tariffItems(agreementId: $agreementId) {
+            id
+            currencyUMA
+            exchangeRate
+            priceBs
+            status
+            providerMedicalSpecialty {
+                medicalSpecialty {
+                    id
+                    name
+                }
+            }
+            providerMedicalSubspecialty {
+                medicalSubspecialty {
+                    id
+                    name
+                }
+            }
+        }
+    }
+`,
+
+	AGREEMENT_PROVIDER_SPECIALTIES: gql`
+    query provider($id: Int!) {
+    provider(id: $id) {
+		medicalGroups {
+        specialties {
+          id
+          name
+          subspecialties {
+            id
+            name
+          }
+        }
+      }
+
+      }
+    }
+  
+  `,
 	CREATE_AGREEMENT_DEPENDENCIES: gql`
 		query {
 			providers { id businessName }
@@ -43,14 +80,14 @@ export const query = {
 	}
 }
 `,
-	CREATE_AGREEMENT_RATE_DEPENDENCIES: gql`
-	query {
-		agreementRateDependencies {
-		medicalSpecialties { id name }
-		medicalSubspecialties { id name }
-	}
-	}
-	`,
+	// CREATE_AGREEMENT_RATE_DEPENDENCIES: gql`
+	// query {
+	// 	agreementRateDependencies {
+	// 	medicalSpecialties { id name }
+	// 	medicalSubspecialties { id name }
+	// }
+	// }
+	// `,
 	UPDATE_AGREEMENT_RATE_DEPENDENCIES: gql`
 	query updateAgreementRateDependencies($id: Int!) {
 	agreementRate(id: $id) {
@@ -86,9 +123,25 @@ export const mutation = {
 	  }
 	}
   `,
+	UPGRADE_AGREEMENT: gql`
+		mutation upgrade($id: Int!) {
+			agreement: upgradeAgreement(id: $id) {
+				id
+			}
+		}
+	`,
+	
+	DOWNGRADE_AGREEMENT: gql`
+		mutation downgrade($id: Int!) {
+			agreement: downgradeAgreement(id: $id) {
+				id
+			}
+		}
+	`,
+	
 	CREATE_AGREEMENT_RATE: gql`
-	mutation createAgreementRate($input: AgreementRateInput!) {
-	  createAgreementRate(input: $input) {
+	mutation createTariff($data: ITariffCreateArgs!) {
+	  createTariff(data: $data) {
 		id
 	  }
 	}
@@ -107,4 +160,21 @@ export const mutation = {
 	  }
 	}
   `,
+}
+
+export const subscription = {
+	AGREEMENT_UPSERTED: gql`
+		subscription agreement {
+			agreementUpserted {
+				id
+			}
+		}
+	`,
+	AGREEMENT_DELETED: gql`
+		subscription agreement {	
+			agreementDeleted {
+				id
+			}
+		}
+	`
 }
