@@ -27,7 +27,7 @@ import { ClinicCareList, ClinicCareManage } from '../modules/health'
 import { UserEdit } from '../modules/authorization/user/user-edit.view'
 import { ClinicCareInsuredHistoryList } from '../modules/health/clinic-care-insured-history/clinic-care-insured-history.list'
 import AgreementsList from '../modules/costcontrol/agreements/agreements-list.view'
-
+import InterclinicalCostList from '../modules/costcontrol/interclinicalcost/interclinical-cost-list.view'
 
 function useAuthorized() {
 	const [ error, onError ] = useError()
@@ -234,6 +234,7 @@ export function Authorized() {
 						</Route>
 						<Route path="controlcostos">
 							<Route path="convenios" element={<AgreementsList />} />
+							<Route path="costointerclinical" element={<InterclinicalCostList/>} />
 						</Route>
 						<Route path='cuenta'>
 							<Route path='' element={<UserEdit/>}/>
