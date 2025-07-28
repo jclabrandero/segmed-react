@@ -94,7 +94,8 @@ function AgreementTariffList({
 	return (
 		<Table rowKey="id" dataSource={rates} pagination={false} size="small">
 			<Column title="Especialidad" dataIndex={['providerMedicalSpecialty', 'medicalSpecialty', 'name']} />
-			<Column title="Subespecialidad" render={(_, record: ProviderTariff) => record.providerMedicalSubspecialty?.medicalSubspecialty?.name ?? '-'}/>
+			<Column title="Subespecialidad" 
+				render={(_, record: ProviderTariff) =>record.providerMedicalSubspecialty?.medicalSubspecialty?.name ?? '-'}/>
 			<Column title="UMA" dataIndex="currencyUMA" />
 			<Column title="Tipo de cambio" dataIndex="exchangeRate" />
 			<Column title="Costo Bs" dataIndex="priceBs" />

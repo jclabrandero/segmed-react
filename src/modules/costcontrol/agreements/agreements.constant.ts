@@ -47,22 +47,48 @@ export const query = {
     }
 `,
 
+	// AGREEMENT_PROVIDER_SPECIALTIES: gql`
+    // query provider($id: Int!) {
+    // provider(id: $id) {
+	// 	medicalGroups {
+    //     specialties {
+    //       id
+    //       name
+    //       subspecialties {
+    //         id
+    //         name
+    //       }
+    //     }
+    //   }
+
+    //   }
+    // }
+
 	AGREEMENT_PROVIDER_SPECIALTIES: gql`
-    query provider($id: Int!) {
-    provider(id: $id) {
-		medicalGroups {
-        specialties {
+	query providerWithProviderIds($id: Int!) {
+  providerWithProviderIds(id: $id) {
+    id
+    businessName
+    medicalGroups {
+      id
+      name
+      specialties {
+        id # <- ID de ProviderMedicalSpecialty
+        medicalSpecialty {
           id
           name
-          subspecialties {
+        }
+        subspecialties {
+          id # <- ID de ProviderMedicalSubspecialty
+          medicalSubspecialty {
             id
             name
           }
         }
       }
-
-      }
     }
+  }
+}
   
   `,
 	CREATE_AGREEMENT_DEPENDENCIES: gql`

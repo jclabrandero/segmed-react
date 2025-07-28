@@ -115,11 +115,37 @@ export function AgreementRateForm({
 		fetchPolicy: 'network-only'
 	})
 
+	// useEffect(() => {
+	// 	if (data?.provider?.medicalGroups) {
+	// 		const allSpecialties = data.provider.medicalGroups.flatMap(
+	// 			(group: { specialties: { id: number; name: string; subspecialties: { id: number; name: string }[] }[] }) =>
+	// 				group.specialties
+	// 		)
+	// 		setSpecialties(allSpecialties)
+	// 	}
+	// }, [data])
+
 	useEffect(() => {
-		if (data?.provider?.medicalGroups) {
-			const allSpecialties = data.provider.medicalGroups.flatMap(
-				(group: { specialties: { id: number; name: string; subspecialties: { id: number; name: string }[] }[] }) =>
-					group.specialties
+		if (data?.providerWithProviderIds?.medicalGroups) {
+			const allSpecialties = data.providerWithProviderIds.medicalGroups.flatMap(
+				(group: {
+					specialties: {
+						id: number
+						medicalSpecialty: { name: string }
+						subspecialties: {
+							id: number
+							medicalSubspecialty: { name: string }
+						}[]
+					}[]
+				}) =>
+					group.specialties.map(s => ({
+						id: s.id,
+						name: s.medicalSpecialty.name,
+						subspecialties: s.subspecialties.map(sub => ({
+							id: sub.id,
+							name: sub.medicalSubspecialty.name
+						})),
+					}))
 			)
 			setSpecialties(allSpecialties)
 		}
